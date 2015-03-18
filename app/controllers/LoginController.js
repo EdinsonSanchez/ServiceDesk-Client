@@ -38,7 +38,7 @@ app.controller('LoginController',
               // Usuario actual
               $scope.setCurrentUser(userLog);
               // redirecciona al dashboard
-              window.location = $location.host() + ($location.port() != "" ? ':' + $location.port() : '' ) + '/' +appName + '/#/tickets';
+              window.location = $location.host() + ($location.port() != "80" ? ':' + $location.port() : '' ) + '/' + appName + '/#/tickets';
 
           }, function () {
               $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
@@ -52,7 +52,7 @@ app.controller('LoginController',
 			AuthService.logout();
 
       // redirecciona a la pagina de login
-      window.location = $location.host() + ($location.port() != "" ? ':' + $location.port() : '' ) + '/' +appName + '/login.html';
+      window.location = $location.host() + ($location.port() != "80" ? ':' + $location.port() : '' ) + '/' +appName + '/login.html';
 		};
 }]);
 
@@ -70,7 +70,7 @@ app.controller('AuthController', ['$scope', '$log', '$location', 'AuthService', 
     function init() {
         if(!AuthService.isAuthenticated()) {
             // redirecciona a la pagina de login
-            window.location = $location.host() + ($location.port() != "" ? ':' + $location.port() : '' ) + '/' +appName + '/login.html';
+            window.location = $location.host() + ($location.port() != "80" ? ':' + $location.port() : '' ) + '/' +appName + '/login.html';
         }
     }
     

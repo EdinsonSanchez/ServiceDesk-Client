@@ -8,6 +8,8 @@
  * @copyright Copyright (C) 2014 Mine Sense Solutions SAC. All rights reserved.
  */
 
+var sandbox = true;
+
 var app = angular.module("SDApp", ['angularMoment', 'ui.router'
 	, 'ngRoute', 'ngSanitize'
 	,'ngResource', 'ngCookies'
@@ -17,12 +19,14 @@ var app = angular.module("SDApp", ['angularMoment', 'ui.router'
 	, 'timer'
 	, 'summernote']);
 
+var mainhost = 'http://www.mss.pe/apps/tickets/v2/public/apiv2';
+var sandbox = 'http://192.168.1.37/appGestConfV2.0/public/apiv2';
 
-var apiUrl = 'http://www.mss.pe/apps/tickets/v2/public/apiv2';
-// var apiUrl = 'http://192.168.1.37/appGestConfV2.0/public/apiv2';
+var mainurl = 'http://www.mss.pe/apps/tickets/v2/public';
+var sandboxurl = 'http://192.168.1.37/appGestConfV2.0/public';
 
-// var appUrl = 'http://192.168.1.37/appGestConfV2.0/public';
-var appUrl = 'http://www.mss.pe/apps/tickets/v2/public';
+var apiUrl = sandbox ? sandbox : mainhost ;
+var appUrl = sandbox ? sandboxurl : mainurl;
 
 var appName = 'ServiceDesk';
 
