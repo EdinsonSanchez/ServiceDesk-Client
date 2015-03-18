@@ -1,0 +1,449 @@
+<form class="form-horizontal">
+    <div class="panel panel-default" ng-controller="AuthController">
+        <div class="panel-heading">
+            <h3 class="panel-title"><strong>Ticket</strong> Nuevo</h3>
+        </div>
+        <div class="panel-body">
+            <p>Información general de un ticket, tener cuidado y mantener la calma al llenar este formulario. Recuerda que la información debe ser real. <br>El afectado solo puede ser una opción.</p>
+        </div>
+        <div class="panel-body">
+            
+            <div class="row">
+                <!-- col1 -->
+                <div class="col-md-4">
+                    
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Empresa</label>
+                        <div class="col-md-9">
+                            <select class="form-control select" name="empresa" ng-required="true" ng-model="ticket.empresa" ng-options="empresa.razon_social for empresa in empresas"></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Sucursal</label>
+                        <div class="col-md-9">
+                            <select class="form-control select" name="sucursal" ng-required="true" ng-model="ticket.sucursal" ng-options="sucursal.nombre for sucursal in sucursales"></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-controller="ModalPersonaCtrl">
+                        <label class="col-md-3 control-label">Solicitante</label>
+                        <div class="col-md-9">
+                            <div class="input-group">
+                                <select class="form-control select" name="solicitante" ng-required="true" ng-model="ticket.reportador" ng-options='(reportador.nombre + " " + reportador.apellidos) for reportador in personas'></select>
+                                <span class="input-group-btn" ng-if="isAuthorized([userRoles.super, userRoles.analista])">
+                                    <button type="button" class="btn btn-default" ng-click="open('lg')"><span class="fa fa-plus"></span></button>
+                                </span>
+                                <span class="input-group-addon" ng-if="isAuthorized([userRoles.usuario, userRoles.manager])"><span class="fa fa-plus"></span></span>
+                            </div>
+                        </div>
+                    </div>    
+                    <!-- modal personas -->
+                    <div class="form-group" ng-controller="ModalPersonaCtrl" ng-if="isAuthorized([userRoles.super, userRoles.analista])">
+                        <script type="text/ng-template" id="personasModalContent.html">
+                            <div class="modal-body">
+                                <div class="table-responsive" ng-controller="PersonaController">
+                                   <div ng-show="!persobaObs.uploader.isLoading">
+                                        <form novalidate name="persona_frm" class="form-horizontal" ng-submit="newPersona(persona_frm.$valid)" ng-include="'views/personas/forms/form.html'"></form>
+                                    </div>
+                                    <div class="col-md-12" ng-show="persobaObs.uploader.isError">
+                                        <div class="alert alert-danger" role="alert"><strong>{{ persobaObs.uploader.message }}</strong></div>
+                                    </div>
+                                    <div class="col-md-12" ng-show="persobaObs.uploader.isSuccess">
+                                        <div class="alert alert-success" role="alert"><strong>{{ persobaObs.uploader.message }}</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-warning" ng-click="cancel()">Cerrar</button>
+                            </div>
+                        </script>
+                    </div>
+                    <!-- end modal personas -->
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Afectado</label>
+                        <div class="col-md-9">
+                            <select class="form-control select" ng-model="ticket.tipoafectado" ng-options='tipoafectado.nombre for tipoafectado in tipoafectados'></select>
+                        </div>
+                    </div> 
+
+                    <div class="form-group" ng-show="ticket.tipoafectado.id == 1" >
+                        <label class="col-md-3 control-label"></label>
+                        <div class="col-md-9">
+                            <select class="form-control select" ng-required="ticket.tipoafectado.id == 1" name="sucursal_afectada" ng-model="ticket.sucursal_afectada" ng-options='sucursal.nombre for sucursal in sucursales'></select>
+                            <span class="help-block">Sucursal afectada</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-show="ticket.tipoafectado.id == 2">
+                        <label class="col-md-3 control-label"></label>
+                        <div class="col-md-9">
+                            <select class="form-control select" ng-required="ticket.tipoafectado.id == 2" name="area_afectada" ng-model="ticket.area_afectada" ng-options='area.nombre for area in areas'></select>
+                            <span class="help-block">Área afectada</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-show="ticket.tipoafectado.id == 3" ng-controller="ModalPersonaCtrl">
+                        <label class="col-md-3 control-label"></label>
+                        <div class="col-md-9">
+                            <div class="input-group">
+                                <select class="form-control select" ng-required="ticket.tipoafectado.id == 3" name="persona_afectada" ng-model="ticket.persona_afectada" ng-options='(afectado.nombre + " " + afectado.apellidos) for afectado in personas'></select>
+                                <span class="input-group-btn" ng-if="isAuthorized([userRoles.super, userRoles.analista])">
+                                    <button type="button" class="btn btn-default" ng-click="open('lg')"><span class="fa fa-plus"></span></button>
+                                </span>
+                                <span class="input-group-addon" ng-if="isAuthorized([userRoles.usuario, userRoles.manager])"><span class="fa fa-plus"></span></span>
+                            </div>
+                            <span class="help-block">Persona afectada</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Grupo</label>
+                        <div class="col-md-9">
+                            <select class="form-control select" name="grupo" ng-model="ticket.grupo" ng-required="true" ng-options='grupo.nombre for grupo in grupos'>
+                            </select>
+                            <span class="help-block">Grupo asignado</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Asignado</label>
+                        <div class="col-md-9">
+                            <select class="form-control select" name="asignado" ng-model="ticket.asignado" ng-options='(asignado.persona.nombre + " " + asignado.persona.apellidos) for asignado in asignados'></select>
+                            <span class="help-block">Analista asignado</span>
+                        </div>
+                    </div>
+                    
+                </div>
+                <!-- end - col1 -->
+
+                <!-- col2 -->
+                <div class="col-md-4">
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Tipo</label>
+                        <div class="col-md-9">
+                            <select class="form-control select" disabled ng-model="ticket.tipoticket" ng-options="tipo.nombre for tipo in tipotickets">
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Severidad</label>
+                        <div class="col-md-9">
+                            <select class="form-control select" ng-model="ticket.severidad" ng-options="severidad.nivel for severidad in severidades">
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Clase</label>
+                        <div class="col-md-9">
+                            <select class="form-control select" ng-model="ticket.clase" ng-options="clase.nombre for clase in incclases">
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Prioridad</label>
+                        <div class="col-md-9">
+                             <select class="form-control select" disabled ng-model="ticket.prioridad" ng-options="prioridad.nombre for prioridad in prioridades">
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Estado</label>
+                        <div class="col-md-9">
+                            <select class="form-control select" disabled ng-model="ticket.estado" ng-options="estado.nombre for estado in estados"></select>
+                        </div>
+                    </div>
+                                        
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Descripción</label>
+                        <div class="col-md-9 col-xs-12">
+                            <!-- <summernote height="100" ng-model="ticket.descripcion"></summernote> -->
+                            <textarea class="form-control" rows="5" name="descripcion" ng-required="true" ng-minlength=10 ng-model="ticket.descripcion"></textarea>
+                            <span class="help-block">Descripción general del ticket</span>
+                        </div>
+                    </div>
+                    
+                </div>
+                <!-- end - col2 -->
+
+                <!-- col3 -->
+                <div class="col-md-4">
+
+                    <div class="form-group" ng-controller="ModalTicketCtrl">
+                        <label class="col-md-3 control-label">Referencia</label>
+                        <div class="col-md-9">
+                            <div class="input-group">
+                                <input type="text" class="form-control" ng-model="ticket.referencia.tipo.nombre" readonly="" />
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="open('lg')"><span class="fa fa-search"></span></button>                        
+                                </span>
+                            </div>
+                            <span ng-show="ticket.referencia.id" class="help-block">Ticket ID: {{ ticket.referencia.id }} ( {{ ticket.referencia.tipo.nombre }} )</span>
+                        </div>
+                    </div>
+                    <!-- modal tickets -->
+                    <div class="form-group" ng-controller="ModalTicketCtrl">
+                        <script type="text/ng-template" id="ticketsModalContent.html">
+                            <div class="modal-header">
+                                <h3 class="modal-title">Tickets</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="table-responsive" ng-controller="dtTickets">
+                                    <div>
+                                        <table datatable dt-options="dtOptions" dt-columns="dtColumns" class="table table-hover datatable dataTable no-footer"></table>
+                                    </div>
+                                </div>
+                                Seleccionado ID: <b>{{ selected.item.id }} ( {{ selected.item.tipo.nombre }} )</b>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" ng-click="ok()">OK</button>
+                                <button class="btn btn-warning" ng-click="cancel()">Cancelar</button>
+                            </div>
+                        </script>
+                    </div>
+                    <!-- end - modal tickets -->
+
+                    <div class="form-group" ng-controller="ModalComponenteCtrl">
+                        <label class="col-md-3 control-label">Elemento</label>
+                        <div class="col-md-9">
+                            <div class="input-group">
+                                <input type="text" class="form-control" ng-model="ticket.componente.nombre" readonly="" />
+                                <span class="input-group-btn" ><button type="button" class="btn btn-default" ng-click="open('lg')"><span class="fa fa-search"></span></button></span>
+                            </div>
+                            <span ng-show="ticket.componente.id" class="help-block">ID: {{ ticket.componente.id }} - {{ ticket.componente.nombre }}: {{ ticket.componente.clasificacion.nombre }} ( {{ ticket.componente.estado.nombre }} )</span>
+                        </div>
+                    </div>
+                    <!-- modal componentes -->
+                    <div class="form-group" ng-controller="ModalComponenteCtrl">
+                        <script type="text/ng-template" id="componentesModalContent.html">
+                            <div class="modal-header">
+                                <h3 class="modal-title">Elementos de Configuración (ICs)</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="table-responsive" ng-controller="dtComponentes">
+                                    <div>
+                                        <table datatable dt-options="dtOptions" dt-columns="dtColumns" class="table table-hover datatable dataTable no-footer"></table>
+                                    </div>
+                                </div>
+                                Seleccionado ID: <b>{{ selected.item.id }} - {{ selected.item.nombre }}: {{ selected.item.clasificacion.nombre }} ( {{ selected.item.estado.nombre }} )</b>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" ng-click="ok()">OK</button>
+                                <button class="btn btn-warning" ng-click="cancel()">Cancelar</button>
+                            </div>
+                        </script>
+                    </div>
+                    <!-- end - modal componentes -->
+
+                    <!-- clasificacion -->
+                    <div class="form-group" ng-controller="ModalTipificacionCtrl">
+                        <label class="col-md-10 control-label">Clasificación del motivo</label>
+                        <div class="col-md-2">
+                            <span class="input-group-btn" ng-if="isAuthorized([userRoles.super, userRoles.analista])">
+                                <button type="button" class="btn btn-default" ng-click="open('lg')"><span class="fa fa-plus"></span></button>
+                            </span>
+                            <span class="input-group-addon" ng-if="isAuthorized([userRoles.usuario, userRoles.manager])"><span class="fa fa-plus"></span></span>
+                        </div>
+                    </div>
+                    <!-- modal tipificaciones -->
+                    <div class="form-group" ng-controller="ModalTipificacionCtrl">
+                        <script type="text/ng-template" id="tipificacionesModalContent.html">
+                            <div class="modal-body">
+                                <div class="table-responsive" ng-controller="TipificacionController">
+                                    <div ng-show="!tipificacion.uploader.isLoading">
+                                        <form novalidate name="tipificaciones_frm" class="form-horizontal" ng-include="'views/tipificaciones/forms/frm_create.html'"></form>
+                                    </div>
+                                    <div class="col-md-12" ng-show="tipificacion.uploader.isError">
+                                        <div class="alert alert-danger" role="alert"><strong>{{ tipificacion.uploader.message }}</strong></div>
+                                    </div>
+                                    <div class="col-md-12" ng-show="tipificacion.uploader.isSuccess">
+                                        <div class="alert alert-success" role="alert"><strong>{{ tipificacion.uploader.message }}</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-warning" ng-click="cancel()">Cerrar</button>
+                            </div>
+                        </script>
+                    </div>
+                    <!-- end - modal tipificaciones -->
+                    
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            <select class="form-control select" ng-model="ticket.tipificacion.N1" ng-options="tipificacion.nombre for tipificacion in tipificacionesN1" ng-show="tipificacionesN1.length > 0"></select>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-control select" ng-model="ticket.tipificacion.N2" ng-options="tipificacion.nombre for tipificacion in tipificacionesN2" ng-show="tipificacionesN2.length > 0"></select>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-control select" ng-model="ticket.tipificacion.N3" ng-options="tipificacion.nombre for tipificacion in tipificacionesN3" ng-show="tipificacionesN3.length > 0"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        
+                        <div class="col-md-4">
+                            <select class="form-control select" ng-model="ticket.tipificacion.N4" ng-options="tipificacion.nombre for tipificacion in tipificacionesN4" ng-show="tipificacionesN4.length > 0"></select>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-control select" ng-model="ticket.tipificacion.N5" ng-options="tipificacion.nombre for tipificacion in tipificacionesN5" ng-show="tipificacionesN5.length > 0"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="col-md-12">
+                            <span class="help-block">*Nota: Clasifica el motivo los más preciso que te sea posible.</span>
+                        </div>
+                    </div>
+                    <!-- end - clasificacion -->
+
+                    <!-- solver -->
+                    <div class="form-group">
+                        <label class="col-md-10 control-label">Buscar solución</label>
+                        <div class="col-md-2">
+                            <span class="input-group-btn" ><button type="button" class="btn btn-default" ng-disabled="solverObs.uploader.isLoading" ng-click="solver()"><span class="fa fa-search"></span></button></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12" ng-if="solverObs.uploader.isSuccess && ticket.solver_aut.soluciones.length > 0">
+                        <accordion>
+                            <accordion-group heading="Soluciones anteriores" >
+                                <div class="messages">
+                                    <div class="item item-visible" ng-repeat="solucion in ticket.solver_aut.soluciones | orderBy:'created_at':false">
+                                        <div class="text">
+                                            <div class="heading">
+                                                <a ng-repeat="solver in solucion.solver">{{ solver.nombre }} > </a>
+                                                <span class="date">{{ solucion.created_at }}</span>
+                                            </div>
+                                            {{ solucion.descripcion }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </accordion-group>
+                        </accordion>
+                    </div>
+                    <div class="col-md-12" ng-if="solverObs.uploader.isError && ticket.solver_aut.soluciones.length == 0">
+                        <blockquote>
+                            <p>{{ solverObs.uploader.message}}</p>
+                        </blockquote>
+                    </div>
+                    <!-- end-solver -->
+                </div>
+                <!-- end - col3 -->
+            </div>
+            <!-- end - row -->
+
+            <br><br>
+            <!-- row2 -->
+            <div class="row">
+                <!-- col1 -->
+                <div class="col-md-12">
+
+                    <!-- upload file -->
+                    <div ng-controller="UploadFileController" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
+
+                        <!--  -->
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label>Agregar anexos</label>
+                                <span class="file-input file-input-new">
+                                    <div class="input-group ">
+                                        <div tabindex="-1" class="form-control file-caption  kv-fileinput-caption">
+                                            <span class="glyphicon glyphicon-file kv-caption-icon" style="display: none;"></span>
+                                        </div>
+                                        <div class="input-group-btn">
+                                            <div class="btn btn-primary btn-file">
+                                                <i class="glyphicon glyphicon-folder-open"></i> &nbsp;Navegar … 
+                                                <input type="file" nv-file-select="" uploader="uploader" multiple />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                        <!--  -->
+                        <!--  -->
+                        <div class="col-md-12 sr-item">
+                            
+                            <p><strong>Anexos</strong>: <strong>{{ uploader.queue.length }}</strong>.</p>
+                            <div>
+                                <button type="button" class="btn btn-info btn-sm" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
+                                    <span class="fa fa-arrow-circle-o-up"></span> Subir todo
+                                </button>
+                                <button type="button" class="btn btn-warning btn-sm" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
+                                    <span class="fa fa-ban"></span> Cancelar todo
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
+                                    <span class="glyphicon glyphicon-trash"></span> Quitar todo
+                                </button>
+                            </div>
+                            
+                            <div class="table-responsive push-up-10">
+                                <table class="table table-actions table-striped">
+                                    <thead>                                            
+                                        <tr>
+                                            <th width="10%">Nombre</th>
+                                            <th>Descripción</th>
+                                            <th ng-show="uploader.isHTML5">Peso</th>
+                                            <th ng-show="uploader.isHTML5">Progreso</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="item in uploader.queue">
+                                            <td><strong>{{ item.file.name }}</strong></td>
+                                            <td>
+                                                <input type="text" class="form-control" ng-model="item.file.descripcion" />
+                                            </td>
+                                            <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                                            <td ng-show="uploader.isHTML5">
+                                                <div class="progress" style="margin-bottom: 0;">
+                                                    <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                                                <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                                                <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+                                            </td>
+                                            <td nowrap>
+                                                <button type="button" class="btn btn-info btn-sm" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                                                    <span class="fa fa-arrow-circle-o-up"></span> Subir
+                                                </button>
+                                                <button type="button" class="btn btn-warning btn-sm" ng-click="item.cancel()" ng-disabled="!item.isUploading">
+                                                    <span class="fa fa-ban"></span> Cancelar 
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-sm" ng-click="item.remove()">
+                                                    <span class="glyphicon glyphicon-trash"></span> Quitar
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div>
+                                <small>
+                                    Nota: Carga todos los archivos y/o retira todos los elementos con estado (X) para poder guardar el ticket.
+                                </small><br>
+                                <small>Advertencia: El estado (X) indica que el archivo tiene problemas al ser enviado al servidor, por lo cual debe ser quitado de la lista.</small>
+                            </div>
+                        </div>
+                        <!--  -->
+                    </div>
+                    <!-- end - upload file -->
+                </div>
+                <!-- end - col1 -->
+            </div>
+            <!-- end - row2 -->
+        </div>
+        <div class="panel-footer">
+            <button ng-click="newTicket(frm_ticket.$valid)" ng-disabled="frm_ticket.$invalid || ticketObs.uploader.isLoading" class="btn btn-primary pull-right">Guardar Ticket <span class="fa fa-floppy-o fa-right"></span></button>
+        </div>
+    </div>
+</form>
+

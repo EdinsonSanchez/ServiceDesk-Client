@@ -1,0 +1,63 @@
+<form class="form-horizontal">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><strong>Cargo</strong> Detalle</h3>
+        </div>
+        <div class="panel-body">
+            <p>Actualiza con precaución la información general del cargo.</p>
+        </div>
+        <div class="panel-body">
+
+            <!-- col1 -->
+            <div class="col-md-6">
+
+                <div class="form-group" ng-class="cargo_frm.nombre.$invalid ? 'has-error' : ''">
+                    <label class="col-md-3 control-label">Nombres</label>
+                    <div class="col-md-9">
+                        
+                        <input type="text" class="form-control" ng-minlength=3 name="nombre" ng-model="cargo.nombre" ng-required="true" />
+                        
+                        <!--  -->
+                        <div class="error" ng-show="cargo_frm.nombre.$invalid || cargo_frm.nombre.$pristine">
+                            <small class="error" ng-show="cargo_frm.nombre.$error.required">
+                                No puedes dejar vacío este campo.
+                            </small>
+                            <small class="error" ng-show="cargo_frm.nombre.$error.minlength">
+                                El nombre debe tener al menos 3 letras.
+                            </small>
+                        </div>
+                        <!--  -->
+                    </div>
+                </div>
+
+                <div class="form-group" ng-class="cargo_frm.descripcion.$invalid ? 'has-error' : ''">
+                    <label class="col-md-3 control-label">Descripción</label>
+                    <div class="col-md-9">
+                        
+                        <textarea class="form-control" rows="5" name="descripcion" ng-required="true" ng-minlength=5 ng-model="cargo.descripcion"></textarea> 
+                        
+                        <!--  -->
+                        <div class="error" ng-show="cargo_frm.descripcion.$invalid || cargo_frm.descripcion.$pristine">
+                            <small class="error" ng-show="cargo_frm.descripcion.$error.required">
+                                No puedes dejar vacio este campo.
+                            </small>
+                            <small class="error" ng-show="cargo_frm.descripcion.$error.minlength">
+                                La descripción debe tener al menos 5 letras
+                            </small>
+                        </div>
+                        <!--  -->
+                    </div>
+                </div>
+                
+
+            </div>
+            <!-- end - col1 -->
+
+
+        </div>
+
+        <div class="panel-footer">
+            <button type="submit" ng-disabled="cargo_frm.$invalid || cargoObs.uploader.isLoading" class="btn btn-primary pull-right">Actualizar Cargo <span class="fa fa-floppy-o fa-right"></span></button>
+        </div>
+    </div>
+</form>

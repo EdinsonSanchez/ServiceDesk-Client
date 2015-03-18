@@ -1,0 +1,17 @@
+<div class="row">
+    <div class="col-md-12" ng-show="!elementoObs.uploader.isLoading">
+        <form novalidate name="elemento_frm" class="form-horizontal" ng-submit="updateElemento(elemento_frm.$valid)" ng-include="'views/elementos/forms/frm_edit.html'"></form>
+    </div>
+    <!-- Alertas del proceso de registro -->
+    <div class="col-md-12" ng-show="elementoObs.uploader.isError">
+        <div class="alert alert-danger" role="alert"><strong>{{ elementoObs.uploader.message }}</strong><br>
+            <a type="button" class="btn btn-danger btn-sm" href="#/elementos"> Regresar</a>
+        </div>
+    </div>
+    <div class="col-md-12" ng-show="elementoObs.uploader.isSuccess">
+        <div class="alert alert-success" role="alert"><strong>{{ elementoObs.uploader.message }}</strong><br>
+            <a type="button" class="btn btn-success btn-sm" href="#/elementos"> Regresar</a>
+        </div>
+    </div>
+</div>
+<br><br>

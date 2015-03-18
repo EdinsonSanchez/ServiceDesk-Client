@@ -1,0 +1,86 @@
+<form class="form-horizontal">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><strong>Usuario</strong> Detalle</h3>
+        </div>
+        <div class="panel-body">
+            <p>Actualiza con precacción la información de acceso al sistema.</p>
+        </div>
+        <div class="panel-body">
+
+            <div class="col-md-6">
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Nombre de usuario</label>
+                    <div class="col-md-9">
+                        <div class="input-group">
+                            <input type="text" disabled class="form-control" ng-minlength=5 name="username" ng-model="user.username" ng-required="true" /><span class="input-group-addon"><span class="fa fa-pencil"></span></span>
+                        </div>
+                        <!--  -->
+                        <div ng-show="frm_user.username.$invalid && !frm_user.username.$pristine">
+                            <small class="help-block" ng-show="frm_user.username.$error.required">
+                                No puedes dejar vacío este campo.
+                            </small>
+                            <small class="help-block" ng-show="frm_user.username.$error.minlength">
+                                El nombre de usuario debe tener al menos 5 letras.
+                            </small>
+                        </div>
+                        <!--  -->
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Clave</label>
+                    <div class="col-md-9">
+                        <div class="input-group">
+                            <input type="password" ng-disabled="!user.updatePassword" class="form-control" ng-minlength=8 name="password" ng-model="user.password" ng-required="user.updatePassword" />
+
+                             <span class="input-group-addon">
+                                    <input type="checkbox" class="icheckbox_minimal-grey checked icheckbox" id="updateAsignado" name="updateAsignado" ng-model="user.updatePassword" />
+                                </span>
+
+                        </div>
+                        <span class="help-block">Recuerda tu clave secreta no debes de dárselo a nadie.</span>
+                        <!--  -->
+                        <div ng-show="frm_user.password.$invalid && !frm_user.password.$pristine">
+                            <small class="help-block" ng-show="frm_user.password.$error.required">
+                                No puedes dejar vacío este campo.
+                            </small>
+                            <small class="help-block" ng-show="frm_user.password.$error.minlength">
+                                Tu clave secreta debe tener al menos 8 letras.
+                            </small>
+                        </div>
+                        <!--  -->
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Persona</label>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" ng-required="true" ng-model="user.persona.nombre" readonly="" />    
+                        <span ng-show="user.persona.nombre" class="help-block">ID: {{ user.persona.id }} - {{ user.persona.nombre }} {{ user.persona.apellidos }}</span>
+                    </div>
+                </div>
+               
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Permisos</label>
+                    <div class="col-md-9">
+                        <div class="row" ng-repeat="usergroup in usergroups" >
+                             <label class="check">
+                                <input type="checkbox" class="icheckbox_minimal-grey checked icheckbox" checklist-model="user.usergroups" checklist-value="usergroup.id"> {{usergroup.title}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="panel-footer">
+            <button type="submit" ng-disabled="frm_user.$invalid || userObs.uploader.isLoading" ng-click="updateUser(frm_user.$valid)" class="btn btn-primary pull-right">Actualizar Usuario <span class="fa fa-floppy-o fa-right"></span></button>
+        </div>
+    </div>
+</form>

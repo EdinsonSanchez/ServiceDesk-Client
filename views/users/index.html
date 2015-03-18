@@ -1,0 +1,24 @@
+<div class="row">
+    <div class="col-md-12">
+        <!-- START DEFAULT DATATABLE -->
+        <div class="panel panel-default" ng-controller="dtUsers">
+            <div class="panel-heading">
+                <h3 class="panel-title">Usuarios - Resumen</h3>
+                <ul class="panel-controls">
+                    <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
+                    <li class="panel-refresh">
+                        <a ng-click="reloadData()" class="panel-refresh"><span class="fa fa-refresh"></span></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <div>
+                        <table datatable dt-options="dtOptions" dt-columns="dtColumns" class="table table-hover datatable dataTable no-footer"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END DEFAULT DATATABLE -->
+    </div>
+</div>

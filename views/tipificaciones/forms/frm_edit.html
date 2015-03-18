@@ -1,0 +1,91 @@
+<form class="form-horizontal">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><strong>Tipificación</strong> Editar</h3>
+        </div>
+        <div class="panel-body">
+            <p>Modifica la información necesaria.</p>
+        </div>
+        <div class="panel-body">
+
+            <div class="row">
+<!--             col1-->
+                <div class="col-md-4">
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Nombre</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" disabled name="nombre" ng-model="tipificacion.nombre" ng-required="true" />
+                        </div>
+                    </div>
+                </div>
+                <!-- end-col1 -->
+    <!--            col2 -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Impacto</label>
+                        <div class="col-md-9">
+                            <select class="form-control select" ng-model="tipificacion.impacto" ng-options="impacto.nombre for impacto in impactos track by impacto.id">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+    <!--            col3 -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Categoría</label>
+                        <div class="col-md-9">
+                            <select class="form-control select" disabled ng-model="tipificacion.categoria" ng-options="categoria.nombre for categoria in categorias track by categoria.id">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+    <!--            end-col3-->
+            </div>
+            <br><br>
+            <div class="row">
+<!--                col4-->
+                <div class="col-md-12">
+                    <div class="table-responsive" ng-controller="dtTipificacionesWithActions">
+                        <div>
+                            <table datatable dt-options="dtOptions" dt-columns="dtColumns" class="table table-hover datatable dataTable no-footer"></table>
+                        </div>
+                    </div>
+                </div>
+<!--            end-col4-->
+                <br>
+                <hr>
+<!--            col5-->
+                <div class="col-md-12">
+                    <h4>Elementos seleccionados</h4>
+                    <table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="table table-hover datatable dataTable no-footer">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                             <tr ng-repeat="item in tipificacion.parents">
+                                <td>{{ item.id }}</td>
+                                <td>{{ item.nombre }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm" ng-click="removeItem($index)">
+                                        <span class="glyphicon glyphicon-trash"></span> Quitar
+                                    </button>
+                                </td>
+                             </tr>
+                        </tbody>
+                    </table>
+                </div>
+<!--            end-col5-->
+            </div>
+
+        </div>
+
+        <div class="panel-footer">
+            <button type="submit" ng-disabled="frm_editicket.$invalid || tipificacion.uploader.isLoading" ng-click="updateTipificacion(frm_editicket.$valid)" class="btn btn-primary pull-right">Actualizar Tipificación <span class="fa fa-floppy-o fa-right"></span></button>
+        </div>
+    </div>
+</form>

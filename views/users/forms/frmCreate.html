@@ -1,0 +1,106 @@
+<form class="form-horizontal">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><strong>Usuario</strong> Nuevo</h3>
+        </div>
+        <div class="panel-body">
+            <p>Información única del nuevo usuario, tener en cuenta que al crear una cuenta, éste tendra la capacidad de acceder al sistema y observar todos los modulos permitidos actualmente.</p>
+        </div>
+        <div class="panel-body">
+
+            <div class="col-md-6">
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Nombre de usuario</label>
+                    <div class="col-md-9">
+                        <div class="input-group">
+                            <input type="text" class="form-control" ng-minlength=5 name="username" ng-model="user.username" ng-required="true" /><span class="input-group-addon"><span class="fa fa-pencil"></span></span>
+                        </div>
+                        <!--  -->
+                        <div ng-show="frm_user.username.$invalid && !frm_user.username.$pristine">
+                            <small class="help-block" ng-show="frm_user.username.$error.required">
+                                No puedes dejar vacío este campo.
+                            </small>
+                            <small class="help-block" ng-show="frm_user.username.$error.minlength">
+                                El nombre de usuario debe tener al menos 5 letras.
+                            </small>
+                        </div>
+                        <!--  -->
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Clave</label>
+                    <div class="col-md-9">
+                        <div class="input-group">
+                            <input type="password" class="form-control" ng-minlength=8 name="password" ng-model="user.password" ng-required="true" /><span class="input-group-addon"><span class="fa fa-pencil"></span></span>
+                        </div>
+                        <span class="help-block">Recuerda tu clave secreta no debes de dárselo a nadie.</span>
+                        <!--  -->
+                        <div ng-show="frm_user.password.$invalid && !frm_user.password.$pristine">
+                            <small class="help-block" ng-show="frm_user.password.$error.required">
+                                No puedes dejar vacío este campo.
+                            </small>
+                            <small class="help-block" ng-show="frm_user.password.$error.minlength">
+                                Tu clave secreta debe tener al menos 8 letras.
+                            </small>
+                        </div>
+                        <!--  -->
+                    </div>
+                </div>
+
+                <div class="form-group" ng-controller="ModalPersonaCtrl">
+                    <label class="col-md-3 control-label">Persona</label>
+                    <div class="col-md-9">
+                        <div class="input-group">
+                            <input type="text" class="form-control" ng-required="true" ng-model="user.persona.nombre" readonly="" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="open('lg')"><span class="fa fa-search"></span></button></span>
+                        </div>
+                        <span ng-show="user.persona.nombre" class="help-block">ID: {{ user.persona.id }} - {{ user.persona.nombre }} {{ user.persona.apellidos }}</span>
+                    </div>
+                </div>
+                <!-- modal personas -->
+                <div class="form-group" ng-controller="ModalPersonaCtrl">
+                    <script type="text/ng-template" id="personasModalContent.html">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Personas</h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="table-responsive" ng-controller="dtPersonas">
+                                <div>
+                                    <table datatable dt-options="dtOptions" dt-columns="dtColumns" class="table table-hover datatable dataTable no-footer"></table>
+                                </div>
+                            </div>
+                            Seleccionado ID: <b>{{ selected.item.id }} - {{ selected.item.nombre }} {{ selected.item.apellidos }}</b>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" ng-click="ok()">OK</button>
+                            <button class="btn btn-warning" ng-click="cancel()">Cancelar</button>
+                        </div>
+                    </script>
+                </div>
+                <!-- end - modal personas -->
+
+            </div>
+
+            <div class="col-md-6">
+                 <div class="form-group">
+                    <label class="col-md-3 control-label">Permisos</label>
+                    <div class="col-md-9">
+                        <div class="row" ng-repeat="role in usergroups" >
+                             <label class="check">
+                                <input type="checkbox" class="icheckbox_minimal-grey checked icheckbox" checklist-model="user.usergroups" checklist-value="role"> {{role.title}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="panel-footer">
+            <button type="submit" ng-disabled="frm_user.$invalid || userObs.uploader.isLoading" ng-click="newUser(frm_user.$valid)" class="btn btn-primary pull-right">Guardar Usuario <span class="fa fa-floppy-o fa-right"></span></button>
+        </div>
+    </div>
+</form>

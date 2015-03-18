@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es" ng-app="SDApp">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Gestion de Servicios TI</title>
+        <link rel="shortcut icon" href="assets/img/mss/favicon.ico">
+        <link rel="apple-touch-icon" href="assets/img/mss/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="assets/img/mss/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="assets/img/mss/apple-touch-icon-114x114.png">
+        <!-- build:css plugins -->
+        <link rel="stylesheet" type="text/css" id="theme" href="assets/css/theme-default.css"/>
+        <link rel="stylesheet" type="text/css" id="theme" href="assets/css/toaster.css"/>
+        <link rel="stylesheet" type="text/css" id="theme" href="assets/css/custom.css"/>
+        <!-- endbuild -->
+    </head>
+    <body ng-cloak="">
+        
+        
+        <!-- start page container -->
+        <div class="page-container" ng-controller="AuthController">
+            <!-- start page sidebar -->
+            <div class="page-sidebar page-sidebar-fixed scroll mCustomScrollbar _mCS_1 mCS-autHide">
+                <!-- start x-navigation -->
+                <ul class="x-navigation" >
+                    <li class="xn-logo">
+                        <a href="#/">GESTION DE SERVICIOS TI</a>
+                        <a href="#/" class="x-navigation-control"></a>
+                    </li>
+                    <li class="xn-profile">
+                        <a href="#" class="profile-mini">
+                            <img src="user-profiles/images/no-image.jpg" />
+                        </a>
+                        <div class="profile">
+                            <div class="profile-image">
+                                <img src="user-profiles/images/no-image.jpg" />
+                            </div>
+                            <div class="profile-data">
+                                <div class="profile-data-name">{{ currentUser.username }}</div>
+                                <div class="profile-data-title">
+                                    <div ng-repeat="group in currentUser.usergroups">
+                                    [ 
+                                    {{ group.title }} 
+                                    ]
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                                                                        
+                    </li>
+                    <li class="xn-title">General</li>
+                    <li ng-if="isAuthorized([userRoles.super, userRoles.reportes])" >
+                        <a href="#/dashboard"><span class="fa fa-desktop"></span> <span class="xn-text">Dashboard</span></a>
+                    </li>
+                    <li class="xn-openable active" ng-show="isAuthorized([userRoles.super, userRoles.usuario, userRoles.manager, userRoles.analista])">
+                        <a href="#"><span class="fa fa-files-o"></span> <span class="xn-text">Tickets</span></a>
+                        <ul>
+                            <li ng-show="isAuthorized([userRoles.super, userRoles.usuario, userRoles.manager, userRoles.analista])"><a href="#/tickets"><span class="fa fa-align-justify"></span> Resumen</a></li>
+                            <li ng-show="isAuthorized([userRoles.super, userRoles.analista])"><a href="#/tickets-archivados"><span class="fa fa-briefcase"></span> Archivados</a></li>
+                            <li ng-show="isAuthorized([userRoles.super, userRoles.usuario, userRoles.manager, userRoles.analista])"><a href="#/tickets-create"><span class="fa fa-pencil-square-o"></span> Crear ticket</a></li>
+                        </ul>
+                    </li>
+                    <li class="xn-openable" ng-show="isAuthorized([userRoles.none])">
+                        <a href="#"><span class="fa fa-file-text-o"></span> <span class="xn-text">Reportes RCA</span></a>
+                        <ul>
+                            <li><a href="#/rcareport"><span class="fa fa-align-justify"></span> Resumen</a></li>
+                        </ul>
+                    </li>
+                    <li class="xn-openable" ng-show="isAuthorized([userRoles.super])" >
+                        <a href="#"><span class="fa fa-file-text-o"></span> <span class="xn-text">Tipificaciones</span></a>
+                        <ul>
+                            <li><a href="#/tipificaciones"><span class="fa fa-align-justify"></span> Resumen</a></li>
+                            <li><a href="#/tipificaciones-create"><span class="fa fa-pencil-square-o"></span> Crear tipificacion</a></li>
+                        </ul>
+                    </li>
+
+
+                    <li class="xn-title" ng-if="isAuthorized([userRoles.super])">Avanzado</li>
+                    <li class="xn-openable" ng-show="isAuthorized([userRoles.super])">
+                        <a href="#"><span class="fa fa-users"></span> <span class="xn-text">Personas</span></a>                        
+                        <ul>
+                            <li><a href="#/personas"><span class="fa fa-align-justify"></span> Resumen</a></li>
+                            <li><a href="#/personas-create"><span class="fa fa-pencil-square-o"></span> Crear persona</a></li>
+                        </ul>
+                    </li>                    
+                    <li class="xn-openable" ng-show="isAuthorized([userRoles.super])">
+                        <a href="#"><span class="fa fa-user"></span> <span class="xn-text">Usuarios</span></a>
+                        <ul>
+                            <li><a href="#/users"><span class="fa fa-align-justify"></span> Resumen</a></li>
+                            <li><a href="#/users-create"><span class="fa fa-pencil-square-o"></span> Crear usuario</a></li>
+                        </ul>
+                    </li>
+                    <li class="xn-openable" ng-if="isAuthorized([userRoles.none])">
+                        <a href="#"><span class="fa fa-lock"></span> <span class="xn-text">Roles</span></a>
+                        <ul>
+                            <li><a href="#/usergroups"><span class="fa fa-align-justify"></span> Resumen</a></li>
+                            <li><a href="#/usergroups-create"><span class="fa fa-pencil-square-o"></span> Crear rol</a></li>
+                        </ul>
+                    </li>
+                    <li class="xn-openable" ng-show="isAuthorized([userRoles.super])">
+                        <a href="#"><span class="fa fa-list-ul"></span> <span class="xn-text">Grupos</span></a>
+                        <ul>
+                            <li><a href="#/grupos"><span class="fa fa-align-justify"></span> Resumen</a></li>
+                            <li><a href="#/grupos-create"><span class="fa fa-pencil-square-o"></span> Crear grupo</a></li>
+                        </ul>
+                    </li>
+                    <li class="xn-openable" ng-show="isAuthorized([userRoles.super])">
+                        <a href="#"><span class="glyphicon glyphicon-th"></span> <span class="xn-text">Cargos</span></a>
+                        <ul>
+                            <li><a href="#/cargos"><span class="fa fa-align-justify"></span> Resumen</a></li>
+                            <li><a href="#/cargos-create"><span class="fa fa-pencil-square-o"></span> Crear cargo</a></li>
+                        </ul>
+                    </li>
+                    <li class="xn-openable" ng-show="isAuthorized([userRoles.super])">
+                        <a href="#"><span class="glyphicon glyphicon-align-center"></span> <span class="xn-text">Áreas</span></a>
+                        <ul>
+                            <li><a href="#/areas"><span class="fa fa-align-justify"></span> Resumen</a></li>
+                            <li><a href="#/areas-create"><span class="fa fa-pencil-square-o"></span> Crear área</a></li>
+                        </ul>
+                    </li>
+                    <li class="xn-openable" ng-show="isAuthorized([userRoles.super])">
+                        <a href="#"><span class="fa fa-table"></span> <span class="xn-text">Elementos (ICs)</span></a>
+                        <ul>
+                            <li><a href="#/elementos"><span class="fa fa-align-justify"></span> Resumen</a></li>
+                            <li><a href="#/elementos-create"><span class="fa fa-pencil-square-o"></span> Crear elemento</a></li>
+                        </ul>
+                    </li>
+                    
+                </ul>
+                <!-- end x-navigation -->
+            </div>
+            <!-- end page sidebar -->
+
+            <!-- start page content -->
+            <div class="page-content">
+                <!-- start x-navigation vertical -->
+                <ul class="x-navigation x-navigation-horizontal x-navigation-panel">
+                    <!-- TOGGLE NAVIGATION -->
+                    <li class="xn-icon-button">
+                        <a href="#" class="x-navigation-minimize"><span class="fa fa-dedent"></span></a>
+                    </li>
+                    <!-- END TOGGLE NAVIGATION -->
+                    <!-- SEARCH -->
+                    <li class="xn-search">
+                        <form role="form">
+                            <input type="text" name="search" placeholder="Buscar..."/>
+                        </form>
+                    </li>   
+                    <!-- END SEARCH -->
+                    <!-- POWER OFF -->
+                    <li class="xn-icon-button pull-right last" ng-show="isAuthorized([userRoles.super])">
+                        <a href="#" class="sidebar-toggle"><span class="fa fa-align-right"></span></a>           
+                    </li> 
+                    <!-- END POWER OFF -->                    
+                    <!-- POWER OFF -->
+                    <li class="xn-icon-button pull-right">
+                        <a href="#"><span class="fa fa-power-off"></span></a>
+                        <ul class="xn-drop-left animated zoomIn">
+                            <li><a href="#/" class="mb-control" data-box="#mb-signout"><span class="fa fa-sign-out"></span> Cerrar sesion</a></li>
+                        </ul>                        
+                    </li> 
+                    <!-- END POWER OFF -->   
+                    <!-- MESSAGES -->
+                    <li class="xn-icon-button pull-right" ng-show="isAuthorized([userRoles.super])">
+                        <a href="#"><span class="fa fa-comments"></span></a>
+                        <div class="informer informer-danger">0</div>
+                        <div class="panel panel-primary animated zoomIn xn-drop-left xn-panel-dragging">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><span class="fa fa-comments"></span> Mensajes</h3>                                
+                                <div class="pull-right">
+                                    <span class="label label-danger">0 nuevos</span>
+                                </div>
+                            </div>
+                            <div class="panel-body list-group list-group-contacts scroll" style="height: 300px;">
+<!--
+                                <a href="#" class="list-group-item">
+                                    <div class="list-group-status status-offline"></div>
+                                    <img src="user-profiles/images/no-image.jpg" class="pull-left" alt="Darth Vader"/>
+                                    <span class="contacts-title">Darth Vader</span>
+                                    <p>I want my money back!</p>
+                                </a>
+-->
+                            </div>     
+                            <div class="panel-footer text-center">
+                                <a href="#/mensajes">Mostrar todos los mensajes</a>
+                            </div>                            
+                        </div>                        
+                    </li>
+                    <!-- END MESSAGES -->     
+                    <!-- TASKS -->
+                    <li class="xn-icon-button pull-right" ng-show="isAuthorized([userRoles.super, userRoles.analista])" ng-controller="UserTicketController">
+                        <a href="#"><span class="fa fa-tasks"></span></a>
+                        <div class="informer informer-warning">{{ movimientos.length }}</div>
+                        <div class="panel panel-primary animated zoomIn xn-drop-left xn-panel-dragging">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><span class="fa fa-tasks"></span> Mis Tickets Asignados</h3>                          
+
+                                <div class="pull-right">
+                                    <span class="label label-success">{{ count.severidad_4 }}</span>
+                                    <span class="label label-info">{{ count.severidad_3 }}</span>
+                                    <span class="label label-warning">{{ count.severidad_2 }}</span>
+                                    <span class="label label-danger">{{ count.severidad_1 }}</span>
+                                </div>
+
+                            </div>
+                            <div class="panel-body list-group scroll" style="height: 300px;">                                
+                                <a href="#/tickets/{{ movimiento.ticket.id }}" ng-repeat="movimiento in movimientos | orderBy:['ticket.severidad_id', 'ticket.prioridad']:false" class="list-group-item">
+                                    <div class="list-group-status severidad-{{ movimiento.ticket.severidad_id }}"></div>
+                                    <span class="contacts-title"><strong>Ticket - {{ movimiento.ticket.prefijo }}{{ ("0000" + movimiento.ticket.correlativo ).slice(-5) }} ({{ movimiento.ticket.tipo.nombre }})</strong></span>
+                                    <p><small class="text-muted">{{ movimiento.ticket.user.persona.nombre }} {{ movimiento.ticket.user.persona.apellidos }}, {{ movimiento.created_at }} / prioridad {{ movimiento.ticket.prioridad }}</small></p>
+                                </a>
+                            </div>     
+                            <div class="panel-footer text-center">
+                                <a href="#/tickets">Mostrar todos los tickets</a>
+                            </div>                            
+                        </div>                        
+                    </li>
+                    <!-- END TASKS -->       
+                </ul>
+                <!-- end x-navigation vertical -->
+
+                <!-- start breadcrumb -->
+                <ul class="breadcrumb">
+                    <li><a href="#/">Inicio</a></li> 
+                </ul>
+                <!-- end breadcrumb -->
+
+                <!-- start page content wrapper -->
+                <div class="page-content-wrap">
+                    <div data-ui-view="" id="ui-view" class="slide-animation"></div>
+                </div>
+                <!-- end page content wrapper -->
+            </div>
+            <!-- end page content -->
+        </div>
+        <!-- end page container -->
+
+        <!-- START SIDEBAR -->
+        <div class="sidebar">            
+            <div class="sidebar-wrapper scroll mCustomScrollbar _mCS_2 mCS-autoHide" style="height: 587px;">
+                <div id="mCSB_2" class="mCustomScrollBox mCS-light mCSB_vertical mCSB_inside" tabindex="0">
+                    <div id="mCSB_2_container" class="mCSB_container" style="position: relative; top: 0px; left: 0px;" dir="ltr">
+                
+                        <div class="sidebar-tabs">
+                            <a href="#sidebar_1" class="sidebar-tab active"><span class="fa fa-comments"></span> Mensajes</a>
+                            <a href="#sidebar_2" class="sidebar-tab"><span class="fa fa-cog"></span> Configuracion</a>
+                        </div>
+
+                        <div class="sidebar-tab-content active" id="sidebar_1">
+                            <div class="sidebar-title">Tienes <strong>0 nuevos</strong> mensajes</div>    
+                        </div>
+
+                        <div class="sidebar-tab-content form-horizontal" id="sidebar_2"></div>
+                    </div>
+                    <div id="mCSB_2_scrollbar_vertical" class="mCSB_scrollTools mCSB_2_scrollbar mCS-light mCSB_scrollTools_vertical" style="display: block;">
+                        <div class="mCSB_draggerContainer">
+                            <div id="mCSB_2_dragger_vertical" class="mCSB_dragger" style="position: absolute; min-height: 30px; display: block; height: 579px; max-height: 685px; top: 0px;" oncontextmenu="return false;">
+                                <div class="mCSB_dragger_bar" style="line-height: 30px;"></div>
+                            </div>
+                            <div class="mCSB_draggerRail"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+        </div>
+        <!-- END SIDEBAR -->        
+    
+        <!-- start message box -->
+        <div class="message-box animated fadeIn" id="mb-signout" ng-controller="LoginController">
+            <div class="mb-container col-md-12">
+                <div class="mb-middle">
+                    <div class="mb-title"><span class="fa fa-sign-out"></span> Cerrar <strong>Sesion</strong>?</div>
+                    <div class="mb-content">
+                        <p>Estas seguro que deseas finalizar la sesion actual?</p>                    
+                        <p>Presiona NO si deseas seguir trabajando. Si para cambiar de usuario</p>
+                    </div>
+                    <div class="mb-footer">
+                        <div class="pull-right">
+                            <a ng-click="logout()" class="btn btn-success btn-lg mb-control-close">Si</a>
+                            <button class="btn btn-default btn-lg mb-control-close">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end message box -->
+    </body>
+    <toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
+    <!-- build:js plugins general -->
+    <script type="text/javascript" src="assets/js/plugins/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/js/plugins/jquery/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="assets/js/plugins/bootstrap/bootstrap.min.js"></script>
+
+    <!-- datatables plugins -->
+    <script src="assets/js/plugins/datatables/media/js/jquery.dataTables.js"></script>
+    <script src="assets/js/plugins/datatables-colreorder/js/dataTables.colReorder.js"></script>
+    <script src="assets/js/plugins/datatables-colvis/js/dataTables.colVis.js"></script>
+    <script src="assets/js/plugins/datatables-tabletools/js/dataTables.tableTools.js"></script>
+    <script src="assets/js/plugins/datatables-responsive/js/dataTables.responsive.js"></script>
+    <script src="assets/js/plugins/datatables-scroller/js/dataTables.scroller.js"></script>
+    <!-- endbuild -->
+
+    <!-- build:js plugins this page -->
+    <script type='text/javascript' src='assets/js/plugins/icheck/icheck.min.js'></script>        
+    <script type="text/javascript" src="assets/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js"></script>
+    <script type="text/javascript" src="assets/js/plugins/scrolltotop/scrolltopcontrol.js"></script>
+    
+    <script type="text/javascript" src="assets/js/plugins/morris/raphael-min.js"></script>
+
+    <script type="text/javascript" src="assets/js/plugins/highcharts/highcharts.js"></script>
+    <script type="text/javascript" src="assets/js/plugins/morris/morris.min.js"></script>       
+    <script type="text/javascript" src="assets/js/plugins/rickshaw/d3.v3.js"></script>
+    <script type="text/javascript" src="assets/js/plugins/rickshaw/rickshaw.min.js"></script>
+    <script type='text/javascript' src='assets/js/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js'></script>
+    <script type='text/javascript' src='assets/js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js'></script> 
+    
+    <script type="text/javascript" src="assets/js/plugins/owl/owl.carousel.min.js"></script>                 
+    <script type="text/javascript" src="assets/js/plugins/moment.min.js"></script>
+    
+    <script type="text/javascript" src="assets/js/plugins/tagsinput/jquery.tagsinput.min.js"></script>
+
+    <script type="text/javascript" src="assets/js/plugins/codemirror/codemirror.js"></script>        
+    <script type='text/javascript' src="assets/js/plugins/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+    <script type='text/javascript' src="assets/js/plugins/codemirror/mode/xml/xml.js"></script>
+    <script type='text/javascript' src="assets/js/plugins/codemirror/mode/javascript/javascript.js"></script>
+    <script type='text/javascript' src="assets/js/plugins/codemirror/mode/css/css.js"></script>
+    <script type='text/javascript' src="assets/js/plugins/codemirror/mode/clike/clike.js"></script>
+    <script type='text/javascript' src="assets/js/plugins/codemirror/mode/php/php.js"></script>
+
+    <script type="text/javascript" src="assets/js/plugins/summernote/summernote.js"></script>
+    <!-- endbuild -->
+
+    <!-- build:js template -->
+    <script type="text/javascript" src="assets/js/plugins.js"></script>        
+    <script type="text/javascript" src="assets/js/actions.js"></script>
+    <!-- endbuild -->
+
+    <!-- build:js angularjs -->
+    <script type="text/javascript" src="angular/angular.min.js"></script>
+    <script type="text/javascript" src="angular/angular-ui-router.min.js"></script>
+    <script type="text/javascript" src="angular/angular-route.min.js"></script>
+    <script type="text/javascript" src="angular/angular-animate.min.js"></script>
+    <script type="text/javascript" src="angular/angular-resource.min.js"></script>
+    <script type="text/javascript" src="angular/angular-sanitize.js"></script>
+    <script type="text/javascript" src="angular/angular-cookies.js"></script>
+    <script type="text/javascript" src="angular/toaster.js"></script>
+    <!-- endbuild
+
+    <!-- build:js modules -->
+    <script type="text/javascript" src="app/app.js"></script>
+    <!-- build:js boostrap-ui-->
+    <script type="text/javascript" src="app_externs/ui-bootstrap-tpls-0.12.0.js"></script>
+    <!-- datatables -->
+    <script src="app_externs/angular-datatables.js"></script>
+    <script src="app_externs/angular-datatables.util.js"></script>
+    <script src="app_externs/angular-datatables.options.js"></script>
+    <script src="app_externs/angular-datatables.factory.js"></script>
+    <script src="app_externs/angular-datatables.renderer.js"></script>
+    <script src="app_externs/angular-datatables.bootstrap.options.js"></script>
+    <script src="app_externs/angular-datatables.bootstrap.js"></script>
+    <script src="app_externs/angular-datatables.directive.js"></script>
+    <!-- upload-file -->
+    <script src="app_externs/angular-file-upload/angular-file-upload.min.js"></script>
+    <!-- timer -->
+    <script src="app_externs/angular-timer/timer.js"></script>
+    <!-- summernote -->
+    <script src="app_externs/angular-summernote/angular-summernote.js"></script>
+    <!-- checklist -->
+    <script src="app_externs/checklist-model/checklist-model.js"></script>
+    <!-- moment -->
+    <script src="app_externs/angular-moment/angular-moment.js"></script>
+    <script src="app_externs/angular-moment/moment.js"></script>
+    <!-- endbuild -->
+
+    <!-- build:js services,factories,etc -->
+    <script type="text/javascript" src="app/services/Personas.js"></script>
+    <script type="text/javascript" src="app/services/Generos.js"></script>
+    <script type="text/javascript" src="app/services/Empresas.js"></script>
+    <script type="text/javascript" src="app/services/Sucursales.js"></script>
+    <script type="text/javascript" src="app/services/Cargos.js"></script>
+    <script type="text/javascript" src="app/services/Areas.js"></script>
+    <script type="text/javascript" src="app/services/Grupos.js"></script>
+    <script type="text/javascript" src="app/services/Tipotickets.js"></script>
+    <script type="text/javascript" src="app/services/Severidades.js"></script>
+    <script type="text/javascript" src="app/services/Impactos.js"></script>
+    <script type="text/javascript" src="app/services/Estados.js"></script>
+    <script type="text/javascript" src="app/services/Tipificaciones.js"></script>
+    <script type="text/javascript" src="app/services/Componentes.js"></script>
+    <script type="text/javascript" src="app/services/Users.js"></script>
+    <script type="text/javascript" src="app/services/Usergroups.js"></script>
+    <script type="text/javascript" src="app/services/Anexos.js"></script>
+    <script type="text/javascript" src="app/services/Tickets.js"></script>
+    <script type="text/javascript" src="app/services/Rcareports.js"></script>
+    <script type="text/javascript" src="app/services/Categorias.js"></script>
+    <script type="text/javascript" src="app/services/Estadoscis.js"></script>
+    <script type="text/javascript" src="app/services/ClasificacionIcs.js"></script>
+    <script type="text/javascript" src="app/services/Marcas.js"></script>
+    <script type="text/javascript" src="app/services/Incclases.js"></script>
+    <script type="text/javascript" src="app/services/Datetime.js"></script>
+    <script type="text/javascript" src="app/services/Charts.js"></script>
+    <script type="text/javascript" src="app/services/Solver.js"></script>
+    <!-- endbuild -->
+
+    <!-- build:js controllers -->
+    <script type="text/javascript" src="app/controllers/PersonaController.js"></script>
+    <script type="text/javascript" src="app/controllers/PersonaDetailController.js"></script>
+    <script type="text/javascript" src="app/controllers/TicketController.js"></script>
+    <script type="text/javascript" src="app/controllers/TicketDetailController.js"></script>
+    <script type="text/javascript" src="app/controllers/UserTicketController.js"></script>
+    <script type="text/javascript" src="app/controllers/LoginController.js"></script>
+    <script type="text/javascript" src="app/controllers/RcareportController.js"></script>
+    <script type="text/javascript" src="app/controllers/RcareportDetailController.js"></script>
+    <script type="text/javascript" src="app/controllers/UserController.js"></script>
+    <script type="text/javascript" src="app/controllers/UserDetailController.js"></script>
+    <script type="text/javascript" src="app/controllers/TipificacionController.js"></script>
+    <script type="text/javascript" src="app/controllers/TipificacionDetailController.js"></script>
+    <script type="text/javascript" src="app/controllers/ElementoController.js"></script>
+    <script type="text/javascript" src="app/controllers/ElementoDetailController.js"></script>
+    <script type="text/javascript" src="app/controllers/ClockController.js"></script>
+    <script type="text/javascript" src="app/controllers/GrupoController.js"></script>
+    <script type="text/javascript" src="app/controllers/GrupoDetailController.js"></script>
+    <script type="text/javascript" src="app/controllers/CargoController.js"></script>
+    <script type="text/javascript" src="app/controllers/CargoDetailController.js"></script>
+    <script type="text/javascript" src="app/controllers/AreaController.js"></script>
+    <script type="text/javascript" src="app/controllers/AreaDetailController.js"></script>
+    <script type="text/javascript" src="app/controllers/UsergroupController.js"></script>
+    <script type="text/javascript" src="app/controllers/UsergroupDetailController.js"></script>
+    
+    <!-- modals -->
+    <script type="text/javascript" src="app/controllers/modals/mComponenteCtrl.js"></script>
+    <script type="text/javascript" src="app/controllers/modals/mTicketCtrl.js"></script>
+    <script type="text/javascript" src="app/controllers/modals/mProblemaCtrl.js"></script>
+    <script type="text/javascript" src="app/controllers/modals/mPersonaCtrl.js"></script>
+    <script type="text/javascript" src="app/controllers/modals/mTipificacionCtrl.js"></script>
+    
+    <!-- charts -->
+    <script type="text/javascript" src="app/controllers/charts/ChartsCtrl.js"></script>
+
+    <!-- externs -->
+    <script type="text/javascript" src="app/controllers/UploadFileController.js"></script>
+    <script type="text/javascript" src="app/controllers/DatepickerCtrl.js"></script>
+    <script type="text/javascript" src="app/controllers/TimepickerCtrl.js"></script>
+    <script type="text/javascript" src="app/controllers/AccordionCtrl.js"></script>
+    <!-- endbuild -->
+
+    <!-- build:js controllers-plugins -->
+    <script type="text/javascript" src="app/controllers/dtPersonas.js"></script>
+    <script type="text/javascript" src="app/controllers/dtGrupos.js"></script>
+    <script type="text/javascript" src="app/controllers/dtUsers.js"></script>
+    <script type="text/javascript" src="app/controllers/dtComponentes.js"></script>
+    <script type="text/javascript" src="app/controllers/dtTickets.js"></script>
+    <script type="text/javascript" src="app/controllers/dtTipificaciones.js"></script>
+    <script type="text/javascript" src="app/controllers/dtRcareports.js"></script>
+    <script type="text/javascript" src="app/controllers/dtCargos.js"></script>
+    <script type="text/javascript" src="app/controllers/dtAreas.js"></script>
+    <script type="text/javascript" src="app/controllers/dtUsergroups.js"></script>
+    <script type="text/javascript" src="app/controllers/dts/dtTicketsArchive.js"></script>
+    <!-- endbuild -->
+</html>

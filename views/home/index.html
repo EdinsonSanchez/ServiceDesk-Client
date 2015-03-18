@@ -1,0 +1,110 @@
+<!-- START WIDGETS -->
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-3">
+        <div class="widget widget-default widget-item-icon">
+            <div class="widget-item-left">
+                <span class="fa fa-envelope"></span>
+            </div>
+            <div class="widget-data">
+                <div class="widget-int num-count">0</div>
+                <div class="widget-title">Mensajes Nuevos</div>
+                <div class="widget-subtitle"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        
+        <!-- <div class="widget widget-default widget-item-icon" >
+            <div class="widget-item-left">
+                <span class="fa fa-user"></span>
+            </div>
+            <div class="widget-data">
+                <div class="widget-int num-count">375</div>
+                <div class="widget-title">Personas registradas</div>
+                <div class="widget-subtitle"></div>
+            </div>
+            
+        </div> -->
+        
+    </div>
+    <div class="col-md-3">
+        
+        <div class="widget widget-danger widget-padding-sm" ng-controller="ClockController">
+            <div class="widget-big-int">{{("0"+server.hours).slice(-2)}} : {{ ("0"+server.minutes).slice(-2)}} : {{("0"+server.seconds).slice(-2)}}</div>
+            <div class="widget-controls">
+            </div>
+            <div class="widget-buttons widget-c3">
+                <div class="col">
+                    <a href="#/dashboard"><span class="fa fa-clock-o"></span></a>
+                </div>
+                <div class="col">
+                    <a href="#/dashboard"><span class="fa fa-bell"></span></a>
+                </div>
+                <div class="col">
+                    <a href="#/dashboard"><span class="fa fa-calendar"></span></a>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-default" ng-controller="IncidenciaSeveridadCtrl">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{ title }}</h3>
+            </div>
+            <div class="panel-body">
+                <div id="incidencias-area" style="height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default" ng-controller="IncidenciaClaseCtrl">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{ title }}</h3>
+            </div>
+            <div class="panel-body">
+                <div id="incidencias-clase-area" style="height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12" ng-controller="IncidenciaWeekCtrl">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{ title }}</h3>
+            </div>
+            <div class="panel-body">
+                <div id="incidencias-week-area" style="height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default" ng-controller="IncidenciaMonthlyCtrl">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{ title }}</h3>
+            </div>
+            <div class="panel-body">
+                <div id="incidencias-monthly-area" style="height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default" ng-controller="IncidenciaDaylyCtrl">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{ title }}</h3>
+            </div>
+            <div class="panel-body">
+                <div id="incidencias-dayly-area" style="height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<br><br>

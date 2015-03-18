@@ -1,0 +1,43 @@
+<form class="form-horizontal">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><strong>Rol</strong> Nuevo</h3>
+        </div>
+        <div class="panel-body">
+            <p>Información general del nuevo rol.</p>
+        </div>
+        <div class="panel-body">
+
+            <!-- col1 -->
+            <div class="col-md-6">
+
+                <div class="form-group" ng-class="usergroup_frm.title.$invalid ? 'has-error' : ''">
+                    <label class="col-md-3 control-label">Nombre</label>
+                    <div class="col-md-9">
+                        
+                        <input type="text" class="form-control" ng-minlength=3 name="title" ng-model="usergroup.title" ng-required="true" />
+                        
+                        <!--  -->
+                        <div class="error" ng-show="usergroup_frm.title.$invalid || usergroup_frm.title.$pristine">
+                            <small class="error" ng-show="usergroup_frm.title.$error.required">
+                                No puedes dejar vacío este campo.
+                            </small>
+                            <small class="error" ng-show="usergroup_frm.title.$error.minlength">
+                                El nombre debe tener al menos 3 letras.
+                            </small>
+                        </div>
+                        <!--  -->
+                    </div>
+                </div>
+
+            </div>
+            <!-- end - col1 -->
+
+
+        </div>
+
+        <div class="panel-footer">
+            <button type="submit" ng-disabled="usergroup_frm.$invalid || usergroupObs.uploader.isLoading" class="btn btn-primary pull-right">Guardar Rol <span class="fa fa-floppy-o fa-right"></span></button>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,56 @@
+<form class="form-horizontal">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><strong>Área</strong> Nuevo</h3>
+        </div>
+        <div class="panel-body">
+            <p>Información general de la nueva área.</p>
+        </div>
+        <div class="panel-body">
+
+            <!-- col1 -->
+            <div class="col-md-6">
+
+                <div class="form-group" ng-class="area_frm.nombre.$invalid ? 'has-error' : ''">
+                    <label class="col-md-3 control-label">Nombre</label>
+                    <div class="col-md-9">
+                        
+                        <input type="text" class="form-control" ng-minlength=3 name="nombre" ng-model="area.nombre" ng-required="true" />
+                        
+                        <!--  -->
+                        <div class="error" ng-show="area_frm.nombre.$invalid || area_frm.nombre.$pristine">
+                            <small class="error" ng-show="area_frm.nombre.$error.required">
+                                No puedes dejar vacío este campo.
+                            </small>
+                            <small class="error" ng-show="area_frm.nombre.$error.minlength">
+                                El nombre debe tener al menos 3 letras.
+                            </small>
+                        </div>
+                        <!--  -->
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Centro de Costo</label>
+                    <div class="col-md-9">
+                        <input type="number" class="form-control" step="1.80" min="0.0" name="centro_costo" ng-model="area.centro_costo" ng-required="true">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Área responsable</label>
+                    <div class="col-md-9">
+                        <select class="form-control select" name="parent" ng-model="area.parent" ng-options="area.nombre for area in areas track by area.id"></select>
+                    </div>
+                </div>
+            </div>
+            <!-- end - col1 -->
+
+
+        </div>
+
+        <div class="panel-footer">
+            <button type="submit" ng-disabled="area_frm.$invalid || areaObs.uploader.isLoading" class="btn btn-primary pull-right">Guardar Area <span class="fa fa-floppy-o fa-right"></span></button>
+        </div>
+    </div>
+</form>

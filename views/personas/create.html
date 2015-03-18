@@ -1,0 +1,16 @@
+<div class="row">
+	<div class="col-md-12" ng-show="!persobaObs.uploader.isLoading">
+		<form novalidate name="persona_frm" class="form-horizontal" ng-submit="newPersona(persona_frm.$valid)" ng-include="'views/personas/forms/form.html'"></form>
+	</div>
+	<!-- Alertas del proceso de registro -->
+    <div class="col-md-12" ng-show="persobaObs.uploader.isError">
+        <div class="alert alert-danger" role="alert"><strong>{{ persobaObs.uploader.message }}</strong><br>
+            <a type="button" class="btn btn-danger btn-sm" href="#/personas"> Regresar</a>
+        </div>
+    </div>
+    <div class="col-md-12" ng-show="persobaObs.uploader.isSuccess">
+        <div class="alert alert-success" role="alert"><strong>{{ persobaObs.uploader.message }}</strong><br>
+            <a type="button" class="btn btn-success btn-sm" href="#/personas"> Regresar</a>
+        </div>
+    </div>
+</div>
