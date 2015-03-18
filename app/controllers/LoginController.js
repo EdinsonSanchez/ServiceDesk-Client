@@ -18,7 +18,9 @@ app.controller('LoginController',
 		$scope.user = { username: '', password: '' };
 		$scope.message = '';
 
-    $log.info($location.host() + ($location.port() != "" ? ':' + $location.port() : '' ) + '/' +appName);
+    var hostapp = $location.protocol() + "://" + $location.host() + ($location.port() != "" ? ':' + $location.port() : '' ) + '/' +appName;
+
+    $log.info(hostapp);
 		/* -------------------------------------------------------
      * Funciones principales
      * ------------------------------------------------------- */
@@ -38,7 +40,7 @@ app.controller('LoginController',
               // Usuario actual
               $scope.setCurrentUser(userLog);
               // redirecciona al dashboard
-              window.location = $location.host() + ($location.port() != "80" ? ':' + $location.port() : '' ) + '/' + appName + '/#/tickets';
+              window.location.href = hostapp + '/#/tickets';
 
           }, function () {
               $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
@@ -52,14 +54,14 @@ app.controller('LoginController',
 			AuthService.logout();
 
       // redirecciona a la pagina de login
-      window.location = $location.host() + ($location.port() != "80" ? ':' + $location.port() : '' ) + '/' +appName + '/login.html';
+       window.location.href = hostapp + '/login.html';
 		};
 }]);
 
 app.controller('AuthController', ['$scope', '$log', '$location', 'AuthService', 'USER_ROLES', function ($scope, $log, $location, AuthService, USER_ROLES) {
     
-    // $scope.currentUser = { username: 'edinsonjim', cargo: { nombre: 'Software Developer' } };
     $scope.currentUser = AuthService.getUser();
+    var hostapp = $location.protocol() + "://" + $location.host() + ($location.port() != "" ? ':' + $location.port() : '' ) + '/' +appName;
 
 //    $log.info($scope.currentUser);
     $scope.userRoles = USER_ROLES;
@@ -70,7 +72,7 @@ app.controller('AuthController', ['$scope', '$log', '$location', 'AuthService', 
     function init() {
         if(!AuthService.isAuthenticated()) {
             // redirecciona a la pagina de login
-            window.location = $location.host() + ($location.port() != "80" ? ':' + $location.port() : '' ) + '/' +appName + '/login.html';
+            window.location.href = hostapp + '/login.html';
         }
     }
     

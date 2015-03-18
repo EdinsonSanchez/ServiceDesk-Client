@@ -371,7 +371,7 @@
                                                 <span class="date">{{ movimiento.created_at }}</span>
                                                 <span class="date">&nbsp;[ {{ movimiento.movclase.nombre }} ]&nbsp;</span>
                                             </div>
-                                            <div ng-bind-html-unsafe="movimiento.descripcion"></div>
+                                            <div ng-bind-html="movimiento.descripcion"></div>
                                         </div>
                                     </div>
                                 </div>
