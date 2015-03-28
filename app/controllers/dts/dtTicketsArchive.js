@@ -39,12 +39,12 @@ app.controller('dtTicketsArchive',
     }
     
     $scope.dtColumns = [
-        // DTColumnBuilder.newColumn(null).withTitle('Acciones').notSortable()
-        //     .renderWith(function (data) {
-        //         return '<button class="btn ' + $scope.getClassBtn(data.severidad_id) +' btn-sm" ng-click="show(' + data.id + ')">' +
-        //             '   <i class="fa fa-eye"></i>' +
-        //             '</button>&nbsp;';
-        //     }),
+        DTColumnBuilder.newColumn(null).withTitle('Acciones').notSortable()
+            .renderWith(function (data) {
+                return '<button class="btn btn-sm" ng-click="show(' + data.id + ')">' +
+                    '   <i class="fa fa-eye"></i>' +
+                    '</button>&nbsp;';
+            }),
         DTColumnBuilder.newColumn('id').withTitle('ID').notVisible(),
         DTColumnBuilder.newColumn(null).withTitle('Ticket')
             .renderWith(function (data){

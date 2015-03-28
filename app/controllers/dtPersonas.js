@@ -50,5 +50,5 @@ app.controller('dtPersonas',
             }),
     ];
         
-//    $timeout($scope.reloadData, 50);
+   // $timeout($scope.reloadData, 50);
 }]);

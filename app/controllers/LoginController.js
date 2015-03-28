@@ -20,7 +20,7 @@ app.controller('LoginController',
 
     var hostapp = $location.protocol() + "://" + $location.host() + ($location.port() != "" ? ':' + $location.port() : '' ) + '/' +appName;
 
-    $log.info(hostapp);
+    // $log.info(hostapp);
 		/* -------------------------------------------------------
      * Funciones principales
      * ------------------------------------------------------- */

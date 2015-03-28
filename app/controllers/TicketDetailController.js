@@ -238,7 +238,7 @@ app.controller('TicketDetailController',
 
 	// solucion motivo
 	$scope.$watch('ticket.currentMovimiento.solucion.N1', function (newSolucion, oldSolucion) {
-		$log.info(newSolucion);
+		// $log.info(newSolucion);
 		if(!isNaN(newSolucion.id)) {
 			$scope.solucionesN2 = TipificacionesResource.query({ parent_id: newSolucion.id, categoria_id: 2 }); // categoria_id: 2 -> solucion	
 		}
@@ -453,7 +453,7 @@ app.controller('TicketDetailController',
 		$scope.ticket.descripcion = currentTicket.descripcion;
 		$scope.ticket.private_descripcion = currentTicket.private_descripcion;
 
-		$log.info($scope.ticket.private_descripcion);
+		// $log.info($scope.ticket.private_descripcion);
 
 		$scope.ticket.referencia = currentTicket.parent;
 		$scope.ticket.componente = currentTicket.funcionalic;
@@ -471,7 +471,7 @@ app.controller('TicketDetailController',
         // Transforma la informacion de tipificaciones solucion separada por comas e.j. "{1,5,8,20,30}"
         var lengthTipificacionesFinal = currentTicket.movimientos[movimientosLength - 1].tipificaciones_final.length;
         var partSoluciones = currentTicket.movimientos[movimientosLength - 1].tipificaciones_final.substr(1, lengthTipificacionesFinal - 2).split(',');
-        $log.info(partSoluciones[1]);
+        // $log.info(partSoluciones[1]);
         $scope.ticket.currentMovimiento.solucion.N1 = { id: (partSoluciones[0] != "" && partSoluciones[0] != undefined ? partSoluciones[0] : 0) };
         $scope.ticket.currentMovimiento.solucion.N2 = { id: (partSoluciones[1] != "" && partSoluciones[1] != undefined ? partSoluciones[1] : 0) };
         $scope.ticket.currentMovimiento.solucion.N3 = { id: (partSoluciones[2] != "" && partSoluciones[2] != undefined ? partSoluciones[2] : 0) };
@@ -551,7 +551,7 @@ app.controller('TicketDetailController',
     };
 	$scope.updateTicket = function (isValid) {
         
-		$log.info($scope.ticket);
+		// $log.info($scope.ticket);
         // Verifica que todos los archivos hayan subido correctamente
         var completeUploadFiles = false;
         var countVal = 0;
