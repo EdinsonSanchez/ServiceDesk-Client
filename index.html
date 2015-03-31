@@ -15,8 +15,8 @@
         <!-- endbuild -->
     </head>
     <body ng-cloak="">
-        
-        
+
+
         <!-- start page container -->
         <div class="page-container" ng-controller="AuthController">
             <!-- start page sidebar -->
@@ -39,13 +39,13 @@
                                 <div class="profile-data-name">{{ currentUser.username }}</div>
                                 <div class="profile-data-title">
                                     <div ng-repeat="group in currentUser.usergroups">
-                                    [ 
-                                    {{ group.title }} 
+                                    [
+                                    {{ group.title }}
                                     ]
                                     </div>
                                 </div>
                             </div>
-                        </div>                                                                        
+                        </div>
                     </li>
                     <li class="xn-title">General</li>
                     <li ng-if="isAuthorized([userRoles.super, userRoles.reportes])" >
@@ -76,12 +76,12 @@
 
                     <li class="xn-title" ng-if="isAuthorized([userRoles.super])">Avanzado</li>
                     <li class="xn-openable" ng-show="isAuthorized([userRoles.super])">
-                        <a href="#"><span class="fa fa-users"></span> <span class="xn-text">Personas</span></a>                        
+                        <a href="#"><span class="fa fa-users"></span> <span class="xn-text">Personas</span></a>
                         <ul>
                             <li><a href="#/personas"><span class="fa fa-align-justify"></span> Resumen</a></li>
                             <li><a href="#/personas-create"><span class="fa fa-pencil-square-o"></span> Crear persona</a></li>
                         </ul>
-                    </li>                    
+                    </li>
                     <li class="xn-openable" ng-show="isAuthorized([userRoles.super])">
                         <a href="#"><span class="fa fa-user"></span> <span class="xn-text">Usuarios</span></a>
                         <ul>
@@ -124,7 +124,7 @@
                             <li><a href="#/elementos-create"><span class="fa fa-pencil-square-o"></span> Crear elemento</a></li>
                         </ul>
                     </li>
-                    
+
                 </ul>
                 <!-- end x-navigation -->
             </div>
@@ -139,33 +139,23 @@
                         <a href="#" class="x-navigation-minimize"><span class="fa fa-dedent"></span></a>
                     </li>
                     <!-- END TOGGLE NAVIGATION -->
-                    <!-- SEARCH -->
-                    <!-- <li class="xn-search">
-                        <form role="form">
-                            <input type="text" name="search" placeholder="Buscar..."/>
-                        </form>
-                    </li>    -->
-                    <!-- END SEARCH -->
-                    <!-- POWER OFF -->
-                    <li class="xn-icon-button pull-right last" ng-show="isAuthorized([userRoles.super])">
-                        <a href="#" class="sidebar-toggle"><span class="fa fa-align-right"></span></a>           
-                    </li> 
-                    <!-- END POWER OFF -->                    
+                    
+
                     <!-- POWER OFF -->
                     <li class="xn-icon-button pull-right">
                         <a href="#"><span class="fa fa-power-off"></span></a>
                         <ul class="xn-drop-left animated zoomIn">
                             <li><a href="#/" class="mb-control" data-box="#mb-signout"><span class="fa fa-sign-out"></span> Cerrar sesion</a></li>
-                        </ul>                        
-                    </li> 
-                    <!-- END POWER OFF -->   
+                        </ul>
+                    </li>
+                    <!-- END POWER OFF -->
                     <!-- MESSAGES -->
                     <li class="xn-icon-button pull-right" ng-show="isAuthorized([userRoles.super])">
                         <a href="#"><span class="fa fa-comments"></span></a>
                         <div class="informer informer-danger">0</div>
                         <div class="panel panel-primary animated zoomIn xn-drop-left xn-panel-dragging">
                             <div class="panel-heading">
-                                <h3 class="panel-title"><span class="fa fa-comments"></span> Mensajes</h3>                                
+                                <h3 class="panel-title"><span class="fa fa-comments"></span> Mensajes</h3>
                                 <div class="pull-right">
                                     <span class="label label-danger">0 nuevos</span>
                                 </div>
@@ -179,20 +169,20 @@
                                     <p>I want my money back!</p>
                                 </a>
 -->
-                            </div>     
+                            </div>
                             <div class="panel-footer text-center">
                                 <a href="#/mensajes">Mostrar todos los mensajes</a>
-                            </div>                            
-                        </div>                        
+                            </div>
+                        </div>
                     </li>
-                    <!-- END MESSAGES -->     
+                    <!-- END MESSAGES -->
                     <!-- TASKS -->
                     <li class="xn-icon-button pull-right" ng-show="isAuthorized([userRoles.super, userRoles.analista])" ng-controller="UserTicketController">
                         <a href="#"><span class="fa fa-tasks"></span></a>
                         <div class="informer informer-warning">{{ movimientos.length }}</div>
                         <div class="panel panel-primary animated zoomIn xn-drop-left xn-panel-dragging">
                             <div class="panel-heading">
-                                <h3 class="panel-title"><span class="fa fa-tasks"></span> Mis Tickets Asignados</h3>                          
+                                <h3 class="panel-title"><span class="fa fa-tasks"></span> Mis Tickets Asignados</h3>
 
                                 <div class="pull-right">
                                     <span class="label label-success">{{ count.severidad_4 }}</span>
@@ -202,25 +192,25 @@
                                 </div>
 
                             </div>
-                            <div class="panel-body list-group scroll" style="height: 300px;">                                
+                            <div class="panel-body list-group scroll" style="height: 300px;">
                                 <a href="#/tickets/{{ movimiento.ticket.id }}" ng-repeat="movimiento in movimientos | orderBy:['ticket.severidad_id', 'ticket.prioridad']:false" class="list-group-item">
                                     <div class="list-group-status severidad-{{ movimiento.ticket.severidad_id }}"></div>
                                     <span class="contacts-title"><strong>Ticket - {{ movimiento.ticket.prefijo }}{{ ("0000" + movimiento.ticket.correlativo ).slice(-5) }} ({{ movimiento.ticket.tipo.nombre }})</strong></span>
                                     <p><small class="text-muted">{{ movimiento.ticket.user.persona.nombre }} {{ movimiento.ticket.user.persona.apellidos }}, {{ movimiento.created_at }} / prioridad {{ movimiento.ticket.prioridad }}</small></p>
                                 </a>
-                            </div>     
+                            </div>
                             <div class="panel-footer text-center">
                                 <a href="#/tickets">Mostrar todos los tickets</a>
-                            </div>                            
-                        </div>                        
+                            </div>
+                        </div>
                     </li>
-                    <!-- END TASKS -->       
+                    <!-- END TASKS -->
                 </ul>
                 <!-- end x-navigation vertical -->
 
                 <!-- start breadcrumb -->
                 <ul class="breadcrumb">
-                    <li><a href="#/">Inicio</a></li> 
+                    <li><a href="#/">Inicio</a></li>
                 </ul>
                 <!-- end breadcrumb -->
 
@@ -234,43 +224,13 @@
         </div>
         <!-- end page container -->
 
-        <!-- START SIDEBAR -->
-        <div class="sidebar">            
-            <div class="sidebar-wrapper scroll mCustomScrollbar _mCS_2 mCS-autoHide" style="height: 587px;">
-                <div id="mCSB_2" class="mCustomScrollBox mCS-light mCSB_vertical mCSB_inside" tabindex="0">
-                    <div id="mCSB_2_container" class="mCSB_container" style="position: relative; top: 0px; left: 0px;" dir="ltr">
-                
-                        <div class="sidebar-tabs">
-                            <a href="#sidebar_1" class="sidebar-tab active"><span class="fa fa-comments"></span> Mensajes</a>
-                            <a href="#sidebar_2" class="sidebar-tab"><span class="fa fa-cog"></span> Configuracion</a>
-                        </div>
-
-                        <div class="sidebar-tab-content active" id="sidebar_1">
-                            <div class="sidebar-title">Tienes <strong>0 nuevos</strong> mensajes</div>    
-                        </div>
-
-                        <div class="sidebar-tab-content form-horizontal" id="sidebar_2"></div>
-                    </div>
-                    <div id="mCSB_2_scrollbar_vertical" class="mCSB_scrollTools mCSB_2_scrollbar mCS-light mCSB_scrollTools_vertical" style="display: block;">
-                        <div class="mCSB_draggerContainer">
-                            <div id="mCSB_2_dragger_vertical" class="mCSB_dragger" style="position: absolute; min-height: 30px; display: block; height: 579px; max-height: 685px; top: 0px;" oncontextmenu="return false;">
-                                <div class="mCSB_dragger_bar" style="line-height: 30px;"></div>
-                            </div>
-                            <div class="mCSB_draggerRail"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>            
-        </div>
-        <!-- END SIDEBAR -->        
-    
         <!-- start message box -->
         <div class="message-box animated fadeIn" id="mb-signout" ng-controller="LoginController">
             <div class="mb-container col-md-12">
                 <div class="mb-middle">
                     <div class="mb-title"><span class="fa fa-sign-out"></span> Cerrar <strong>Sesion</strong>?</div>
                     <div class="mb-content">
-                        <p>Estas seguro que deseas finalizar la sesion actual?</p>                    
+                        <p>Estas seguro que deseas finalizar la sesion actual?</p>
                         <p>Presiona NO si deseas seguir trabajando. Si para cambiar de usuario</p>
                     </div>
                     <div class="mb-footer">
@@ -300,25 +260,25 @@
     <!-- endbuild -->
 
     <!-- build:js plugins this page -->
-    <script type='text/javascript' src='assets/js/plugins/icheck/icheck.min.js'></script>        
+    <script type='text/javascript' src='assets/js/plugins/icheck/icheck.min.js'></script>
     <script type="text/javascript" src="assets/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js"></script>
     <script type="text/javascript" src="assets/js/plugins/scrolltotop/scrolltopcontrol.js"></script>
-    
+
     <script type="text/javascript" src="assets/js/plugins/morris/raphael-min.js"></script>
 
     <script type="text/javascript" src="assets/js/plugins/highcharts/highcharts.js"></script>
-    <script type="text/javascript" src="assets/js/plugins/morris/morris.min.js"></script>       
+    <script type="text/javascript" src="assets/js/plugins/morris/morris.min.js"></script>
     <script type="text/javascript" src="assets/js/plugins/rickshaw/d3.v3.js"></script>
     <script type="text/javascript" src="assets/js/plugins/rickshaw/rickshaw.min.js"></script>
     <script type='text/javascript' src='assets/js/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js'></script>
-    <script type='text/javascript' src='assets/js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js'></script> 
-    
-    <script type="text/javascript" src="assets/js/plugins/owl/owl.carousel.min.js"></script>                 
+    <script type='text/javascript' src='assets/js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js'></script>
+
+    <script type="text/javascript" src="assets/js/plugins/owl/owl.carousel.min.js"></script>
     <script type="text/javascript" src="assets/js/plugins/moment.min.js"></script>
-    
+
     <script type="text/javascript" src="assets/js/plugins/tagsinput/jquery.tagsinput.min.js"></script>
 
-    <script type="text/javascript" src="assets/js/plugins/codemirror/codemirror.js"></script>        
+    <script type="text/javascript" src="assets/js/plugins/codemirror/codemirror.js"></script>
     <script type='text/javascript' src="assets/js/plugins/codemirror/mode/htmlmixed/htmlmixed.js"></script>
     <script type='text/javascript' src="assets/js/plugins/codemirror/mode/xml/xml.js"></script>
     <script type='text/javascript' src="assets/js/plugins/codemirror/mode/javascript/javascript.js"></script>
@@ -330,7 +290,7 @@
     <!-- endbuild -->
 
     <!-- build:js template -->
-    <script type="text/javascript" src="assets/js/plugins.js"></script>        
+    <script type="text/javascript" src="assets/js/plugins.js"></script>
     <script type="text/javascript" src="assets/js/actions.js"></script>
     <!-- endbuild -->
 
@@ -424,14 +384,14 @@
     <script type="text/javascript" src="app/controllers/AreaDetailController.js"></script>
     <script type="text/javascript" src="app/controllers/UsergroupController.js"></script>
     <script type="text/javascript" src="app/controllers/UsergroupDetailController.js"></script>
-    
+
     <!-- modals -->
     <script type="text/javascript" src="app/controllers/modals/mComponenteCtrl.js"></script>
     <script type="text/javascript" src="app/controllers/modals/mTicketCtrl.js"></script>
     <script type="text/javascript" src="app/controllers/modals/mProblemaCtrl.js"></script>
     <script type="text/javascript" src="app/controllers/modals/mPersonaCtrl.js"></script>
     <script type="text/javascript" src="app/controllers/modals/mTipificacionCtrl.js"></script>
-    
+
     <!-- charts -->
     <script type="text/javascript" src="app/controllers/charts/ChartsCtrl.js"></script>
 

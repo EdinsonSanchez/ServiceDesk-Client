@@ -26,19 +26,20 @@ app.controller('dtTickets',
         .withPaginationType('full_numbers')
         .withBootstrap()
         .withOption('createdRow', function(row, data, dataIndex) {
-            
+
             // Es necesario corregir el problema con la zona horaria, para tener una unica fecha.
             var now = new Date().getTime();
             var tiempoTranscurrido = 0; // tiempo en milisegundos.
             var ultimoMovLast = 0;
             var ultimoMovStandby = false;
             var msFechaProgramado = 0;
+            var empresaId = data.empresa.id;
             // Obtiene el tiempo transcurrido de todos lo mivimientos.
             angular.forEach(data.movimientos, function (movimiento) {
 
                 // movimientoclase_id 1: abierto, 7: en espera
                 if(movimiento.movimientoclase_id == 1) {
-                    
+
                     var closedAt = new Date(movimiento.closed_at);
                     var createdAt = new Date(movimiento.created_at);
                     // si existe tiempo de cierre del movimiento, es un movimiento con rango de fechas
@@ -77,10 +78,10 @@ app.controller('dtTickets',
             if(clase != 0)
             {
                 angular.forEach(data.severidad.incclases, function (incclase) {
-                    if(incclase.id == 1 && clase == 1) { // hardware siempre
-                        tiempoResolucion = incclase.pivot.tiempo_resolucion;    
-                    } else if(incclase.id == 2 && clase == 2) { // software siempre
-                        tiempoResolucion = incclase.pivot.tiempo_resolucion;    
+                    if(incclase.id == 1 && clase == 1 && empresaId == incclase.pivot.empresa_id) { // hardware siempre
+                        tiempoResolucion = incclase.pivot.tiempo_resolucion;
+                    } else if(incclase.id == 2 && clase == 2 && empresaId == incclase.pivot.empresa_id) { // software siempre
+                        tiempoResolucion = incclase.pivot.tiempo_resolucion;
                     }
                 }, this);
             }
@@ -93,9 +94,8 @@ app.controller('dtTickets',
              * 0: tiempoResolucion      Aun no se ha definido el tiempo de resolucion.
              * ----------------------------------------------------------------------------------------- */
             if(clase != 0 && !ultimoMovStandby && tiempoResolucion != 0) {
-
                 var restanteDesdeUltimoMov = now - ultimoMovLast;
-                var msTiempoResolucion = tiempoResolucion * 1000 * 60; 
+                var msTiempoResolucion = tiempoResolucion * 1000 * 60;
                 var msTiempoTotalTranscurrido = restanteDesdeUltimoMov + tiempoTranscurrido;
 
                 // Se muestra la banda roja al vencer el tiempo total de resolucion.
@@ -105,7 +105,7 @@ app.controller('dtTickets',
                 // Se muestra la banda amarilla al estar dentro del ultimo 30% del tiempo total.
                 else if ((msTiempoResolucion - (msTiempoResolucion * 0.3)) <= (msTiempoTotalTranscurrido) && msTiempoTotalTranscurrido > 1 ) {
                     angular.element(row).context.className = 'warning';
-                } 
+                }
             }
 
             /* ------------------------------------------------------------------------------------------
@@ -177,13 +177,6 @@ app.controller('dtTickets',
                 return data.nombre + ' ' + data.apellidos;
             }),
         DTColumnBuilder.newColumn('estado.nombre').withTitle('Estado'),
-        // DTColumnBuilder.newColumn(null).withTitle('Grupo')
-        //     .renderWith(function (data) {
-        //         if(data.movimientos[data.movimientos.length - 1].grupo != null) {
-        //             return data.movimientos[data.movimientos.length - 1].grupo.nombre;
-        //         }
-        //         else return null;
-        //     }),
         DTColumnBuilder.newColumn(null).withTitle('Asignado a')
             .renderWith(function (data) {
                 if(data.movimientos[data.movimientos.length - 1].asignado != null) {
@@ -200,25 +193,20 @@ app.controller('dtTickets',
             .renderWith(function (data) {
                  return data.movimientos[data.movimientos.length - 1].fecha_programado;
              }),
-        // DTColumnBuilder.newColumn(null).withTitle('Referencia')
-        //     .renderWith(function (data) {
-        //          if(data.parent != null) {
-        //              return '<a href="#/tickets/' + data.parent.id +'">' + data.parent.prefijo + '-' + ("0000" + data.parent.correlativo).slice(-5) + '</a>';
-        //          }
-        //          else return null;
-        //      }),
         DTColumnBuilder.newColumn(null).withTitle('Tiempo restante').notSortable()
            .renderWith(function (data, type, full, meta) {
-                
+
                 var now = new Date().getTime();
                 var tiempoTranscurrido = 0; // tiempo en milisegundos.
                 var ultimoMovLast = 0;
                 var ultimoMovStandby = false;
+                var empresaId = data.empresa.id;
+
                 angular.forEach(data.movimientos, function (movimiento) {
 
                     // movimientoclase_id 1: abierto, 7: en espera
                     if(movimiento.movimientoclase_id == 1) {
-                        
+
                         var closedAt = new Date(movimiento.closed_at);
                         var createdAt = new Date(movimiento.created_at);
                         // si existe tiempo de cierre del movimiento, es un movimiento con rango de fechas
@@ -257,10 +245,10 @@ app.controller('dtTickets',
                 if(clase != 0)
                 {
                     angular.forEach(data.severidad.incclases, function (incclase) {
-                        if(incclase.id == 1 && clase == 1) { // hardware siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;    
-                        } else if(incclase.id == 2 && clase == 2) { // software siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;    
+                        if(incclase.id == 1 && clase == 1 && empresaId == incclase.pivot.empresa_id) { // hardware siempre
+                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
+                        } else if(incclase.id == 2 && clase == 2 && empresaId == incclase.pivot.empresa_id) { // software siempre
+                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
                         }
                     }, this);
                 }
@@ -274,10 +262,10 @@ app.controller('dtTickets',
                 }
 
                 if(tiempoResolucion == 0) {
-                    return '<span class="label label-warning">(Tiempo a tratar)</span>';
+                    return '<span class="label label-warning">(Tiempo a tratar/no definido)</span>';
                 } else {
                     var restanteDesdeUltimoMov = now - ultimoMovLast;
-                    var msTiempoResolucion = tiempoResolucion * 1000 * 60; 
+                    var msTiempoResolucion = tiempoResolucion * 1000 * 60;
 
                     if (msTiempoResolucion - (restanteDesdeUltimoMov + tiempoTranscurrido) > 0) {
                         // finish-callback="callbackTimer.finished()"
@@ -321,19 +309,20 @@ app.controller('dtTicketsAbiertos',
         .withPaginationType('full_numbers')
         .withBootstrap()
         .withOption('createdRow', function(row, data, dataIndex) {
-            
+
             // Es necesario corregir el problema con la zona horaria, para tener una unica fecha.
             var now = new Date().getTime();
             var tiempoTranscurrido = 0; // tiempo en milisegundos.
             var ultimoMovLast = 0;
             var ultimoMovStandby = false;
             var msFechaProgramado = 0;
+            var empresaId = data.empresa.id;
             // Obtiene el tiempo transcurrido de todos lo mivimientos.
             angular.forEach(data.movimientos, function (movimiento) {
 
                 // movimientoclase_id 1: abierto, 7: en espera
                 if(movimiento.movimientoclase_id == 1) {
-                    
+
                     var closedAt = new Date(movimiento.closed_at);
                     var createdAt = new Date(movimiento.created_at);
                     // si existe tiempo de cierre del movimiento, es un movimiento con rango de fechas
@@ -372,10 +361,10 @@ app.controller('dtTicketsAbiertos',
             if(clase != 0)
             {
                 angular.forEach(data.severidad.incclases, function (incclase) {
-                    if(incclase.id == 1 && clase == 1) { // hardware siempre
-                        tiempoResolucion = incclase.pivot.tiempo_resolucion;    
-                    } else if(incclase.id == 2 && clase == 2) { // software siempre
-                        tiempoResolucion = incclase.pivot.tiempo_resolucion;    
+                    if(incclase.id == 1 && clase == 1 && empresaId == incclase.pivot.empresa_id) { // hardware siempre
+                        tiempoResolucion = incclase.pivot.tiempo_resolucion;
+                    } else if(incclase.id == 2 && clase == 2 && empresaId == incclase.pivot.empresa_id) { // software siempre
+                        tiempoResolucion = incclase.pivot.tiempo_resolucion;
                     }
                 }, this);
             }
@@ -390,7 +379,7 @@ app.controller('dtTicketsAbiertos',
             if(clase != 0 && !ultimoMovStandby && tiempoResolucion != 0) {
 
                 var restanteDesdeUltimoMov = now - ultimoMovLast;
-                var msTiempoResolucion = tiempoResolucion * 1000 * 60; 
+                var msTiempoResolucion = tiempoResolucion * 1000 * 60;
                 var msTiempoTotalTranscurrido = restanteDesdeUltimoMov + tiempoTranscurrido;
 
                 // Se muestra la banda roja al vencer el tiempo total de resolucion.
@@ -400,7 +389,7 @@ app.controller('dtTicketsAbiertos',
                 // Se muestra la banda amarilla al estar dentro del ultimo 30% del tiempo total.
                 else if ((msTiempoResolucion - (msTiempoResolucion * 0.3)) <= (msTiempoTotalTranscurrido) && msTiempoTotalTranscurrido > 1 ) {
                     angular.element(row).context.className = 'warning';
-                } 
+                }
             }
 
             /* ------------------------------------------------------------------------------------------
@@ -482,19 +471,21 @@ app.controller('dtTicketsAbiertos',
         DTColumnBuilder.newColumn(null).withTitle('Ultimo acceso')
             .renderWith(function (data) {
                  return data.movimientos[data.movimientos.length - 1].created_at;
-             }),    
+             }),
         DTColumnBuilder.newColumn(null).withTitle('Tiempo restante').notSortable()
            .renderWith(function (data, type, full, meta) {
-                
+
                 var now = new Date().getTime();
                 var tiempoTranscurrido = 0; // tiempo en milisegundos.
                 var ultimoMovLast = 0;
                 var ultimoMovStandby = false;
+                var empresaId = data.empresa.id;
+
                 angular.forEach(data.movimientos, function (movimiento) {
 
                     // movimientoclase_id 1: abierto, 7: en espera
                     if(movimiento.movimientoclase_id == 1) {
-                        
+
                         var closedAt = new Date(movimiento.closed_at);
                         var createdAt = new Date(movimiento.created_at);
                         // si existe tiempo de cierre del movimiento, es un movimiento con rango de fechas
@@ -533,10 +524,10 @@ app.controller('dtTicketsAbiertos',
                 if(clase != 0)
                 {
                     angular.forEach(data.severidad.incclases, function (incclase) {
-                        if(incclase.id == 1 && clase == 1) { // hardware siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;    
-                        } else if(incclase.id == 2 && clase == 2) { // software siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;    
+                        if(incclase.id == 1 && clase == 1 && empresaId == incclase.pivot.empresa_id) { // hardware siempre
+                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
+                        } else if(incclase.id == 2 && clase == 2 && empresaId == incclase.pivot.empresa_id) { // software siempre
+                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
                         }
                     }, this);
                 }
@@ -550,10 +541,10 @@ app.controller('dtTicketsAbiertos',
                 }
 
                 if(tiempoResolucion == 0) {
-                    return '<span class="label label-warning">(Tiempo a tratar)</span>';
+                    return '<span class="label label-warning">(Tiempo a tratar/no definido)</span>';
                 } else {
                     var restanteDesdeUltimoMov = now - ultimoMovLast;
-                    var msTiempoResolucion = tiempoResolucion * 1000 * 60; 
+                    var msTiempoResolucion = tiempoResolucion * 1000 * 60;
 
                     if (msTiempoResolucion - (restanteDesdeUltimoMov + tiempoTranscurrido) > 0) {
                         // finish-callback="callbackTimer.finished()"
@@ -595,19 +586,20 @@ app.controller('dtTicketsPendientes',
         .withPaginationType('full_numbers')
         .withBootstrap()
         .withOption('createdRow', function(row, data, dataIndex) {
-            
+
             // Es necesario corregir el problema con la zona horaria, para tener una unica fecha.
             var now = new Date().getTime();
             var tiempoTranscurrido = 0; // tiempo en milisegundos.
             var ultimoMovLast = 0;
             var ultimoMovStandby = false;
             var msFechaProgramado = 0;
+            var empresaId = data.empresa.id;
             // Obtiene el tiempo transcurrido de todos lo mivimientos.
             angular.forEach(data.movimientos, function (movimiento) {
 
                 // movimientoclase_id 1: abierto, 7: en espera
                 if(movimiento.movimientoclase_id == 1) {
-                    
+
                     var closedAt = new Date(movimiento.closed_at);
                     var createdAt = new Date(movimiento.created_at);
                     // si existe tiempo de cierre del movimiento, es un movimiento con rango de fechas
@@ -646,10 +638,10 @@ app.controller('dtTicketsPendientes',
             if(clase != 0)
             {
                 angular.forEach(data.severidad.incclases, function (incclase) {
-                    if(incclase.id == 1 && clase == 1) { // hardware siempre
-                        tiempoResolucion = incclase.pivot.tiempo_resolucion;    
-                    } else if(incclase.id == 2 && clase == 2) { // software siempre
-                        tiempoResolucion = incclase.pivot.tiempo_resolucion;    
+                    if(incclase.id == 1 && clase == 1 && empresaId == incclase.pivot.empresa_id) { // hardware siempre
+                        tiempoResolucion = incclase.pivot.tiempo_resolucion;
+                    } else if(incclase.id == 2 && clase == 2 && empresaId == incclase.pivot.empresa_id) { // software siempre
+                        tiempoResolucion = incclase.pivot.tiempo_resolucion;
                     }
                 }, this);
             }
@@ -664,7 +656,7 @@ app.controller('dtTicketsPendientes',
             if(clase != 0 && !ultimoMovStandby && tiempoResolucion != 0) {
 
                 var restanteDesdeUltimoMov = now - ultimoMovLast;
-                var msTiempoResolucion = tiempoResolucion * 1000 * 60; 
+                var msTiempoResolucion = tiempoResolucion * 1000 * 60;
                 var msTiempoTotalTranscurrido = restanteDesdeUltimoMov + tiempoTranscurrido;
 
                 // Se muestra la banda roja al vencer el tiempo total de resolucion.
@@ -674,7 +666,7 @@ app.controller('dtTicketsPendientes',
                 // Se muestra la banda amarilla al estar dentro del ultimo 30% del tiempo total.
                 else if ((msTiempoResolucion - (msTiempoResolucion * 0.3)) <= (msTiempoTotalTranscurrido) && msTiempoTotalTranscurrido > 1 ) {
                     angular.element(row).context.className = 'warning';
-                } 
+                }
             }
 
             /* ------------------------------------------------------------------------------------------
@@ -759,16 +751,18 @@ app.controller('dtTicketsPendientes',
              }),
         DTColumnBuilder.newColumn(null).withTitle('Tiempo restante').notSortable()
            .renderWith(function (data, type, full, meta) {
-                
+
                 var now = new Date().getTime();
                 var tiempoTranscurrido = 0; // tiempo en milisegundos.
                 var ultimoMovLast = 0;
                 var ultimoMovStandby = false;
+                var empresaId = data.empresa.id;
+
                 angular.forEach(data.movimientos, function (movimiento) {
 
                     // movimientoclase_id 1: abierto, 7: en espera
                     if(movimiento.movimientoclase_id == 1) {
-                        
+
                         var closedAt = new Date(movimiento.closed_at);
                         var createdAt = new Date(movimiento.created_at);
                         // si existe tiempo de cierre del movimiento, es un movimiento con rango de fechas
@@ -807,10 +801,10 @@ app.controller('dtTicketsPendientes',
                 if(clase != 0)
                 {
                     angular.forEach(data.severidad.incclases, function (incclase) {
-                        if(incclase.id == 1 && clase == 1) { // hardware siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;    
-                        } else if(incclase.id == 2 && clase == 2) { // software siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;    
+                        if(incclase.id == 1 && clase == 1 && empresaId == incclase.pivot.empresa_id) { // hardware siempre
+                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
+                        } else if(incclase.id == 2 && clase == 2 && empresaId == incclase.pivot.empresa_id) { // software siempre
+                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
                         }
                     }, this);
                 }
@@ -824,10 +818,10 @@ app.controller('dtTicketsPendientes',
                 }
 
                 if(tiempoResolucion == 0) {
-                    return '<span class="label label-warning">(Tiempo a tratar)</span>';
+                    return '<span class="label label-warning">(Tiempo a tratar/no definido)</span>';
                 } else {
                     var restanteDesdeUltimoMov = now - ultimoMovLast;
-                    var msTiempoResolucion = tiempoResolucion * 1000 * 60; 
+                    var msTiempoResolucion = tiempoResolucion * 1000 * 60;
 
                     if (msTiempoResolucion - (restanteDesdeUltimoMov + tiempoTranscurrido) > 0) {
                         // finish-callback="callbackTimer.finished()"
@@ -869,19 +863,20 @@ app.controller('dtTicketsEspera',
         .withPaginationType('full_numbers')
         .withBootstrap()
         .withOption('createdRow', function(row, data, dataIndex) {
-            
+
             // Es necesario corregir el problema con la zona horaria, para tener una unica fecha.
             var now = new Date().getTime();
             var tiempoTranscurrido = 0; // tiempo en milisegundos.
             var ultimoMovLast = 0;
             var ultimoMovStandby = false;
             var msFechaProgramado = 0;
+            var empresaId = data.empresa.id;
             // Obtiene el tiempo transcurrido de todos lo mivimientos.
             angular.forEach(data.movimientos, function (movimiento) {
 
                 // movimientoclase_id 1: abierto, 7: en espera
                 if(movimiento.movimientoclase_id == 1) {
-                    
+
                     var closedAt = new Date(movimiento.closed_at);
                     var createdAt = new Date(movimiento.created_at);
                     // si existe tiempo de cierre del movimiento, es un movimiento con rango de fechas
@@ -920,10 +915,10 @@ app.controller('dtTicketsEspera',
             if(clase != 0)
             {
                 angular.forEach(data.severidad.incclases, function (incclase) {
-                    if(incclase.id == 1 && clase == 1) { // hardware siempre
-                        tiempoResolucion = incclase.pivot.tiempo_resolucion;    
-                    } else if(incclase.id == 2 && clase == 2) { // software siempre
-                        tiempoResolucion = incclase.pivot.tiempo_resolucion;    
+                    if(incclase.id == 1 && clase == 1 && empresaId == incclase.pivot.empresa_id) { // hardware siempre
+                        tiempoResolucion = incclase.pivot.tiempo_resolucion;
+                    } else if(incclase.id == 2 && clase == 2 && empresaId == incclase.pivot.empresa_id) { // software siempre
+                        tiempoResolucion = incclase.pivot.tiempo_resolucion;
                     }
                 }, this);
             }
@@ -938,7 +933,7 @@ app.controller('dtTicketsEspera',
             if(clase != 0 && !ultimoMovStandby && tiempoResolucion != 0) {
 
                 var restanteDesdeUltimoMov = now - ultimoMovLast;
-                var msTiempoResolucion = tiempoResolucion * 1000 * 60; 
+                var msTiempoResolucion = tiempoResolucion * 1000 * 60;
                 var msTiempoTotalTranscurrido = restanteDesdeUltimoMov + tiempoTranscurrido;
 
                 // Se muestra la banda roja al vencer el tiempo total de resolucion.
@@ -948,7 +943,7 @@ app.controller('dtTicketsEspera',
                 // Se muestra la banda amarilla al estar dentro del ultimo 30% del tiempo total.
                 else if ((msTiempoResolucion - (msTiempoResolucion * 0.3)) <= (msTiempoTotalTranscurrido) && msTiempoTotalTranscurrido > 1 ) {
                     angular.element(row).context.className = 'warning';
-                } 
+                }
             }
 
             /* ------------------------------------------------------------------------------------------
@@ -1019,14 +1014,6 @@ app.controller('dtTicketsEspera',
             .renderWith(function (data, type, full, meta) {
                 return data.nombre + ' ' + data.apellidos;
             }),
-        // DTColumnBuilder.newColumn('estado.nombre').withTitle('Estado'),
-        // DTColumnBuilder.newColumn(null).withTitle('Grupo')
-        //     .renderWith(function (data) {
-        //         if(data.movimientos[data.movimientos.length - 1].grupo != null) {
-        //             return data.movimientos[data.movimientos.length - 1].grupo.nombre;
-        //         }
-        //         else return null;
-        //     }),
         DTColumnBuilder.newColumn(null).withTitle('Asignado a')
             .renderWith(function (data) {
                 if(data.movimientos[data.movimientos.length - 1].asignado != null) {
@@ -1043,25 +1030,19 @@ app.controller('dtTicketsEspera',
             .renderWith(function (data) {
                  return data.movimientos[data.movimientos.length - 1].fecha_programado;
              }),
-        // DTColumnBuilder.newColumn(null).withTitle('Referencia')
-        //     .renderWith(function (data) {
-        //          if(data.parent != null) {
-        //              return '<a href="#/tickets/' + data.parent.id +'">' + data.parent.prefijo + '-' + ("0000" + data.parent.correlativo).slice(-5) + '</a>';
-        //          }
-        //          else return null;
-        //      }),
         DTColumnBuilder.newColumn(null).withTitle('Tiempo restante').notSortable()
            .renderWith(function (data, type, full, meta) {
-                
+
                 var now = new Date().getTime();
                 var tiempoTranscurrido = 0; // tiempo en milisegundos.
                 var ultimoMovLast = 0;
                 var ultimoMovStandby = false;
+                var empresaId = data.empresa.id;
                 angular.forEach(data.movimientos, function (movimiento) {
 
                     // movimientoclase_id 1: abierto, 7: en espera
                     if(movimiento.movimientoclase_id == 1) {
-                        
+
                         var closedAt = new Date(movimiento.closed_at);
                         var createdAt = new Date(movimiento.created_at);
                         // si existe tiempo de cierre del movimiento, es un movimiento con rango de fechas
@@ -1100,10 +1081,10 @@ app.controller('dtTicketsEspera',
                 if(clase != 0)
                 {
                     angular.forEach(data.severidad.incclases, function (incclase) {
-                        if(incclase.id == 1 && clase == 1) { // hardware siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;    
-                        } else if(incclase.id == 2 && clase == 2) { // software siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;    
+                        if(incclase.id == 1 && clase == 1 && empresaId == incclase.pivot.empresa_id) { // hardware siempre
+                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
+                        } else if(incclase.id == 2 && clase == 2 && empresaId == incclase.pivot.empresa_id) { // software siempre
+                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
                         }
                     }, this);
                 }
@@ -1117,10 +1098,10 @@ app.controller('dtTicketsEspera',
                 }
 
                 if(tiempoResolucion == 0) {
-                    return '<span class="label label-warning">(Tiempo a tratar)</span>';
+                    return '<span class="label label-warning">(Tiempo a tratar/no definido)</span>';
                 } else {
                     var restanteDesdeUltimoMov = now - ultimoMovLast;
-                    var msTiempoResolucion = tiempoResolucion * 1000 * 60; 
+                    var msTiempoResolucion = tiempoResolucion * 1000 * 60;
 
                     if (msTiempoResolucion - (restanteDesdeUltimoMov + tiempoTranscurrido) > 0) {
                         // finish-callback="callbackTimer.finished()"

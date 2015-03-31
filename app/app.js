@@ -17,12 +17,12 @@ var app = angular.module("SDApp", ['angularMoment', 'ui.router'
 	, 'summernote']);
 
 var apiMainhost = 'http://www.mss.pe/apps/tickets/v2/public/apiv2';
-// var sandbox = 'http://192.168.1.37/appGestConfV2.0/public/apiv2';
+var sandbox = 'http://192.168.1.37/appGestConfV2.0/public/apiv2';
 
 var apiMainUrl = 'http://www.mss.pe/apps/tickets/v2/public';
-// var sandboxurl = 'http://192.168.1.37/appGestConfV2.0/public';
+var sandboxurl = 'http://192.168.1.37/appGestConfV2.0/public';
 
-var apiUrl = apiMainhost;
+var apiUrl = sandbox;
 var appUrl = apiMainUrl;
 
 var appName = 'apps/tickets/ServiceDesk';
@@ -53,14 +53,14 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function($stat
 	$stateProvider
 	/*----------------------------------
 	 * 404
-	 * --------------------------------- */ 
+	 * --------------------------------- */
 	.state('404', {
 	 	url: '/404',
 	 	templateUrl: 'views/errors/404.html'
 	})
 	 /*----------------------------------
 	 * dashboard
-	 * --------------------------------- */ 
+	 * --------------------------------- */
 	.state('dashboard', {
 		url: '/dashboard',
 		templateUrl: 'views/home/index.html',
@@ -70,7 +70,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function($stat
 	})
 	/*----------------------------------
 	 * tickets
-	 * --------------------------------- */ 
+	 * --------------------------------- */
 	.state('tickets', {
 		url: '/tickets',
 		templateUrl: 'views/tickets/index.html',
@@ -103,7 +103,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function($stat
 	})
 	/*----------------------------------
 	 * tipificaciones
-	 * --------------------------------- */ 
+	 * --------------------------------- */
 	.state('tipificaciones', {
 	 	url: '/tipificaciones',
 	 	templateUrl: 'views/tipificaciones/index.html',

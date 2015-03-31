@@ -8,7 +8,7 @@
 
 'use strict';
 
-app.controller('TicketController', 
+app.controller('TicketController',
 	['$scope', '$modal', '$log', '$location'
     , 'AuthService'
 	, 'TipoticketsResource'
@@ -24,7 +24,7 @@ app.controller('TicketController',
 	, 'ComponenteFactory'
 	, 'TicketsResource'
 	, 'TicketFactory'
-	, 'AnexosFactory' 
+	, 'AnexosFactory'
 	, 'SolverResource'
 	, function ($scope, $modal, $log, $location
         , AuthService
@@ -43,7 +43,7 @@ app.controller('TicketController',
 		, TicketFactory
 		, AnexosFactory
 		, SolverResource) {
-	
+
 	$scope.status;
 	$scope.tickets = {};
 
@@ -74,7 +74,7 @@ app.controller('TicketController',
 		{ id: 7, nombre: 'Prioridad 7' },
 	];
 	$scope.estados = {};
-	
+
 	// tipificaciones motivo
 	$scope.tipificacionesN1 = {};
 	$scope.tipificacionesN2 = {};
@@ -116,7 +116,7 @@ app.controller('TicketController',
     		soluciones: [],
     	}
 	};
-    
+
     // Control de envio y recepcion de respuesta del servidor.
     $scope.ticketObs = {
         uploader: {
@@ -126,7 +126,7 @@ app.controller('TicketController',
             message: '',
         }
     };
-	
+
 	/* -------------------------------------------------
      * Observables
      * ------------------------------------------------- */
@@ -137,7 +137,7 @@ app.controller('TicketController',
 
 	$scope.$watch('ticket.sucursal', function (newSucursal, oldSucursal) {
 		getPersonalBySucursal(newSucursal.id);
-        
+
         $scope.ticket.reportador = { id: 0 };
         $scope.ticket.persona_afectada = { id: 0 };
 	}, true);
@@ -209,7 +209,7 @@ app.controller('TicketController',
      * ------------------------------------------------------- */
 	TipoticketsResource.query({}, function (tipotickets) {
 		$scope.tipotickets = tipotickets;
-		$scope.ticket.tipoticket = $scope.tipotickets[1]; // incidencia 
+		$scope.ticket.tipoticket = $scope.tipotickets[1]; // incidencia
 	});
 
 	EmpresasResource.query({}, function (empresas) {
@@ -221,7 +221,7 @@ app.controller('TicketController',
 		$scope.severidades = severidades;
 		$scope.ticket.severidad = $scope.severidades[3]; // Severidad 4
 	});
-	
+
 	IncClasesResource.query({}, function (clases) {
 		$scope.incclases = clases;
 		$scope.ticket.clase = $scope.incclases[11]; // Otro
@@ -249,7 +249,7 @@ app.controller('TicketController',
 
 	TipificacionesResource.query({ nivel: 1 }, function (data) {
 		$scope.tipificacionesN1 = data;
-		$scope.ticket.tipificacion.N1 = $scope.tipificacionesN1[0]; // Hardware 
+		$scope.ticket.tipificacion.N1 = $scope.tipificacionesN1[0]; // Hardware
 	});
 
 	function getSucursalesByEmpresa (empresaId) {
@@ -282,24 +282,24 @@ app.controller('TicketController',
     function isCorrect () {
         // $log.info($scope.ticket);
         var correct = true;
-        
+
         if($scope.ticket.sucursal.id == 0) correct = false;
         if($scope.ticket.reportador == 0) correct = false;
-        
+
         if($scope.ticket.tipoafectado.id == 3) {
             if($scope.ticket.persona_afectada.id == 0 || $scope.ticket.persona_afectada == null) { correct = false; }
-        } 
+        }
         else if($scope.ticket.tipoafectado.id == 2) {
             if($scope.ticket.area_afectada.id == 0 || $scope.ticket.area_afectada == null) correct = false;
-        } 
+        }
         else if($scope.ticket.tipoafectado.id == 1) {
             if($scope.ticket.sucursal_afectada.id == 0 || $scope.ticket.sucursal_afectada == null) correct = false;
         }
-        
+
         // $log.info(correct);
         return true;
     }
-    
+
     // Calcular la prioridad
     function calcularPrioridad (impacto, urgencia) {
         if(impacto && urgencia) {
@@ -378,7 +378,7 @@ app.controller('TicketController',
      * Acciones principales
      * ------------------------------------------------------------- */
 	$scope.newTicket = function (isValid) {
-        
+
         // Verifica que todos los archivos hayan subido correctamente
         var completeUploadFiles = false;
         var countVal = 0;
@@ -387,19 +387,19 @@ app.controller('TicketController',
                 countVal++;
             }
         }, this);
-        
+
         if(countVal != $scope.ticket.anexos.items.length) {
             alert('Algun elemento de los anexos aun no sube correctamente.');
         }
-        
+
         // Si todo es correcto se envia al servidor
         if(isValid && (countVal == $scope.ticket.anexos.items.length) && isCorrect()) {
 
             // Bloque el boton hasta recibir respuesta del servidor.
             $scope.ticketObs.uploader.isLoading = true;
-            
+
             TicketsResource.create($scope.ticket, function (response) {
-                
+
                 $scope.ticketObs.uploader.isSuccess = true;
                 $scope.ticketObs.uploader.message = response.message;
 
@@ -409,10 +409,10 @@ app.controller('TicketController',
                 } else {
                     $scope.ticketObs.uploader.message = 'Error en el proceso de registro!';
                 }
-               
+
                 $scope.ticketObs.uploader.isError = true;
             });
-                 
+
         }
 	}
 }]);
