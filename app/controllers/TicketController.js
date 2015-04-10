@@ -50,20 +50,22 @@ app.controller('TicketController',
 	/* ------------------------------------------
      * Informacion utilizada
      * ------------------------------------------ */
-	$scope.empresas = {};
-	$scope.sucursales = {};
-	$scope.areas = {}; // posible areas afectadas
-	$scope.personas = {};
+	$scope.empresas = [];
+	$scope.sucursales = [];
+	$scope.areas = []; // posible areas afectadas
+	$scope.solicitantes = [];
+	$scope.afectados = [];
+	$scope.personas = [];
 	$scope.tipoafectados = [
 		{ id: 1, nombre: 'Sucursal'},
 		{ id: 2, nombre: 'Area' },
 		{ id: 3, nombre: 'Persona' }
 	];
-	$scope.grupos = {};
-	$scope.asignados = {};
-	$scope.tipotickets = {};
-	$scope.severidades = {};
-	$scope.incclases = {};
+	$scope.grupos = [];
+	$scope.asignados = [];
+	$scope.tipotickets = [];
+	$scope.severidades = [];
+	$scope.incclases = [];
 	$scope.prioridades = [
 		{ id: 1, nombre: 'Prioridad 1' },
 		{ id: 2, nombre: 'Prioridad 2' },
@@ -73,22 +75,24 @@ app.controller('TicketController',
 		{ id: 6, nombre: 'Prioridad 6' },
 		{ id: 7, nombre: 'Prioridad 7' },
 	];
-	$scope.estados = {};
+	$scope.estados = [];
 
 	// tipificaciones motivo
-	$scope.tipificacionesN1 = {};
-	$scope.tipificacionesN2 = {};
-	$scope.tipificacionesN3 = {};
-	$scope.tipificacionesN4 = {};
-	$scope.tipificacionesN5 = {};
+	$scope.tipificacionesN1 = [];
+	$scope.tipificacionesN2 = [];
+	$scope.tipificacionesN3 = [];
+	$scope.tipificacionesN4 = [];
+	$scope.tipificacionesN5 = [];
 
 	/* -------------------------------------------
      * Entidad
      * -------------------------------------------*/
 	$scope.ticket = {
 		tipoticket: {},
-		empresa: { id: 0 },
-		sucursal: { id: 0 },
+		empresa_solicitante: { id: 0 },
+		sucursal_solicitante: { id: 0 },
+		empresa_afectado: { id: 0 },
+		sucursal_afectado: { id: 0 },
 		severidad: {},
 		clase: { id: 0 },
 		prioridad: $scope.prioridades[3],
@@ -130,16 +134,32 @@ app.controller('TicketController',
 	/* -------------------------------------------------
      * Observables
      * ------------------------------------------------- */
-	$scope.$watch('ticket.empresa', function (newEmpresa, oldEmpresa) {
-		getSucursalesByEmpresa(newEmpresa.id);
-        $scope.ticket.sucursal = { id: 0 };
+	$scope.$watch('ticket.empresa_solicitante', function (newEmpresa, oldEmpresa) {
+		if(newEmpresa !== oldEmpresa) {
+			getSucursalesByEmpresaSolicitante(newEmpresa.id);
+	        $scope.ticket.sucursal_solicitante = { id: 0 };
+		}
 	}, true);
 
-	$scope.$watch('ticket.sucursal', function (newSucursal, oldSucursal) {
-		getPersonalBySucursal(newSucursal.id);
+	$scope.$watch('ticket.sucursal_solicitante', function (newSucursal, oldSucursal) {
+		if(newSucursal !== oldSucursal) {
+			getPersonalBySucursalSolicitante(newSucursal.id);
+	        $scope.ticket.reportador = { id: 0 };
+		}
+	}, true);
+	//
+	$scope.$watch('ticket.empresa_afectado', function (newEmpresa, oldEmpresa) {
+		if(newEmpresa !== oldEmpresa) {
+			getSucursalesByEmpresaAfectado(newEmpresa.id);
+			$scope.ticket.sucursal_afectado = { id: 0 };
+		}
+	}, true);
 
-        $scope.ticket.reportador = { id: 0 };
-        $scope.ticket.persona_afectada = { id: 0 };
+	$scope.$watch('ticket.sucursal_afectado', function (newSucursal, oldSucursal) {
+		if(newSucursal !== oldSucursal) {
+			getPersonalBySucursalAfectado(newSucursal.id);
+			$scope.ticket.persona_afectada = { id: 0 };
+		}
 	}, true);
 
 	$scope.$watch('ticket.tipoafectado', function (newTipoafectado, oldTipoafectado) {
@@ -213,8 +233,11 @@ app.controller('TicketController',
 	});
 
 	EmpresasResource.query({}, function (empresas) {
-		$scope.empresas = empresas;
-		$scope.ticket.empresa = $scope.empresas[1]; // Budbay
+		$scope.solicitante_empresas = empresas;
+		$scope.ticket.empresa_solicitante = $scope.solicitante_empresas[0]; // MineSense
+		//
+		$scope.afectado_empresas = empresas;
+		$scope.ticket.empresa_afectado = $scope.solicitante_empresas[1]; // Budbay
 	});
 
 	SeveridadesResource.query({}, function (severidades) {
@@ -252,20 +275,35 @@ app.controller('TicketController',
 		$scope.ticket.tipificacion.N1 = $scope.tipificacionesN1[0]; // Hardware
 	});
 
-	function getSucursalesByEmpresa (empresaId) {
-
+	function getSucursalesByEmpresaSolicitante (empresaId) {
 		SucursalesResource.query({ empresaId: empresaId }, function (sucursales) {
-			$scope.sucursales = sucursales;
+			$scope.solicitante_sucursales = sucursales;
 		});
 	}
 
-	function getPersonalBySucursal (sucursalId) {
+	function getPersonalBySucursalSolicitante (sucursalId) {
 		PersonasFactory.getPersonasBySucursal(sucursalId)
 			.success(function (personas) {
-				$scope.personas = personas;
+				$scope.solicitantes = personas;
 			})
 			.error(function (error) {
-				$scope.status = 'Unable to load personas(sucursal) data: ' + error.message;
+				$scope.status = 'Unable to load solicitantes data: ' + error.message;
+			});
+	}
+
+	function getSucursalesByEmpresaAfectado (empresaId) {
+		SucursalesResource.query({ empresaId: empresaId }, function (sucursales) {
+			$scope.afectado_sucursales = sucursales;
+		});
+	}
+
+	function getPersonalBySucursalAfectado (sucursalId) {
+		PersonasFactory.getPersonasBySucursal(sucursalId)
+			.success(function (personas) {
+				$scope.afectados = personas;
+			})
+			.error(function (error) {
+				$scope.status = 'Unable to load afectados data: ' + error.message;
 			});
 	}
 
@@ -393,7 +431,7 @@ app.controller('TicketController',
         }
 
         // Si todo es correcto se envia al servidor
-        if(isValid && (countVal == $scope.ticket.anexos.items.length) && isCorrect()) {
+        if(isValid && (countVal == $scope.ticket.anexos.items.length)/* && isCorrect()*/) {
 
             // Bloque el boton hasta recibir respuesta del servidor.
             $scope.ticketObs.uploader.isLoading = true;

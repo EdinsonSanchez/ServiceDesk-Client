@@ -33,7 +33,8 @@ app.controller('dtTickets',
             var ultimoMovLast = 0;
             var ultimoMovStandby = false;
             var msFechaProgramado = 0;
-            var empresaId = data.empresa.id;
+            var empresaId = data.empresa_afectado.id;
+            var isCerrado = data.estado.id == 5; // Estado cerrado:5
             // Obtiene el tiempo transcurrido de todos lo mivimientos.
             angular.forEach(data.movimientos, function (movimiento) {
 
@@ -93,7 +94,7 @@ app.controller('dtTickets',
              * true: ultimoMovStandby   El ticket se encuentra programado no muestra banda de color.
              * 0: tiempoResolucion      Aun no se ha definido el tiempo de resolucion.
              * ----------------------------------------------------------------------------------------- */
-            if(clase != 0 && !ultimoMovStandby && tiempoResolucion != 0) {
+            if(clase != 0 && !ultimoMovStandby && tiempoResolucion != 0 && !isCerrado)  {
                 var restanteDesdeUltimoMov = now - ultimoMovLast;
                 var msTiempoResolucion = tiempoResolucion * 1000 * 60;
                 var msTiempoTotalTranscurrido = restanteDesdeUltimoMov + tiempoTranscurrido;
@@ -152,7 +153,13 @@ app.controller('dtTickets',
     $scope.dtColumns = [
          DTColumnBuilder.newColumn(null).withTitle('Acciones').notSortable()
             .renderWith(function (data) {
-                return '<button class="btn ' + $scope.getClassBtn(data.severidad_id) +' btn-sm" ng-click="show(' + data.id + ')">' +
+                var isCerrado = data.estado.id == 5; // Estado Cerrado: 5
+                var cssClass = '';
+                if(!isCerrado) {
+                    cssClass = $scope.getClassBtn(data.severidad_id);
+                }
+
+                return '<button class="btn ' + cssClass +' btn-sm" ng-click="show(' + data.id + ')">' +
                     '   <i class="fa fa-eye"></i>' +
                     '</button>&nbsp;';
             }),
@@ -161,9 +168,9 @@ app.controller('dtTickets',
             .renderWith(function (data){
                 return data.prefijo + '-' + ("0000" + data.correlativo).slice(-5);
             }),
-        DTColumnBuilder.newColumn(null).withTitle('Descripción')
+        DTColumnBuilder.newColumn(null).withTitle('Asunto')
             .renderWith(function(data) {
-                return data.descripcion.length > 30 ? data.descripcion.substring(0, 60) + '...' : data.descripcion;
+                return data.asunto.length > 30 ? data.asunto.substring(0, 60) + '...' : data.asunto;
             }),
         DTColumnBuilder.newColumn('severidad.nivel').withTitle('Severidad'),
         DTColumnBuilder.newColumn(null).withTitle('Prioridad')
@@ -171,7 +178,7 @@ app.controller('dtTickets',
                 return 'Prioridad ' + data.prioridad;
             }),
         DTColumnBuilder.newColumn('clase.nombre').withTitle('Clase'),
-        DTColumnBuilder.newColumn('empresa.razon_social').withTitle('Empresa'),
+        DTColumnBuilder.newColumn('empresa_afectado.razon_social').withTitle('Empresa'),
         DTColumnBuilder.newColumn('reportado_by').withTitle('Reportado por')
             .renderWith(function (data, type, full, meta) {
                 return data.nombre + ' ' + data.apellidos;
@@ -200,7 +207,8 @@ app.controller('dtTickets',
                 var tiempoTranscurrido = 0; // tiempo en milisegundos.
                 var ultimoMovLast = 0;
                 var ultimoMovStandby = false;
-                var empresaId = data.empresa.id;
+                var empresaId = data.empresa_afectado.id;
+                var isCerrado = data.estado.id == 5; // Estado cerrado:5
 
                 angular.forEach(data.movimientos, function (movimiento) {
 
@@ -263,6 +271,15 @@ app.controller('dtTickets',
 
                 if(tiempoResolucion == 0) {
                     return '<span class="label label-warning">(Tiempo a tratar/no definido)</span>';
+                } else if (isCerrado) {
+                    var msTiempoResolucion = tiempoResolucion * 1000 * 60;
+
+                    if(tiempoTranscurrido < msTiempoResolucion) {
+                        return '<span class="label label-success">' + (tiempoTranscurrido / 1000 / 60)+ ' min de ' + tiempoResolucion +' min </span>';
+                    }
+                    else {
+                        return '<span class="label label-danger">' + (tiempoTranscurrido / 1000 / 60) + ' min de ' + tiempoResolucion +' min </span>';
+                    }
                 } else {
                     var restanteDesdeUltimoMov = now - ultimoMovLast;
                     var msTiempoResolucion = tiempoResolucion * 1000 * 60;
@@ -316,7 +333,8 @@ app.controller('dtTicketsAbiertos',
             var ultimoMovLast = 0;
             var ultimoMovStandby = false;
             var msFechaProgramado = 0;
-            var empresaId = data.empresa.id;
+            var empresaId = data.empresa_afectado.id;
+            var isCerrado = data.estado.id == 5; // Estado cerrado:5
             // Obtiene el tiempo transcurrido de todos lo mivimientos.
             angular.forEach(data.movimientos, function (movimiento) {
 
@@ -376,7 +394,7 @@ app.controller('dtTicketsAbiertos',
              * true: ultimoMovStandby   El ticket se encuentra programado no muestra banda de color.
              * 0: tiempoResolucion      Aun no se ha definido el tiempo de resolucion.
              * ----------------------------------------------------------------------------------------- */
-            if(clase != 0 && !ultimoMovStandby && tiempoResolucion != 0) {
+            if(clase != 0 && !ultimoMovStandby && tiempoResolucion != 0 && !isCerrado) {
 
                 var restanteDesdeUltimoMov = now - ultimoMovLast;
                 var msTiempoResolucion = tiempoResolucion * 1000 * 60;
@@ -436,7 +454,13 @@ app.controller('dtTicketsAbiertos',
     $scope.dtColumns = [
          DTColumnBuilder.newColumn(null).withTitle('Acciones').notSortable()
             .renderWith(function (data) {
-                return '<button class="btn ' + $scope.getClassBtn(data.severidad_id) +' btn-sm" ng-click="show(' + data.id + ')">' +
+                var isCerrado = data.estado.id == 5; // Estado Cerrado: 5
+                var cssClass = '';
+                if(!isCerrado) {
+                    cssClass = $scope.getClassBtn(data.severidad_id);
+                }
+
+                return '<button class="btn ' + cssClass +' btn-sm" ng-click="show(' + data.id + ')">' +
                     '   <i class="fa fa-eye"></i>' +
                     '</button>&nbsp;';
             }),
@@ -445,9 +469,9 @@ app.controller('dtTicketsAbiertos',
             .renderWith(function (data){
                 return data.prefijo + '-' + ("0000" + data.correlativo).slice(-5);
             }),
-        DTColumnBuilder.newColumn(null).withTitle('Descripción')
+        DTColumnBuilder.newColumn(null).withTitle('Asunto')
             .renderWith(function(data) {
-                return data.descripcion.length > 30 ? data.descripcion.substring(0, 60) + '...' : data.descripcion;
+                return data.asunto.length > 30 ? data.asunto.substring(0, 60) + '...' : data.asunto;
             }),
         DTColumnBuilder.newColumn('severidad.nivel').withTitle('Severidad'),
         DTColumnBuilder.newColumn(null).withTitle('Prioridad')
@@ -455,7 +479,7 @@ app.controller('dtTicketsAbiertos',
                 return 'Prioridad ' + data.prioridad;
             }),
         DTColumnBuilder.newColumn('clase.nombre').withTitle('Clase'),
-        DTColumnBuilder.newColumn('empresa.razon_social').withTitle('Empresa'),
+        DTColumnBuilder.newColumn('empresa_afectado.razon_social').withTitle('Empresa'),
         DTColumnBuilder.newColumn('reportado_by').withTitle('Reportado por')
             .renderWith(function (data, type, full, meta) {
                 return data.nombre + ' ' + data.apellidos;
@@ -479,7 +503,7 @@ app.controller('dtTicketsAbiertos',
                 var tiempoTranscurrido = 0; // tiempo en milisegundos.
                 var ultimoMovLast = 0;
                 var ultimoMovStandby = false;
-                var empresaId = data.empresa.id;
+                var empresaId = data.empresa_afectado.id;
 
                 angular.forEach(data.movimientos, function (movimiento) {
 
@@ -593,7 +617,8 @@ app.controller('dtTicketsPendientes',
             var ultimoMovLast = 0;
             var ultimoMovStandby = false;
             var msFechaProgramado = 0;
-            var empresaId = data.empresa.id;
+            var empresaId = data.empresa_afectado.id;
+            var isCerrado = data.estado.id == 5; // Estado cerrado:5
             // Obtiene el tiempo transcurrido de todos lo mivimientos.
             angular.forEach(data.movimientos, function (movimiento) {
 
@@ -653,7 +678,7 @@ app.controller('dtTicketsPendientes',
              * true: ultimoMovStandby   El ticket se encuentra programado no muestra banda de color.
              * 0: tiempoResolucion      Aun no se ha definido el tiempo de resolucion.
              * ----------------------------------------------------------------------------------------- */
-            if(clase != 0 && !ultimoMovStandby && tiempoResolucion != 0) {
+            if(clase != 0 && !ultimoMovStandby && tiempoResolucion != 0 && !isCerrado) {
 
                 var restanteDesdeUltimoMov = now - ultimoMovLast;
                 var msTiempoResolucion = tiempoResolucion * 1000 * 60;
@@ -722,9 +747,9 @@ app.controller('dtTicketsPendientes',
             .renderWith(function (data){
                 return data.prefijo + '-' + ("0000" + data.correlativo).slice(-5);
             }),
-        DTColumnBuilder.newColumn(null).withTitle('Descripción')
+        DTColumnBuilder.newColumn(null).withTitle('Asunto')
             .renderWith(function(data) {
-                return data.descripcion.length > 30 ? data.descripcion.substring(0, 60) + '...' : data.descripcion;
+                return data.asunto.length > 30 ? data.asunto.substring(0, 60) + '...' : data.asunto;
             }),
         DTColumnBuilder.newColumn('severidad.nivel').withTitle('Severidad'),
         DTColumnBuilder.newColumn(null).withTitle('Prioridad')
@@ -732,7 +757,7 @@ app.controller('dtTicketsPendientes',
                 return 'Prioridad ' + data.prioridad;
             }),
         DTColumnBuilder.newColumn('clase.nombre').withTitle('Clase'),
-        DTColumnBuilder.newColumn('empresa.razon_social').withTitle('Empresa'),
+        DTColumnBuilder.newColumn('empresa_afectado.razon_social').withTitle('Empresa'),
         DTColumnBuilder.newColumn('reportado_by').withTitle('Reportado por')
             .renderWith(function (data, type, full, meta) {
                 return data.nombre + ' ' + data.apellidos;
@@ -756,7 +781,7 @@ app.controller('dtTicketsPendientes',
                 var tiempoTranscurrido = 0; // tiempo en milisegundos.
                 var ultimoMovLast = 0;
                 var ultimoMovStandby = false;
-                var empresaId = data.empresa.id;
+                var empresaId = data.empresa_afectado.id;
 
                 angular.forEach(data.movimientos, function (movimiento) {
 
@@ -870,7 +895,8 @@ app.controller('dtTicketsEspera',
             var ultimoMovLast = 0;
             var ultimoMovStandby = false;
             var msFechaProgramado = 0;
-            var empresaId = data.empresa.id;
+            var empresaId = data.empresa_afectado.id;
+            var isCerrado = data.estado.id == 5; // Estado cerrado:5
             // Obtiene el tiempo transcurrido de todos lo mivimientos.
             angular.forEach(data.movimientos, function (movimiento) {
 
@@ -930,7 +956,7 @@ app.controller('dtTicketsEspera',
              * true: ultimoMovStandby   El ticket se encuentra programado no muestra banda de color.
              * 0: tiempoResolucion      Aun no se ha definido el tiempo de resolucion.
              * ----------------------------------------------------------------------------------------- */
-            if(clase != 0 && !ultimoMovStandby && tiempoResolucion != 0) {
+            if(clase != 0 && !ultimoMovStandby && tiempoResolucion != 0 && !isCerrado) {
 
                 var restanteDesdeUltimoMov = now - ultimoMovLast;
                 var msTiempoResolucion = tiempoResolucion * 1000 * 60;
@@ -999,9 +1025,9 @@ app.controller('dtTicketsEspera',
             .renderWith(function (data){
                 return data.prefijo + '-' + ("0000" + data.correlativo).slice(-5);
             }),
-        DTColumnBuilder.newColumn(null).withTitle('Descripción')
+        DTColumnBuilder.newColumn(null).withTitle('Asunto')
             .renderWith(function(data) {
-                return data.descripcion.length > 30 ? data.descripcion.substring(0, 60) + '...' : data.descripcion;
+                return data.asunto.length > 30 ? data.asunto.substring(0, 60) + '...' : data.asunto;
             }),
         DTColumnBuilder.newColumn('severidad.nivel').withTitle('Severidad'),
         DTColumnBuilder.newColumn(null).withTitle('Prioridad')
@@ -1009,7 +1035,7 @@ app.controller('dtTicketsEspera',
                 return 'Prioridad ' + data.prioridad;
             }),
         DTColumnBuilder.newColumn('clase.nombre').withTitle('Clase'),
-        DTColumnBuilder.newColumn('empresa.razon_social').withTitle('Empresa'),
+        DTColumnBuilder.newColumn('empresa_afectado.razon_social').withTitle('Empresa'),
         DTColumnBuilder.newColumn('reportado_by').withTitle('Reportado por')
             .renderWith(function (data, type, full, meta) {
                 return data.nombre + ' ' + data.apellidos;
@@ -1037,7 +1063,7 @@ app.controller('dtTicketsEspera',
                 var tiempoTranscurrido = 0; // tiempo en milisegundos.
                 var ultimoMovLast = 0;
                 var ultimoMovStandby = false;
-                var empresaId = data.empresa.id;
+                var empresaId = data.empresa_afectado.id;
                 angular.forEach(data.movimientos, function (movimiento) {
 
                     // movimientoclase_id 1: abierto, 7: en espera

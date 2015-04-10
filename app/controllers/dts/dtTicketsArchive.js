@@ -37,7 +37,7 @@ app.controller('dtTicketsArchive',
         }
         return classBtn;
     }
-    
+
     $scope.dtColumns = [
         DTColumnBuilder.newColumn(null).withTitle('Acciones').notSortable()
             .renderWith(function (data) {
@@ -50,9 +50,9 @@ app.controller('dtTicketsArchive',
             .renderWith(function (data){
                 return data.prefijo + '-' + ("0000" + data.correlativo).slice(-5);
             }),
-        DTColumnBuilder.newColumn(null).withTitle('Descripción')
+        DTColumnBuilder.newColumn(null).withTitle('Asunto')
             .renderWith(function(data) {
-                return data.descripcion.length > 30 ? data.descripcion.substring(0, 60) + '...' : data.descripcion;
+                return data.asunto.length > 30 ? data.asunto.substring(0, 60) + '...' : data.asunto;
             }),
         DTColumnBuilder.newColumn('severidad.nivel').withTitle('Severidad'),
         DTColumnBuilder.newColumn(null).withTitle('Prioridad')
@@ -60,12 +60,7 @@ app.controller('dtTicketsArchive',
                 return 'Prioridad ' + data.prioridad;
             }),
         DTColumnBuilder.newColumn('clase.nombre').withTitle('Clase'),
-        DTColumnBuilder.newColumn('empresa.razon_social').withTitle('Empresa'),
-        // DTColumnBuilder.newColumn('sucursal.nombre').withTitle('Site'),
-        // DTColumnBuilder.newColumn('reportado_by').withTitle('Reportado por')
-            // .renderWith(function (data, type, full, meta) {
-                // return data.nombre + ' ' + data.apellidos;
-            // }),
+        DTColumnBuilder.newColumn('empresa_afectado.razon_social').withTitle('Empresa'),
         DTColumnBuilder.newColumn('estado.nombre').withTitle('Estado'),
         DTColumnBuilder.newColumn(null).withTitle('Grupo')
             .renderWith(function (data) {
@@ -90,16 +85,17 @@ app.controller('dtTicketsArchive',
              }),
         DTColumnBuilder.newColumn(null).withTitle('Solucionado en').notSortable()
            .renderWith(function (data, type, full, meta) {
-                
+
                 var now = new Date().getTime();
                 var tiempoTranscurrido = 0; // tiempo en milisegundos.
                 var ultimoMovLast = 0;
                 var ultimoMovStandby = false;
+                var empresaId = data.empresa_afectado.id;
                 angular.forEach(data.movimientos, function (movimiento) {
 
                     // movimientoclase_id 1: abierto, 7: en espera
                     if(movimiento.movimientoclase_id == 1) {
-                        
+
                         var closedAt = new Date(movimiento.closed_at);
                         var createdAt = new Date(movimiento.created_at);
                         // si existe tiempo de cierre del movimiento, es un movimiento con rango de fechas
@@ -137,10 +133,10 @@ app.controller('dtTicketsArchive',
                 if(clase != 0)
                 {
                     angular.forEach(data.severidad.incclases, function (incclase) {
-                        if(incclase.id == 1 && clase == 1) { // hardware siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;    
-                        } else if(incclase.id == 2 && clase == 2) { // software siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;    
+                        if(incclase.id == 1 && clase == 1 && empresaId == incclase.pivot.empresa_id) { // hardware siempre
+                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
+                        } else if(incclase.id == 2 && clase == 2 && empresaId == incclase.pivot.empresa_id) { // software siempre
+                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
                         }
                     }, this);
                 }
@@ -154,7 +150,7 @@ app.controller('dtTicketsArchive',
                 }
 
                 if(tiempoResolucion == 0) {
-                    return '<span class="label label-warning">(Tiempo a tratar)</span>';
+                    return '<span class="label label-warning">(Tiempo a tratar/no definido)</span>';
                 } else {
                     var msTiempoResolucion = tiempoResolucion * 1000 * 60;
 
@@ -168,7 +164,4 @@ app.controller('dtTicketsArchive',
             }),
     ];
 
-    // $timeout(function() {
-    //   console.log('heyyyyy');
-    // }, 20);
 }]);

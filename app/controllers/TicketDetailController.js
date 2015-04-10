@@ -8,8 +8,8 @@
 
 'use strict';
 
-app.controller('TicketDetailController', 
-	['$scope', '$modal', '$log', '$routeParams', '$location', '$stateParams'
+app.controller('TicketDetailController',
+	['$scope', '$modal', '$log', '$routeParams', '$location', '$stateParams', '$q'
         , 'AuthService'
 		, 'EmpresasResource'
 		, 'SucursalesResource'
@@ -26,7 +26,7 @@ app.controller('TicketDetailController',
 		, 'TicketFactory'
 		, 'ComponenteFactory'
 		, 'SolverResource'
-		, function($scope, $modal, $log, $routeParams, $location, $stateParams
+		, function($scope, $modal, $log, $routeParams, $location, $stateParams, $q
 	        , AuthService
 			, EmpresasResource
 			, SucursalesResource
@@ -43,16 +43,20 @@ app.controller('TicketDetailController',
 			, TicketFactory
 			, ComponenteFactory
 			, SolverResource) {
-	
+
 	$scope.status;
-        
+
 	/* ------------------------------------------------
      * Informacion utilizada
      * ------------------------------------------------ */
-	$scope.empresas = [];
-	$scope.sucursales = [];
+	$scope.afectado_empresas = [];
+	$scope.afectado_sucursales = [];
+	$scope.solicitante_empresas = [];
+	$scope.solicitante_sucursales = [];
 	$scope.areas = []; // posible areas afectadas
 	$scope.personas = [];
+	$scope.solicitantes = [];
+	$scope.afectados = [];
 	$scope.tipoafectados = [
 		{ id: 1, nombre: 'Site'},
 		{ id: 2, nombre: 'Area' },
@@ -73,7 +77,7 @@ app.controller('TicketDetailController',
 		{ id: 7, nombre: 'Prioridad 7' },
 	];
 	$scope.estados = [];
-	
+
     // tipificaciones motivo
 	$scope.tipificacionesN1 = [];
 	$scope.tipificacionesN2 = [];
@@ -92,8 +96,10 @@ app.controller('TicketDetailController',
      * -------------------------------------------------- */
 	$scope.ticket = {
 		tipoticket: {},
-		empresa: { id: 0 },
-		sucursal: { id: 0 },
+		empresa_solicitante: { id: 0 },
+		sucursal_solicitante: { id: 0 },
+		empresa_afectado: { id: 0 },
+		sucursal_afectado: { id: 0 },
 		clase: {},
 		severidad: {},
 		prioridad: {},
@@ -104,13 +110,6 @@ app.controller('TicketDetailController',
 		tipoafectado: { id: 0 },
 		estado: {},
         updateMotivo: false,
-		tipificacionOld: {
-			N1: { id: 0 },
-			N2: { id: 0 },
-			N3: { id: 0 },
-			N4: { id: 0 },
-			N5: { id: 0 },
-		},
         tipificacion: {
 			N1: { id: 0 },
 			N2: { id: 0 },
@@ -143,7 +142,7 @@ app.controller('TicketDetailController',
 		isGesProblema: false,
 		isGesCambio : false,
 	};
-        
+
     // Control de envio y recepcion de respuesta del servidor.
     $scope.ticketObs = {
         uploader: {
@@ -157,12 +156,29 @@ app.controller('TicketDetailController',
 	/* ---------------------------------------------------------------
      * Observables
      * --------------------------------------------------------------- */
-	$scope.$watch('ticket.empresa', function (newEmpresa, oldEmpresa) {
-		getSucursalesByEmpresa(newEmpresa.id);
+	$scope.$watch('ticket.empresa_solicitante', function (newEmpresa, oldEmpresa) {
+		if(newEmpresa !== oldEmpresa) {
+			getSucursalesByEmpresaSolicitante(newEmpresa.id);
+		}
 	}, true);
 
-	$scope.$watch('ticket.sucursal', function (newSucursal, oldSucursal) {
-		getPersonalBySucursal(newSucursal.id);
+	$scope.$watch('ticket.sucursal_solicitante', function (newSucursal, oldSucursal) {
+		if(newSucursal !== oldSucursal) {
+			getPersonalBySucursalSolicitante(newSucursal.id);
+		}
+	}, true);
+
+	//
+	$scope.$watch('ticket.empresa_afectado', function (newEmpresa, oldEmpresa) {
+		if(newEmpresa !== oldEmpresa) {
+			getSucursalesByEmpresaAfectado(newEmpresa.id);
+		}
+	}, true);
+
+	$scope.$watch('ticket.sucursal_afectado', function (newSucursal, oldSucursal) {
+		if(newSucursal !== oldSucursal) {
+			getPersonalBySucursalAfectado(newSucursal.id);
+		}
 	}, true);
 
 	$scope.$watch('ticket.tipoafectado', function (newTipoafectado, oldTipoafectado) {
@@ -182,14 +198,14 @@ app.controller('TicketDetailController',
 		if(newGrupo) {
 	        if(newGrupo.id > 0) {
 	            getPersonalByGrupo(newGrupo.id);
-	            
+
 	            if($scope.ticket.currentMovimiento.updateAsignado) {
 	                $scope.ticket.currentMovimiento.asignado = {};
 	            }
 	        }
 		}
 	}, true);
-       
+
 	$scope.$watch('ticket.clase', function (newClase, oldClase) {
         $scope.ticket.prioridad = $scope.prioridades[newClase.prioridad - 1];
 
@@ -197,94 +213,119 @@ app.controller('TicketDetailController',
         	$scope.ticket.tipificacion.N1 = $scope.tipificacionesN1[newClase.parent_id - 1];
         }
     });
-        
+
     // nueva tipificacion motivo
 	$scope.$watch('ticket.tipificacion.N1', function (newTipificacion, oldTipificacion) {
-		if(!isNaN(newTipificacion.id)) {
-			$scope.tipificacionesN2 = TipificacionesResource.query({ parent_id: newTipificacion.id, categoria_id: 3 }); // categoria_id: 3 -> problema
+		if(newTipificacion !== oldTipificacion && newTipificacion !== undefined) {
+
+			if(!isNaN(newTipificacion.id)) {
+				$scope.tipificacionesN2 = TipificacionesResource.query({ parent_id: newTipificacion.id, categoria_id: 3 }); // categoria_id: 3 -> problema
+			}
+
+	        if($scope.ticket.updateMotivo) {
+	            $scope.ticket.tipificacion.N2 = { id: 0 };
+	        }
 		}
 
-        if($scope.ticket.updateMotivo) {
-            $scope.ticket.tipificacion.N2 = { id: 0 };
-        }
     });
 	$scope.$watch('ticket.tipificacion.N2', function (newTipificacion, oldTipificacion) {
-		if(!isNaN(newTipificacion.id)) {
-			$scope.tipificacionesN3 = TipificacionesResource.query({ parent_id: newTipificacion.id, categoria_id: 3 });
+
+		if(newTipificacion !== oldTipificacion && newTipificacion !== undefined) {
+			if(!isNaN(newTipificacion.id)) {
+				$scope.tipificacionesN3 = TipificacionesResource.query({ parent_id: newTipificacion.id, categoria_id: 3 });
+			}
+
+	        if($scope.ticket.updateMotivo) {
+	            $scope.ticket.tipificacion.N3 = { id: 0 };
+	        }
 		}
 
-        if($scope.ticket.updateMotivo) {
-            $scope.ticket.tipificacion.N3 = { id: 0 };
-        }
 	});
 	$scope.$watch('ticket.tipificacion.N3', function (newTipificacion, oldTipificacion) {
-		if(!isNaN(newTipificacion.id)) {
-			$scope.tipificacionesN4 = TipificacionesResource.query({ parent_id: newTipificacion.id, categoria_id: 3 });
+
+		if(newTipificacion !== oldTipificacion && newTipificacion !== undefined) {
+			if(!isNaN(newTipificacion.id)) {
+				$scope.tipificacionesN4 = TipificacionesResource.query({ parent_id: newTipificacion.id, categoria_id: 3 });
+			}
+
+	        if($scope.ticket.updateMotivo) {
+	            $scope.ticket.tipificacion.N4 = { id: 0 };
+	        }
 		}
 
-        if($scope.ticket.updateMotivo) {
-            $scope.ticket.tipificacion.N4 = { id: 0 };
-        }
 	});
 	$scope.$watch('ticket.tipificacion.N4', function (newTipificacion, oldTipificacion) {
-		if(!isNaN(newTipificacion.id)) {
-			$scope.tipificacionesN5 = TipificacionesResource.query({ parent_id: newTipificacion.id, categoria_id: 3 });
+
+		if(newTipificacion !== oldTipificacion && newTipificacion !== undefined) {
+			if(!isNaN(newTipificacion.id)) {
+				$scope.tipificacionesN5 = TipificacionesResource.query({ parent_id: newTipificacion.id, categoria_id: 3 });
+			}
+
+			if($scope.ticket.updateMotivo) {
+	            $scope.ticket.tipificacion.N5 = { id: 0 };
+	        }
 		}
-		
-        if($scope.ticket.updateMotivo) {
-            $scope.ticket.tipificacion.N5 = { id: 0 };
-        }
+
 	});
 
 	// solucion motivo
 	$scope.$watch('ticket.currentMovimiento.solucion.N1', function (newSolucion, oldSolucion) {
-		// $log.info(newSolucion);
-		if(!isNaN(newSolucion.id)) {
-			$scope.solucionesN2 = TipificacionesResource.query({ parent_id: newSolucion.id, categoria_id: 2 }); // categoria_id: 2 -> solucion	
+		if(newSolucion !== oldSolucion && newSolucion !== undefined) {
+			if(!isNaN(newSolucion.id)) {
+				$scope.solucionesN2 = TipificacionesResource.query({ parent_id: newSolucion.id, categoria_id: 2 }); // categoria_id: 2 -> solucion
+			}
+
+			if($scope.ticket.currentMovimiento.updateSolucion) {
+	            $scope.ticket.currentMovimiento.solucion.N2 = { id: 0 };
+	        }
 		}
-		
-        if($scope.ticket.currentMovimiento.updateSolucion) {
-            $scope.ticket.currentMovimiento.solucion.N2 = { id: 0 };
-        }		
+
 	});
 	$scope.$watch('ticket.currentMovimiento.solucion.N2', function (newSolucion, oldSolucion) {
-		if(!isNaN(newSolucion.id)) {
-			$scope.solucionesN3 = TipificacionesResource.query({ parent_id: newSolucion.id, categoria_id: 2 });
-        }
+		if(newSolucion !== oldSolucion && newSolucion !== undefined) {
+			if(!isNaN(newSolucion.id)) {
+				$scope.solucionesN3 = TipificacionesResource.query({ parent_id: newSolucion.id, categoria_id: 2 });
+	        }
 
-        if($scope.ticket.currentMovimiento.updateSolucion) {
-            $scope.ticket.currentMovimiento.solucion.N3 = { id: 0 };
-        }
+	        if($scope.ticket.currentMovimiento.updateSolucion) {
+	            $scope.ticket.currentMovimiento.solucion.N3 = { id: 0 };
+	        }
+		}
+
 	});
 	$scope.$watch('ticket.currentMovimiento.solucion.N3', function (newSolucion, oldSolucion) {
-		if(!isNaN(newSolucion.id)) {
-			$scope.solucionesN4 = TipificacionesResource.query({ parent_id: newSolucion.id, categoria_id: 2 });
-        }
+		if(newSolucion !== oldSolucion && newSolucion !== undefined) {
+			if(!isNaN(newSolucion.id)) {
+				$scope.solucionesN4 = TipificacionesResource.query({ parent_id: newSolucion.id, categoria_id: 2 });
+	        }
 
-        if($scope.ticket.currentMovimiento.updateSolucion) {
-            $scope.ticket.currentMovimiento.solucion.N4 = { id: 0 };
-        }
+			if($scope.ticket.currentMovimiento.updateSolucion) {
+	            $scope.ticket.currentMovimiento.solucion.N4 = { id: 0 };
+	        }
+		}
+
 	});
 	$scope.$watch('ticket.currentMovimiento.solucion.N4', function (newSolucion, oldSolucion) {
-		if(!isNaN(newSolucion.id)) {
-			$scope.solucionesN5 = TipificacionesResource.query({ parent_id: newSolucion.id, categoria_id: 2 });
-        }
+		if(newSolucion !== oldSolucion && newSolucion !== undefined) {
+			if(!isNaN(newSolucion.id)) {
+				$scope.solucionesN5 = TipificacionesResource.query({ parent_id: newSolucion.id, categoria_id: 2 });
+	        }
 
-        if($scope.ticket.currentMovimiento.updateSolucion) {
-            $scope.ticket.currentMovimiento.solucion.N5 = { id: 0 };
-        }
+			if($scope.ticket.currentMovimiento.updateSolucion) {
+	            $scope.ticket.currentMovimiento.solucion.N5 = { id: 0 };
+	        }
+		}
+
 	});
 
 	// Si es gestion del problema enviamos el ticket actual para cargar datos por defecto
 	$scope.$watch('ticket.isGesProblema', function (newVal, olVal) {
-		TicketFactory.selectItem($scope.ticket); 
+		TicketFactory.selectItem($scope.ticket);
 	});
 
 	$scope.$watch('ticket.currentMovimiento.fechaprogramado', function (newVal, oldVal) {
-
 		// Fecha sin zona horaria.
 		var date = new Date($scope.ticket.currentMovimiento.fechaprogramado);
-
 		$scope.ticket.currentMovimiento.fecha_programado = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
 	});
 
@@ -306,55 +347,93 @@ app.controller('TicketDetailController',
 	/* -----------------------------------------------------
      * Obtiene los recursos necesarios del servidor
      * ----------------------------------------------------- */
-	EmpresasResource.query({}, function (empresas) {
-		$scope.empresas = empresas;
-	});
-
-	AreasResource.query({}, function (areas) {
-		$scope.areas = areas;
-	});
-
-	GruposResource.query({}, function (grupos) {
-		$scope.grupos = grupos;
-	});
-
-	TipoticketsResource.query({}, function (tipotickets) {
-		$scope.tipotickets = tipotickets;
-	});
-
-	SeveridadesResource.query({}, function (severidades) {
-		$scope.severidades = severidades;
-		$scope.ticket.severidad = $scope.severidades[3]; // Severidad 4
-	});
-	
-	IncClasesResource.query({}, function (clases) {
-		$scope.incclases = clases;
-		$scope.ticket.clase = $scope.incclases[11]; // Otro
-	});
-	
-	EstadosResource.query({}, function (estados) {
-		$scope.estados = estados;
-	});
-
-	TipificacionesResource.query({ nivel: 1 }, function (data) {
-		$scope.tipificacionesN1 = data;
-		$scope.solucionesN1 = data;
-	});
-
-	function getSucursalesByEmpresa(empresaId) {
-
-		SucursalesResource.query({ empresaId: empresaId }, function (sucursales) {
-			$scope.sucursales = sucursales;
+	function loadEmpresas() {
+		return EmpresasResource.query({}, function (empresas) {
+			$scope.solicitante_empresas = empresas;
+			$scope.afectado_empresas = empresas;
+			return $scope.afectado_empresas;
 		});
 	}
 
-	function getPersonalBySucursal(sucursalId) {
+	function loadAreas() {
+		return AreasResource.query({}, function (areas) {
+			$scope.areas = areas;
+			return $scope.areas;
+		});
+	}
+
+	function loadGrupos() {
+		return GruposResource.query({}, function (grupos) {
+			$scope.grupos = grupos;
+			return $scope.grupos;
+		});
+	}
+
+	function loadTipotickets() {
+		return TipoticketsResource.query({}, function (tipotickets) {
+			$scope.tipotickets = tipotickets;
+			return $scope.tipotickets;
+		});
+	}
+
+	function loadSeveridades() {
+		return SeveridadesResource.query({}, function (severidades) {
+			$scope.severidades = severidades;
+			return $scope.severidades;
+		});
+	}
+
+	function loadIncClases() {
+		return IncClasesResource.query({}, function (clases) {
+			$scope.incclases = clases;
+			return $scope.incclases;
+		});
+	}
+
+	function loadEstados() {
+		return EstadosResource.query({}, function (estados) {
+			$scope.estados = estados;
+			return $scope.estados;
+		});
+	}
+
+	function loadTipificacionesL1() {
+		return TipificacionesResource.query({ nivel: 1 }, function (data) {
+			$scope.tipificacionesN1 = data;
+			$scope.solucionesN1 = data;
+			return $scope.solucionesN1;
+		});
+	}
+
+	function getSucursalesByEmpresaSolicitante (empresaId) {
+		SucursalesResource.query({ empresaId: empresaId }, function (sucursales) {
+			$scope.solicitante_sucursales = sucursales;
+		});
+	}
+
+	function getPersonalBySucursalSolicitante (sucursalId) {
 		PersonasFactory.getPersonasBySucursal(sucursalId)
 			.success(function (personas) {
-				$scope.personas = personas;
+				$scope.solicitantes = personas;
 			})
 			.error(function (error) {
-				$scope.status = 'Unable to load personas(sucursal) data: ' + error.message;
+				$scope.status = 'Unable to load solicitantes data: ' + error.message;
+			});
+	}
+
+	function getSucursalesByEmpresaAfectado (empresaId) {
+		SucursalesResource.query({ empresaId: empresaId }, function (sucursales) {
+			$scope.afectado_sucursales = sucursales;
+		});
+	}
+
+	function getPersonalBySucursalAfectado (sucursalId) {
+		PersonasFactory.getPersonasBySucursal(sucursalId)
+			.success(function (personas) {
+				$scope.afectados = personas;
+			})
+			.error(function (error) {
+				$scope.status = 'Unable to load afectados data: ' + error.message;
 			});
 	}
 
@@ -367,7 +446,7 @@ app.controller('TicketDetailController',
 				$scope.status = 'Unable to load personal(grupo) data: ' + error.message;
 			});
 	}
-        
+
     // Calcular la prioridad
     function calcularPrioridad (impacto, urgencia) {
         if(impacto && urgencia) {
@@ -406,112 +485,6 @@ app.controller('TicketDetailController',
         }
     }
 
-	/* -----------------------------------------------------------------
-     * Asignacion de la informacion del ticket actual
-     * ----------------------------------------------------------------- */
-	TicketResource.show({ id: $stateParams.id }, function (currentTicket) {
-		// Inicializacion
-		$scope.ticket.id = currentTicket.id;
-		$scope.ticket.prefijo = currentTicket.prefijo;
-		$scope.ticket.correlativo = currentTicket.correlativo;
-
-		$scope.ticket.solver_aut = {
-    		soluciones: [],
-    	};
-
-		$scope.ticket.empresa = currentTicket.empresa;
-		$scope.ticket.sucursal = currentTicket.sucursal;
-		$scope.ticket.reportador = currentTicket.reportado_by;
-
-		if( currentTicket.afectado_id != null) {
-			$scope.ticket.tipoafectado = $scope.tipoafectados[2]; // persona
-			$scope.ticket.persona_afectada = currentTicket.afectado;
-			// $log.info('Persona');
-		} 
-		else if(currentTicket.afectado_area_id != null) {
-			$scope.ticket.tipoafectado = $scope.tipoafectados[1]; // area
-			$scope.ticket.area_afectada = currentTicket.area_afectada;
-			// $log.info('area');	
-		} 
-		else if(currentTicket.afectado_sucursal_id != null) {
-			$scope.ticket.tipoafectado = $scope.tipoafectados[0]; // site
-			$scope.ticket.sucursal_afectada = currentTicket.sucursal_afectada;
-			// $log.info('site');
-		}
-
-        var movimientosLength = currentTicket.movimientos.length;
-        
-		$scope.ticket.currentMovimiento.grupo = currentTicket.movimientos[movimientosLength - 1].grupo;
-		$scope.ticket.currentMovimiento.asignado = currentTicket.movimientos[movimientosLength - 1].asignado;
-        $scope.ticket.currentMovimiento.fechaprogramado = currentTicket.movimientos[movimientosLength - 1].fecha_programado;
-
-		$scope.ticket.tipoticket = currentTicket.tipo;
-		$scope.ticket.severidad = currentTicket.severidad;
-		$scope.ticket.clase = currentTicket.clase;
-		$scope.ticket.prioridad = $scope.prioridades[currentTicket.prioridad-1];
-		$scope.ticket.estado = currentTicket.estado;
-		$scope.ticket.descripcion = currentTicket.descripcion;
-		$scope.ticket.private_descripcion = currentTicket.private_descripcion;
-
-		// $log.info($scope.ticket.private_descripcion);
-
-		$scope.ticket.referencia = currentTicket.parent;
-		$scope.ticket.componente = currentTicket.funcionalic;
-
-        // Transforma la informacion de tipificaciones motivo separada por comas e.j. "{1,5,8,20}"
-		var partOfString = currentTicket.tipificaciones_inicial.substr(1, currentTicket.tipificaciones_inicial.length - 2).split(',');
-
-        // Asociamos los valores a las tipificaciones anteriores
-		$scope.ticket.tipificacion.N1 = { id: partOfString[0] != "" && partOfString[0] != undefined ? partOfString[0] : 0 };
-		$scope.ticket.tipificacion.N2 = { id: partOfString[1] != "" && partOfString[1] != undefined ? partOfString[1] : 0 };
-		$scope.ticket.tipificacion.N3 = { id: partOfString[2] != "" && partOfString[2] != undefined ? partOfString[2] : 0 };
-		$scope.ticket.tipificacion.N4 = { id: partOfString[3] != "" && partOfString[3] != undefined ? partOfString[3] : 0 };
-		$scope.ticket.tipificacion.N5 = { id: partOfString[4] != "" && partOfString[4] != undefined ? partOfString[4] : 0 };
-
-        // Transforma la informacion de tipificaciones solucion separada por comas e.j. "{1,5,8,20,30}"
-        var lengthTipificacionesFinal = currentTicket.movimientos[movimientosLength - 1].tipificaciones_final.length;
-        var partSoluciones = currentTicket.movimientos[movimientosLength - 1].tipificaciones_final.substr(1, lengthTipificacionesFinal - 2).split(',');
-        // $log.info(partSoluciones[1]);
-        $scope.ticket.currentMovimiento.solucion.N1 = { id: (partSoluciones[0] != "" && partSoluciones[0] != undefined ? partSoluciones[0] : 0) };
-        $scope.ticket.currentMovimiento.solucion.N2 = { id: (partSoluciones[1] != "" && partSoluciones[1] != undefined ? partSoluciones[1] : 0) };
-        $scope.ticket.currentMovimiento.solucion.N3 = { id: (partSoluciones[2] != "" && partSoluciones[2] != undefined ? partSoluciones[2] : 0) };
-        $scope.ticket.currentMovimiento.solucion.N4 = { id: (partSoluciones[3] != "" && partSoluciones[3] != undefined ? partSoluciones[3] : 0) };
-        $scope.ticket.currentMovimiento.solucion.N5 = { id: (partSoluciones[4] != "" && partSoluciones[4] != undefined ? partSoluciones[4] : 0) };
-
-		// separar por las comas, asignarle a cada nivel 
-		$scope.ticket.movimientos = currentTicket.movimientos;
-        
-        // reportes RCA del ticket
-		$scope.ticket.rcareports = currentTicket.rcareports;
-
-        // Transforma la informacion de anexos
-        angular.forEach($scope.ticket.movimientos, function(movimiento) {
-            var lengthAnexos = movimiento.anexos.length;
-            
-            if(lengthAnexos > 2) {
-                var anexosAll = movimiento.anexos.substr(2, lengthAnexos - 4).split('},{');
-            
-                movimiento.anexosSplit = [];
-
-                if(anexosAll.length > 0) {
-                    angular.forEach(anexosAll, function (splitString) {
-
-                        var parts = splitString.split(',');
-                        var splitpart = { href: appUrl + '/' + parts[0].substr(1, parts[0].length - 2), description: parts[1] };
-
-                        // agrega al array el nuevo objeto
-                        movimiento.anexosSplit.push(splitpart);
-
-                    }, this);
-                }
-            }
-        }, this);
-
-	}, function (error) {
-		$log.info('Error produccido al obtener la informacion del servidor.');
-		$location.url('/404');
-	});
-	
 	// Control de envio y recepcion de respuesta del servidor.
     $scope.solverObs = {
         uploader: {
@@ -550,7 +523,7 @@ app.controller('TicketDetailController',
         $scope.solverObs.uploader.isLoading = false;
     };
 	$scope.updateTicket = function (isValid) {
-        
+
 		// $log.info($scope.ticket);
         // Verifica que todos los archivos hayan subido correctamente
         var completeUploadFiles = false;
@@ -560,21 +533,21 @@ app.controller('TicketDetailController',
                 countVal++;
             }
         }, this);
-        
+
         if(countVal != $scope.ticket.currentMovimiento.anexos.items.length) {
             alert('Algun elemento de los anexos aun no sube correctamente.');
         }
-        
+
         if(isValid && (countVal == $scope.ticket.currentMovimiento.anexos.items.length)) {
-            
+
             // Bloque el boton hasta recibir respuesta del servidor.
             $scope.ticketObs.uploader.isLoading = true;
-            
+
             TicketResource.update($scope.ticket, function (response) {
-                
+
                 $scope.ticketObs.uploader.isSuccess = true;
                 $scope.ticketObs.uploader.message = response.message;
-                
+
 				// $location.url('/tickets');
             }, function (error) {
                 if(error.data.message) {
@@ -583,10 +556,147 @@ app.controller('TicketDetailController',
                     $scope.ticketObs.uploader.message = 'Error en el proceso de registro!';
                     $log.info(error);
                 }
-               
+
                 $scope.ticketObs.uploader.isError = true;
-                
+
             });
         }
+	}
+
+	loadResources();
+	// Load current ticket.
+	loadCurrent();
+
+	function loadResources() {
+		var promises = [loadEmpresas(), loadAreas(), loadGrupos(), loadTipotickets(), loadSeveridades(), loadIncClases(), loadEstados(), loadTipificacionesL1()];
+
+		return $q.all(promises).then(function () {
+			console.log('Resources load complete');
+		});
+	}
+
+	function loadResourcesDepends() {
+		var promises = [];
+
+		return $q.all(promises).then(function () {
+			console.log('Resources depends load complete');
+		});
+	}
+
+	function loadCurrent() {
+		var promises = [getCurrent()];
+
+		return $q.all(promises).then(function () {
+			console.log('Current ticket load complete');
+		});
+	}
+
+	function getCurrent() {
+		/* -----------------------------------------------------------------
+	     * Asignacion de la informacion del ticket actual
+	     * ----------------------------------------------------------------- */
+		return TicketResource.show({ id: $stateParams.id }, function (currentTicket) {
+			$scope.ticket.solver_aut = {
+	    		soluciones: [],
+	    	};
+			// Inicializacion
+			$scope.ticket.id = currentTicket.id;
+			$scope.ticket.prefijo = currentTicket.prefijo;
+			$scope.ticket.correlativo = currentTicket.correlativo;
+			$scope.ticket.asunto = currentTicket.asunto;
+
+			$scope.ticket.empresa_solicitante = currentTicket.empresa_solicitante;
+			$scope.ticket.sucursal_solicitante = currentTicket.sucursal_solicitante;
+			$scope.ticket.reportador = currentTicket.reportado_by;
+
+			$scope.ticket.empresa_afectado = currentTicket.empresa_afectado;
+			$scope.ticket.sucursal_afectado = currentTicket.sucursal_afectado;
+			if( currentTicket.afectado_id != null) {
+				$scope.ticket.tipoafectado = $scope.tipoafectados[2]; // persona
+				$scope.ticket.persona_afectada = currentTicket.afectado;
+			}
+			else if(currentTicket.afectado_area_id != null) {
+				$scope.ticket.tipoafectado = $scope.tipoafectados[1]; // area
+				$scope.ticket.area_afectada = currentTicket.area_afectada;
+			}
+			else if(currentTicket.afectado_sucursal_id != null) {
+				$scope.ticket.tipoafectado = $scope.tipoafectados[0]; // site
+				$scope.ticket.sucursal_afectada = currentTicket.sucursal_afectada;
+			}
+
+	        var movimientosLength = currentTicket.movimientos.length;
+
+			$scope.ticket.currentMovimiento.grupo = currentTicket.movimientos[movimientosLength - 1].grupo;
+			$scope.ticket.currentMovimiento.asignado = currentTicket.movimientos[movimientosLength - 1].asignado;
+	        $scope.ticket.currentMovimiento.fechaprogramado = currentTicket.movimientos[movimientosLength - 1].fecha_programado;
+
+			$scope.ticket.tipoticket = currentTicket.tipo;
+			$scope.ticket.severidad = currentTicket.severidad;
+			$scope.ticket.clase = currentTicket.clase;
+			$scope.ticket.prioridad = $scope.prioridades[currentTicket.prioridad-1];
+			$scope.ticket.estado = currentTicket.estado;
+			$scope.ticket.descripcion = currentTicket.descripcion;
+			$scope.ticket.private_descripcion = currentTicket.private_descripcion;
+
+			// Estado 5: Cerrado.
+			if($scope.ticket.estado.id == "5") {
+				$scope.ticket.isCerrado = true;
+			} else {
+				$scope.ticket.isCerrado = false;
+			}
+
+			$scope.ticket.referencia = currentTicket.parent;
+			$scope.ticket.componente = currentTicket.funcionalic;
+
+	        // Transforma la informacion de tipificaciones motivo separada por comas e.j. "{1,5,8,20}"
+			var partOfString = currentTicket.tipificaciones_inicial.substr(1, currentTicket.tipificaciones_inicial.length - 2).split(',');
+	        // Asociamos los valores a las tipificaciones anteriores
+			$scope.ticket.tipificacion.N1 = { id: partOfString[0] != "" && partOfString[0] != undefined ? partOfString[0] : 0 };
+			$scope.ticket.tipificacion.N2 = { id: partOfString[1] != "" && partOfString[1] != undefined ? partOfString[1] : 0 };
+			$scope.ticket.tipificacion.N3 = { id: partOfString[2] != "" && partOfString[2] != undefined ? partOfString[2] : 0 };
+			$scope.ticket.tipificacion.N4 = { id: partOfString[3] != "" && partOfString[3] != undefined ? partOfString[3] : 0 };
+			$scope.ticket.tipificacion.N5 = { id: partOfString[4] != "" && partOfString[4] != undefined ? partOfString[4] : 0 };
+
+	        // Transforma la informacion de tipificaciones solucion separada por comas e.j. "{1,5,8,20,30}"
+	        var lengthTipificacionesFinal = currentTicket.movimientos[movimientosLength - 1].tipificaciones_final.length;
+	        var partSoluciones = currentTicket.movimientos[movimientosLength - 1].tipificaciones_final.substr(1, lengthTipificacionesFinal - 2).split(',');
+	        // $log.info(partSoluciones[1]);
+	        $scope.ticket.currentMovimiento.solucion.N1 = { id: (partSoluciones[0] != "" && partSoluciones[0] != undefined ? partSoluciones[0] : 0) };
+	        $scope.ticket.currentMovimiento.solucion.N2 = { id: (partSoluciones[1] != "" && partSoluciones[1] != undefined ? partSoluciones[1] : 0) };
+	        $scope.ticket.currentMovimiento.solucion.N3 = { id: (partSoluciones[2] != "" && partSoluciones[2] != undefined ? partSoluciones[2] : 0) };
+	        $scope.ticket.currentMovimiento.solucion.N4 = { id: (partSoluciones[3] != "" && partSoluciones[3] != undefined ? partSoluciones[3] : 0) };
+	        $scope.ticket.currentMovimiento.solucion.N5 = { id: (partSoluciones[4] != "" && partSoluciones[4] != undefined ? partSoluciones[4] : 0) };
+
+			// separar por las comas, asignarle a cada nivel
+			$scope.ticket.movimientos = currentTicket.movimientos;
+
+	        // Transforma la informacion de anexos
+	        angular.forEach($scope.ticket.movimientos, function(movimiento) {
+	            var lengthAnexos = movimiento.anexos.length;
+
+	            if(lengthAnexos > 2) {
+	                var anexosAll = movimiento.anexos.substr(2, lengthAnexos - 4).split('},{');
+
+	                movimiento.anexosSplit = [];
+
+	                if(anexosAll.length > 0) {
+	                    angular.forEach(anexosAll, function (splitString) {
+
+	                        var parts = splitString.split(',');
+	                        var splitpart = { href: appUrl + '/' + parts[0].substr(1, parts[0].length - 2), description: parts[1] };
+
+	                        // agrega al array el nuevo objeto
+	                        movimiento.anexosSplit.push(splitpart);
+
+	                    }, this);
+	                }
+	            }
+	        }, this);
+			return $scope.ticket;
+		}, function (error) {
+			$log.info('Error produccido al obtener la informacion del servidor.');
+			$location.url('/404');
+		});
+
 	}
 }]);

@@ -14,9 +14,9 @@
                 <div class="form-group" ng-class="grupo_frm.nombre.$invalid ? 'has-error' : ''">
                     <label class="col-md-3 control-label">Nombres</label>
                     <div class="col-md-9">
-                        
+
                         <input type="text" class="form-control" ng-minlength=3 name="nombre" ng-model="grupo.nombre" ng-required="true" />
-                        
+
                         <!--  -->
                         <div class="error" ng-show="grupo_frm.nombre.$invalid || grupo_frm.nombre.$pristine">
                             <small class="error" ng-show="grupo_frm.nombre.$error.required">
@@ -33,9 +33,9 @@
                 <div class="form-group" ng-class="grupo_frm.descripcion.$invalid ? 'has-error' : ''">
                     <label class="col-md-3 control-label">Descripción</label>
                     <div class="col-md-9">
-                        
-                        <textarea class="form-control" rows="5" name="descripcion" ng-required="true" ng-minlength=5 ng-model="grupo.descripcion"></textarea> 
-                        
+
+                        <textarea class="form-control" rows="5" name="descripcion" ng-required="true" ng-minlength=5 ng-model="grupo.descripcion"></textarea>
+
                         <!--  -->
                         <div class="error" ng-show="grupo_frm.descripcion.$invalid || grupo_frm.descripcion.$pristine">
                             <small class="error" ng-show="grupo_frm.descripcion.$error.required">
@@ -48,7 +48,7 @@
                         <!--  -->
                     </div>
                 </div>
-                
+
                 <div class="form-group">
                     <label class="col-md-3 control-label">Nivel</label>
                     <div class="col-md-9">

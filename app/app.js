@@ -17,15 +17,15 @@ var app = angular.module("SDApp", ['angularMoment', 'ui.router'
 	, 'summernote']);
 
 var apiMainhost = 'http://www.mss.pe/apps/tickets/v2/public/apiv2';
-var sandbox = 'http://192.168.1.37/appGestConfV2.0/public/apiv2';
+// var sandbox = 'http://192.168.1.37/appGestConfV2.0/public/apiv2';
 
 var apiMainUrl = 'http://www.mss.pe/apps/tickets/v2/public';
-var sandboxurl = 'http://192.168.1.37/appGestConfV2.0/public';
+// var sandboxurl = 'http://192.168.1.37/appGestConfV2.0/public';
 
-var apiUrl = sandbox;
+var apiUrl = apiMainhost;
 var appUrl = apiMainUrl;
 
-var appName = 'apps/tickets/ServiceDesk';
+var appName = 'apps/tickets';
 
 app.constant('AUTH_EVENTS', {
   loginSuccess: 'auth-login-success',

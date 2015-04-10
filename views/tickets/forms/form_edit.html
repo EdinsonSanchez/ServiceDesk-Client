@@ -4,40 +4,41 @@
             <h3 class="panel-title">Ticket<strong> {{ ticket.prefijo }}-{{ ("0000" + ticket.correlativo).slice(-5) }}</strong></h3>
         </div>
         <div class="panel-body" ng-if="isAuthorized([userRoles.super, userRoles.manager, userRoles.analista])">
-            <p>Realiza todas las acciones necesarios, para el ticket actual</p>
+            <p ng-if="!ticket.isCerrado">Realiza todas las acciones necesarios, para el ticket actual</p>
+            <p ng-if="ticket.isCerrado">Información general de los movimientos en el ticket.</p>
         </div>
         <div class="panel-body" >
             <!-- row1 -->
             <div class="row">
                 <!-- col1 -->
                 <div class="col-md-4">
-                    
+
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Empresa</label>
+                        <label class="col-md-3 control-label">Empresa<code>*</code></label>
                         <div class="col-md-9">
-                            <select class="form-control select" disabled name="empresa" ng-model="ticket.empresa" ng-options="empresa.razon_social for empresa in empresas track by empresa.id"></select>
+                            <select class="form-control select" disabled name="empresasolicitante" ng-required="true" ng-model="ticket.empresa_solicitante" ng-options="empresa.razon_social for empresa in solicitante_empresas track by empresa.id"></select>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">Sucursal</label>
+                    <div class="form-group" >
+                        <label class="col-md-3 control-label">Sucursal<code>*</code></label>
                         <div class="col-md-9">
-                            <select class="form-control select" ng-disabled="isAuthorized([userRoles.manager, userRoles.usuario])" name="sucursal" ng-model="ticket.sucursal" ng-options="sucursal.nombre for sucursal in sucursales track by sucursal.id"></select>
+                            <select class="form-control select" ng-disabled="isAuthorized([userRoles.manager, userRoles.usuario]) || ticket.isCerrado" ng-class="frm_editicket.sucursal.$invalid ? 'has-error' : ''" name="sucursalasolicitante" ng-required="true" ng-model="ticket.sucursal_solicitante" ng-options="sucursal.nombre for sucursal in solicitante_sucursales track by sucursal.id"></select>
                         </div>
                     </div>
 
                     <div class="form-group" ng-controller="ModalPersonaCtrl">
-                        <label class="col-md-3 control-label">Solicitante</label>
+                        <label class="col-md-3 control-label">Solicitante<code>*</code></label>
                         <div class="col-md-9">
                             <div class="input-group">
-                                <select class="form-control select" name="reportador" ng-disabled="isAuthorized([userRoles.manager, userRoles.usuario])" ng-model="ticket.reportador" ng-options='(reportador.nombre + " " + reportador.apellidos) for reportador in personas track by reportador.id'></select>
-                                <span class="input-group-btn" ng-if="isAuthorized([userRoles.super, userRoles.analista])">
+                                <select class="form-control select" name="reportador" ng-disabled="isAuthorized([userRoles.manager, userRoles.usuario]) || ticket.isCerrado" ng-model="ticket.reportador" ng-options='(reportador.nombre + " " + reportador.apellidos) for reportador in solicitantes track by reportador.id'></select>
+                                <span class="input-group-btn" ng-if="isAuthorized([userRoles.super, userRoles.analista]) && !ticket.isCerrado">
                                     <button type="button" class="btn btn-default" ng-click="open('lg')"><span class="fa fa-plus"></span></button>
                                 </span>
-                                <span class="input-group-addon" ng-if="isAuthorized([userRoles.usuario, userRoles.manager])"><span class="fa fa-plus"></span></span>
+                                <span class="input-group-addon" ng-if="isAuthorized([userRoles.usuario, userRoles.manager]) || ticket.isCerrado"><span class="fa fa-plus"></span></span>
                             </div>
                         </div>
-                    </div>    
+                    </div>
 
                     <!-- modal personas -->
                     <div class="form-group" ng-controller="ModalPersonaCtrl">
@@ -61,65 +62,58 @@
                         </script>
                     </div>
                     <!-- end modal personas -->
+                    <hr>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Afectado<code>*</code></label>
+                        <div class="col-md-9">
+                            <select class="form-control select" ng-model="ticket.tipoafectado" ng-disabled="isAuthorized([userRoles.manager, userRoles.usuario]) || ticket.isCerrado" ng-options='tipoafectado.nombre for tipoafectado in tipoafectados track by tipoafectado.id'></select>
+                        </div>
+                    </div>
 
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Afectado</label>
+                        <label class="col-md-3 control-label">Empresa<code>*</code></label>
                         <div class="col-md-9">
-                            <select class="form-control select" ng-model="ticket.tipoafectado" ng-disabled="isAuthorized([userRoles.manager, userRoles.usuario])" ng-options='tipoafectado.nombre for tipoafectado in tipoafectados track by tipoafectado.id'></select>
+                            <select class="form-control select" disabled name="empresaafectado" ng-required="true" ng-model="ticket.empresa_afectado" ng-options="empresa.razon_social for empresa in afectado_empresas track by empresa.id"></select>
                         </div>
-                    </div> 
+                    </div>
+
+                    <div class="form-group" ng-if="ticket.tipoafectado.id == 3">
+                        <label class="col-md-3 control-label">Sucursal<code>*</code></label>
+                        <div class="col-md-9">
+                            <select class="form-control select" ng-disabled="isAuthorized([userRoles.manager, userRoles.usuario]) || ticket.isCerrado" ng-class="frm_editicket.sucursal.$invalid ? 'has-error' : ''" name="sucursalafectado" ng-required="ticket.tipoafectado.id == 3" ng-model="ticket.sucursal_afectado" ng-options="sucursal.nombre for sucursal in afectado_sucursales track by sucursal.id"></select>
+                        </div>
+                    </div>
 
                     <div class="form-group" ng-show="ticket.tipoafectado.id == 1" >
-                        <label class="col-md-3 control-label"></label>
+                        <label class="col-md-3 control-label"><code>*</code></label>
                         <div class="col-md-9">
-                            <select class="form-control select" ng-required="ticket.tipoafectado.id == 1" ng-disabled="isAuthorized([userRoles.manager, userRoles.usuario])" ng-model="ticket.sucursal_afectada" ng-options='sucursal.nombre for sucursal in sucursales track by sucursal.id'></select>
+                            <select class="form-control select" ng-required="ticket.tipoafectado.id == 1" ng-disabled="isAuthorized([userRoles.manager, userRoles.usuario]) || ticket.isCerrado" ng-model="ticket.sucursal_afectada" ng-options='sucursal.nombre for sucursal in afectado_sucursales track by sucursal.id'></select>
                             <span class="help-block">Sucursal afectada</span>
                         </div>
                     </div>
 
                     <div class="form-group" ng-show="ticket.tipoafectado.id == 2">
-                        <label class="col-md-3 control-label"></label>
+                        <label class="col-md-3 control-label"><code>*</code></label>
                         <div class="col-md-9">
-                            <select class="form-control select" ng-required="ticket.tipoafectado.id == 2" ng-disabled="isAuthorized([userRoles.manager, userRoles.usuario])" ng-model="ticket.area_afectada" ng-options='area.nombre for area in areas track by area.id'></select>
+                            <select class="form-control select" ng-required="ticket.tipoafectado.id == 2" ng-disabled="isAuthorized([userRoles.manager, userRoles.usuario]) || ticket.isCerrado" ng-model="ticket.area_afectada" ng-options='area.nombre for area in areas track by area.id'></select>
                             <span class="help-block">Area afectada</span>
                         </div>
                     </div>
 
                     <div class="form-group" ng-show="ticket.tipoafectado.id == 3" ng-controller="ModalPersonaCtrl">
-                        <label class="col-md-3 control-label"></label>
+                        <label class="col-md-3 control-label"><code>*</code></label>
                         <div class="col-md-9">
                             <div class="input-group">
-                                <select class="form-control select" ng-required="ticket.tipoafectado.id == 3" ng-disabled="isAuthorized([userRoles.manager, userRoles.usuario])" ng-model="ticket.persona_afectada" ng-options='(afectado.nombre + " " + afectado.apellidos) for afectado in personas track by afectado.id'></select>
-                                <span class="input-group-btn" ng-if="isAuthorized([userRoles.super, userRoles.analista])">
+                                <select class="form-control select" ng-required="ticket.tipoafectado.id == 3" ng-disabled="isAuthorized([userRoles.manager, userRoles.usuario]) || ticket.isCerrado" ng-model="ticket.persona_afectada" ng-options='(afectado.nombre + " " + afectado.apellidos) for afectado in afectados track by afectado.id'></select>
+                                <span class="input-group-btn" ng-if="isAuthorized([userRoles.super, userRoles.analista]) && !ticket.isCerrado">
                                     <button type="button" class="btn btn-default" ng-click="open('lg')"><span class="fa fa-plus"></span></button>
                                 </span>
-                                <span class="input-group-addon" ng-if="isAuthorized([userRoles.usuario, userRoles.manager])"><span class="fa fa-plus"></span></span>
+                                <span class="input-group-addon" ng-if="isAuthorized([userRoles.usuario, userRoles.manager]) || ticket.isCerrado"><span class="fa fa-plus"></span></span>
                             </div>
                             <span class="help-block">Persona afectada</span>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">Grupo</label>
-                        <div class="col-md-9">
-                            <div class="input-group">
-                                <select class="form-control select" ng-disabled="!ticket.currentMovimiento.updateAsignado || isAuthorized([userRoles.usuario])" ng-model="ticket.currentMovimiento.grupo" ng-options='grupo.nombre for grupo in grupos track by grupo.id' ng-required="ticket.currentMovimiento.updateAsignado"></select>
-                                <span class="input-group-addon">
-                                    <input type="checkbox" class="icheckbox_minimal-grey checked icheckbox" id="updateAsignado" name="updateAsignado" ng-model="ticket.currentMovimiento.updateAsignado" ng-disabled="isAuthorized([userRoles.usuario])" />
-                                </span>
-                            </div>
-                            <span class="help-block">Grupo asignado</span>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">Asignado</label>
-                        <div class="col-md-9">
-                            <select class="form-control select" ng-disabled="!ticket.currentMovimiento.updateAsignado || isAuthorized([userRoles.usuario])" ng-model="ticket.currentMovimiento.asignado" ng-options='(asignado.persona.nombre + " " + asignado.persona.apellidos) for asignado in asignados track by asignado.id'></select>
-                            <span class="help-block">Analista asignado</span>
-                        </div>
-                    </div>
-                    
                 </div>
                 <!-- end - col1 -->
 
@@ -137,7 +131,7 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Severidad</label>
                         <div class="col-md-9">
-                            <select class="form-control select" ng-disabled="isAuthorized([userRoles.usuario])" ng-model="ticket.severidad" ng-options="severidad.nivel for severidad in severidades track by severidad.id">
+                            <select class="form-control select" ng-disabled="isAuthorized([userRoles.usuario]) || ticket.isCerrado" ng-model="ticket.severidad" ng-options="severidad.nivel for severidad in severidades track by severidad.id">
                             </select>
                         </div>
                     </div>
@@ -145,7 +139,7 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Clase</label>
                         <div class="col-md-9">
-                            <select class="form-control select" ng-disabled="isAuthorized([userRoles.usuario])" ng-model="ticket.clase" ng-options="clase.nombre for clase in incclases track by clase.id">
+                            <select class="form-control select" ng-disabled="isAuthorized([userRoles.usuario]) || ticket.isCerrado" ng-model="ticket.clase" ng-options="clase.nombre for clase in incclases track by clase.id">
                             </select>
                         </div>
                     </div>
@@ -161,7 +155,14 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Estado</label>
                         <div class="col-md-9">
-                            <select class="form-control select" ng-disabled="isAuthorized([userRoles.usuario])" ng-model="ticket.estado" ng-options="estado.nombre for estado in estados track by estado.id"></select>
+                            <select class="form-control select" ng-disabled="isAuthorized([userRoles.usuario]) || ticket.isCerrado" ng-model="ticket.estado" ng-options="estado.nombre for estado in estados track by estado.id"></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-md-3 control-label">Asunto</label>
+                        <div class="col-md-9">
+                            <input type="text" disabled class="form-control" ng-minlength=3 name="asunto" ng-model="ticket.asunto" ng-required="true" />
                         </div>
                     </div>
 
@@ -185,6 +186,28 @@
                             <span class="help-block">Hora (12H) es: {{ ticket.currentMovimiento.fechaprogramado | date:'shortTime' }}</span>
                         </div>
                     </div>
+
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Grupo</label>
+                        <div class="col-md-9">
+                            <div class="input-group">
+                                <select class="form-control select" ng-disabled="!ticket.currentMovimiento.updateAsignado || isAuthorized([userRoles.usuario]) || ticket.isCerrado" ng-model="ticket.currentMovimiento.grupo" ng-options='grupo.nombre for grupo in grupos track by grupo.id' ng-required="ticket.currentMovimiento.updateAsignado"></select>
+                                <span class="input-group-addon">
+                                    <input type="checkbox" class="icheckbox_minimal-grey checked icheckbox" id="updateAsignado" name="updateAsignado" ng-model="ticket.currentMovimiento.updateAsignado" ng-disabled="isAuthorized([userRoles.usuario]) || ticket.isCerrado" />
+                                </span>
+                            </div>
+                            <span class="help-block">Grupo asignado</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Asignado</label>
+                        <div class="col-md-9">
+                            <select class="form-control select" ng-disabled="!ticket.currentMovimiento.updateAsignado || isAuthorized([userRoles.usuario])" ng-model="ticket.currentMovimiento.asignado" ng-options='(asignado.persona.nombre + " " + asignado.persona.apellidos) for asignado in asignados track by asignado.id'></select>
+                            <span class="help-block">Analista asignado</span>
+                        </div>
+                    </div>
                 </div>
                 <!-- end - col2 -->
 
@@ -196,10 +219,10 @@
                         <div class="col-md-9">
                             <div class="input-group">
                                 <input type="text" class="form-control" ng-model="ticket.referencia.tipo.nombre" readonly="" />
-                                <span class="input-group-btn" ng-if="isAuthorized([userRoles.super, userRoles.analista, userRoles.manager])">
+                                <span class="input-group-btn" ng-if="isAuthorized([userRoles.super, userRoles.analista, userRoles.manager]) && !ticket.isCerrado">
                                     <button type="button" class="btn btn-default" ng-click="open('lg')"><span class="fa fa-search"></span></button>
                                 </span>
-                                <span class="input-group-addon" ng-if="isAuthorized([userRoles.usuario])"><span class="fa fa-search"></span></span>
+                                <span class="input-group-addon" ng-if="isAuthorized([userRoles.usuario]) || ticket.isCerrado"><span class="fa fa-search"></span></span>
 
                             </div>
                             <span ng-show="ticket.referencia.id" class="help-block">Ticket ID: {{ ticket.referencia.id }} ( {{ ticket.referencia.tipo.nombre }} )</span>
@@ -232,10 +255,10 @@
                         <div class="col-md-9">
                             <div class="input-group">
                                 <input type="text" class="form-control" ng-model="ticket.componente.nombre" readonly="" />
-                                 <span class="input-group-btn" ng-if="isAuthorized([userRoles.super, userRoles.analista, userRoles.manager])">
+                                 <span class="input-group-btn" ng-if="isAuthorized([userRoles.super, userRoles.analista, userRoles.manager]) && !ticket.isCerrado">
                                     <button type="button" class="btn btn-default" ng-click="open('lg')"><span class="fa fa-search"></span></button>
                                 </span>
-                                <span class="input-group-addon" ng-if="isAuthorized([userRoles.usuario])"><span class="fa fa-search"></span></span>
+                                <span class="input-group-addon" ng-if="isAuthorized([userRoles.usuario]) || ticket.isCerrado"><span class="fa fa-search"></span></span>
 
 
                             </div>
@@ -264,18 +287,18 @@
                     </div>
                     <!-- end - modal componentes -->
 
-                    <!-- clasificacion antigua -->
+                    <!-- clasificacion -->
                     <div class="form-group" ng-if="!isAuthorized([userRoles.usuario])" ng-controller="ModalTipificacionCtrl">
                         <label class="col-md-6 control-label">Clasificación del motivo</label>
                          <div class="col-md-4">
-                                <label class="check"><input type="checkbox" class="icheckbox_minimal-grey checked icheckbox" id="updateMotivo" name="updateMotivo" ng-model="ticket.updateMotivo" /> Actualizar</label>
+                                <label class="check"><input type="checkbox" ng-disabled="ticket.isCerrado" class="icheckbox_minimal-grey checked icheckbox" id="updateMotivo" name="updateMotivo" ng-model="ticket.updateMotivo" /> Actualizar</label>
                             </div>
                         <div class="col-md-2">
                             <div class="input-group">
-                                <span class="input-group-btn" ><button type="button" class="btn btn-default" ng-click="open('lg')"><span class="fa fa-plus"></span></button></span>
+                                <span class="input-group-btn" ><button type="button" ng-disabled="ticket.isCerrado" class="btn btn-default" ng-click="open('lg')"><span class="fa fa-plus"></span></button></span>
                             </div>
                         </div>
-                    </div> 
+                    </div>
                     <!-- modal tipificaciones -->
                     <div class="form-group" ng-controller="ModalTipificacionCtrl">
                         <script type="text/ng-template" id="tipificacionesModalContent.html">
@@ -298,7 +321,7 @@
                         </script>
                     </div>
                     <!-- end - modal tipificaciones -->
-                    
+
                     <div class="form-group" ng-if="!isAuthorized([userRoles.usuario])">
                         <div class="col-md-4">
                             <select class="form-control select" ng-disabled="!ticket.updateMotivo" ng-model="ticket.tipificacion.N1" ng-options="tipificacion.nombre for tipificacion in tipificacionesN1 track by tipificacion.id" ng-show="tipificacionesN1.length > 0"></select>
@@ -311,7 +334,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        
+
                         <div class="col-md-4">
                             <select class="form-control select" ng-disabled="!ticket.updateMotivo" ng-model="ticket.tipificacion.N4" ng-options="tipificacion.nombre for tipificacion in tipificacionesN4 track by tipificacion.id" ng-show="tipificacionesN4.length > 0"></select>
                         </div>
@@ -319,14 +342,14 @@
                             <select class="form-control select" ng-disabled="!ticket.updateMotivo" ng-model="ticket.tipificacion.N5" ng-options="tipificacion.nombre for tipificacion in tipificacionesN5 track by tipificacion.id" ng-show="tipificacionesN5.length > 0"></select>
                         </div>
                     </div>
-                    
+
                     <!-- end - clasificacion -->
 
                     <!-- solver -->
                     <div class="form-group">
                         <label class="col-md-10 control-label">Buscar solución</label>
                         <div class="col-md-2">
-                            <span class="input-group-btn" ><button type="button" class="btn btn-default" ng-disabled="solverObs.uploader.isLoading || !ticket.updateMotivo" ng-click="solver()"><span class="fa fa-search"></span></button></span>
+                            <span class="input-group-btn" ><button type="button" class="btn btn-default" ng-disabled="solverObs.uploader.isLoading || !ticket.updateMotivo || ticket.isCerrado" ng-click="solver()"><span class="fa fa-search"></span></button></span>
                         </div>
                     </div>
 
@@ -357,9 +380,9 @@
                 <!-- end - col3 -->
             </div>
             <!-- end-row1 -->
-            
+
         </div>
-        
+
     </div>
 
     <tabset class="panel tabs">
@@ -385,11 +408,11 @@
                                 </div>
                             </accordion-group>
                         </accordion>
-                        
-                        <div class="form-group" ng-if="isAuthorized([userRoles.super, userRoles.manager, userRoles.analista])">
+
+                        <div class="form-group" ng-if="isAuthorized([userRoles.super, userRoles.manager, userRoles.analista]) && !ticket.isCerrado">
                             <div class="col-md-12 col-xs-12">
-                                <!-- <textarea class="form-control" rows="5" name="descripcion" ng-minlength=10 ng-required="true" ng-model="ticket.currentMovimiento.descripcion" placeholder="Descripcion del movimiento"></textarea> -->
-                                <summernote height="100" ng-model="ticket.currentMovimiento.descripcion" ng-required="ticket.currentMovimiento.updateAsignado"></summernote>
+                                <label>Descripción<code>*</code></label>
+                                <summernote height="100" ng-model="ticket.currentMovimiento.descripcion" ng-required="true"></summernote>
                             </div>
                         </div>
                     </div>
@@ -402,15 +425,15 @@
                         <div class="form-group" ng-controller="ModalTipificacionCtrl">
                             <label class="col-md-6 control-label">Solución del problema</label>
                             <div class="col-md-4">
-                                <label class="check"><input type="checkbox" class="icheckbox_minimal-grey checked icheckbox" id="updateSolucion" name="updateSolucion" ng-model="ticket.currentMovimiento.updateSolucion" /> Actualizar</label>
+                                <label class="check"><input type="checkbox" ng-disabled="ticket.isCerrado" class="icheckbox_minimal-grey checked icheckbox" id="updateSolucion" name="updateSolucion" ng-model="ticket.currentMovimiento.updateSolucion" /> Actualizar</label>
                             </div>
                             <div class="col-md-2">
                                 <div class="input-group">
-                                    <span class="input-group-btn" ><button type="button" class="btn btn-default" ng-click="open('lg')"><span class="fa fa-plus"></span></button></span>
+                                    <span class="input-group-btn" ><button type="button" ng-disabled="ticket.isCerrado" class="btn btn-default" ng-click="open('lg')"><span class="fa fa-plus"></span></button></span>
                                 </div>
                             </div>
-                        </div> 
-                        
+                        </div>
+
                         <div class="form-group">
                             <div class="col-md-4">
                                 <select class="form-control select" ng-disabled="!ticket.currentMovimiento.updateSolucion" ng-model="ticket.currentMovimiento.solucion.N1" ng-options="tipificacion.nombre for tipificacion in solucionesN1 track by tipificacion.id" ng-show="solucionesN1.length > 0"></select>
@@ -421,7 +444,7 @@
                             <div class="col-md-4">
                                 <select class="form-control select" ng-disabled="!ticket.currentMovimiento.updateSolucion" ng-model="ticket.currentMovimiento.solucion.N3" ng-options="tipificacion.nombre for tipificacion in solucionesN3 track by tipificacion.id" ng-show="solucionesN3.length > 0"></select>
                             </div>
-                            
+
                         </div>
                         <div class="form-group">
                             <div class="col-md-4">
@@ -452,7 +475,7 @@
                             <div class="panel-body">
                                 <ul class="list-group" ng-repeat="movimiento in ticket.movimientos | orderBy:'created_at':false">
                                     <li class="list-group-item" ng-repeat="anexo in movimiento.anexosSplit"><a href="{{ anexo.href }}" target="_blank">Ver aquí</a> - [ {{ anexo.description }} ] -- Subido por: <a>{{ movimiento.user.username }}</a> at <span class="date">{{ movimiento.created_at }}</span></li>
-                                </ul>                             
+                                </ul>
                             </div>
                         </div>
                         <!-- END DEFAULT LIST GROUP -->
@@ -461,7 +484,7 @@
                 <!-- row1 -->
                 <div class="row">
                     <!-- col1 -->
-                    <div class="col-md-12">
+                    <div class="col-md-12" ng-if="!ticket.isCerrado">
 
                         <!-- upload file -->
                         <div ng-controller="UploadFileController" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
@@ -477,7 +500,7 @@
                                             </div>
                                             <div class="input-group-btn">
                                                 <div class="btn btn-primary btn-file">
-                                                    <i class="glyphicon glyphicon-folder-open"></i> &nbsp;Navegar … 
+                                                    <i class="glyphicon glyphicon-folder-open"></i> &nbsp;Navegar …
                                                     <input type="file" nv-file-select="" uploader="uploader" multiple />
                                                 </div>
                                             </div>
@@ -488,7 +511,7 @@
                             <!--  -->
                             <!--  -->
                             <div class="col-md-12 sr-item">
-                                
+
                                 <p><strong>Anexos</strong>: <strong>{{ uploader.queue.length }}</strong>.</p>
                                 <div>
                                     <button type="button" class="btn btn-info btn-sm" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
@@ -501,10 +524,10 @@
                                         <span class="glyphicon glyphicon-trash"></span> Quitar todo
                                     </button>
                                 </div>
-                                
+
                                 <div class="table-responsive push-up-10">
                                     <table class="table table-actions table-striped">
-                                        <thead>                                            
+                                        <thead>
                                             <tr>
                                                 <th width="10%">Nombre</th>
                                                 <th>Descripción</th>
@@ -536,7 +559,7 @@
                                                         <span class="fa fa-arrow-circle-o-up"></span> Subir
                                                     </button>
                                                     <button type="button" class="btn btn-warning btn-sm" ng-click="item.cancel()" ng-disabled="!item.isUploading">
-                                                        <span class="fa fa-ban"></span> Cancelar 
+                                                        <span class="fa fa-ban"></span> Cancelar
                                                     </button>
                                                     <button type="button" class="btn btn-danger btn-sm" ng-click="item.remove()">
                                                         <span class="glyphicon glyphicon-trash"></span> Quitar
@@ -584,8 +607,8 @@
                                 </div>
                             </accordion-group>
                         </accordion>
-                        
-                        <div class="form-group">
+
+                        <div class="form-group" ng-if="!ticket.isCerrado">
                             <div class="col-md-12 col-xs-12">
                                 <summernote height="100" ng-model="ticket.currentMovimiento.private_descripcion" ></summernote>
                             </div>
@@ -596,25 +619,12 @@
             </div>
         </tab>
 
-        <tab heading="Gest. Problema" ng-show="ticket.rcareports.length > 0">
-            <div class="panel-body">
-<!--                row1 -->
-                <div class="row" ng-controller="dtRcareports">
-                    <div class="table-responsive">
-                        <div>
-                            <table datatable dt-options="dtOptions" dt-columns="dtColumns" class="table table-hover datatable dataTable no-footer"></table>
-                        </div>
-                    </div>
-                </div>
-<!--                end-row2 -->
-            </div>
-        </tab>
+
     </tabset>
 
     <div class="panel-footer">
         <a href="#/tickets" class="btn btn-default">Regresar</a>
-        <button ng-click="updateTicket(frm_editicket.$valid)" ng-if="isAuthorized([userRoles.super, userRoles.manager, userRoles.analista])" ng-disabled="frm_editicket.$invalid || ticketObs.uploader.isLoading" class="btn btn-primary pull-right">Actualizar Ticket <span class="fa fa-floppy-o fa-right"></span></button>
+        <button ng-click="updateTicket(frm_editicket.$valid)" ng-if="isAuthorized([userRoles.super, userRoles.manager, userRoles.analista]) && !ticket.isCerrado" ng-disabled="frm_editicket.$invalid || ticketObs.uploader.isLoading" class="btn btn-primary pull-right">Actualizar Ticket <span class="fa fa-floppy-o fa-right"></span></button>
     </div>
-   
-</form>
 
+</form>
