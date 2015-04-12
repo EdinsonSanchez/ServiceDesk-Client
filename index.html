@@ -76,6 +76,20 @@
 
                     <li class="xn-title" ng-if="isAuthorized([userRoles.super])">Avanzado</li>
                     <li class="xn-openable" ng-show="isAuthorized([userRoles.super])">
+                        <a href="#"><span class="fa fa-hospital-o"></span> <span class="xn-text">Empresas</span></a>
+                        <ul>
+                            <li><a href="#/empresas"><span class="fa fa-align-justify"></span> Resumen</a></li>
+                            <li><a href="#/empresas-create"><span class="fa fa-pencil-square-o"></span> Crear empresa</a></li>
+                        </ul>
+                    </li>
+                    <li class="xn-openable" ng-show="isAuthorized([userRoles.super])">
+                        <a href="#"><span class="fa fa-code-fork"></span> <span class="xn-text">Sucursales</span></a>
+                        <ul>
+                            <li><a href="#/sucursales"><span class="fa fa-align-justify"></span> Resumen</a></li>
+                            <li><a href="#/sucursales-create"><span class="fa fa-pencil-square-o"></span> Crear sucursal</a></li>
+                        </ul>
+                    </li>
+                    <li class="xn-openable" ng-show="isAuthorized([userRoles.super])">
                         <a href="#"><span class="fa fa-users"></span> <span class="xn-text">Personas</span></a>
                         <ul>
                             <li><a href="#/personas"><span class="fa fa-align-justify"></span> Resumen</a></li>
@@ -303,7 +317,7 @@
     <script type="text/javascript" src="angular/angular-sanitize.js"></script>
     <script type="text/javascript" src="angular/angular-cookies.js"></script>
     <script type="text/javascript" src="angular/toaster.js"></script>
-    <!-- endbuild
+    <!-- endbuild -->
 
     <!-- build:js modules -->
     <script type="text/javascript" src="app/app.js"></script>
@@ -414,5 +428,18 @@
     <script type="text/javascript" src="app/controllers/dtAreas.js"></script>
     <script type="text/javascript" src="app/controllers/dtUsergroups.js"></script>
     <script type="text/javascript" src="app/controllers/dts/dtTicketsArchive.js"></script>
+    <!-- module empresas -->
+    <script type="text/javascript" src="app/controllers/empresas/listempresas.dt.js"></script>
+    <script type="text/javascript" src="app/controllers/empresas/listsucursalesactions.dt.js"></script>
+    <script type="text/javascript" src="app/controllers/empresas/empresa.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/empresas/empresadetail.controller.js"></script>
+
+    <!-- module sucursales -->
+    <script type="text/javascript" src="app/controllers/sucursales/sucursal.modal.instance.js"></script>
+    <script type="text/javascript" src="app/controllers/sucursales/sucursal.modal.js"></script>
+    <script type="text/javascript" src="app/controllers/sucursales/sucursal.factory.js"></script>
+    <script type="text/javascript" src="app/controllers/sucursales/sucursal.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/sucursales/listsucursales.dt.js"></script>
+    <script type="text/javascript" src="app/controllers/sucursales/sucursaldetail.controller.js"></script>
     <!-- endbuild -->
 </html>

@@ -1,0 +1,16 @@
+<div class="row">
+	<div class="col-md-12" ng-show="!svm.sucursalObs.uploader.isLoading">
+		<form novalidate name="sucursal_frm" class="form-horizontal" ng-submit="svm.updateSucursal(sucursal_frm.$valid)" ng-include="'views/sucursales/partials/frmedit.html'"></form>
+	</div>
+	<!-- Alertas del proceso de registro -->
+    <div class="col-md-12" ng-show="svm.sucursalObs.uploader.isError">
+        <div class="alert alert-danger" role="alert"><strong>{{ svm.sucursalObs.uploader.message }}</strong><br>
+            <a type="button" class="btn btn-danger btn-sm" href="#/sucursales"> Regresar</a>
+        </div>
+    </div>
+    <div class="col-md-12" ng-show="svm.sucursalObs.uploader.isSuccess">
+        <div class="alert alert-success" role="alert"><strong>{{ svm.sucursalObs.uploader.message }}</strong><br>
+            <a type="button" class="btn btn-success btn-sm" href="#/sucursales"> Regresar</a>
+        </div>
+    </div>
+</div>

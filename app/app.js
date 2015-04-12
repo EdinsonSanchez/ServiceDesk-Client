@@ -9,20 +9,20 @@
  */
 var app = angular.module("SDApp", ['angularMoment', 'ui.router'
 	, 'ngRoute', 'ngSanitize'
-	,'ngResource', 'ngCookies'
+	, 'ngResource', 'ngCookies'
 	, 'ngAnimate', 'checklist-model'
-	,'toaster','datatables'
+	, 'toaster','datatables'
 	, 'angularFileUpload', 'ui.bootstrap'
 	, 'timer'
 	, 'summernote']);
 
 var apiMainhost = 'http://www.mss.pe/apps/tickets/v2/public/apiv2';
-// var sandbox = 'http://192.168.1.37/appGestConfV2.0/public/apiv2';
+var sandbox = 'http://192.168.1.37/appGestConfV2.0/public/apiv2';
 
 var apiMainUrl = 'http://www.mss.pe/apps/tickets/v2/public';
 // var sandboxurl = 'http://192.168.1.37/appGestConfV2.0/public';
 
-var apiUrl = apiMainhost;
+var apiUrl = sandbox;
 var appUrl = apiMainUrl;
 
 var appName = 'apps/tickets';
@@ -283,7 +283,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function($stat
 	    	authorizedRoles: [USER_ROLES.super]
 	    }
 	})
-	 /*----------------------------------
+	/*----------------------------------
 	 * ics
 	 * --------------------------------- */
 	.state('elementos', {
@@ -308,6 +308,58 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function($stat
 		data: {
 	    	authorizedRoles: [USER_ROLES.super]
 	    }
+	})
+	/*----------------------------------
+	* empresas
+	* --------------------------------- */
+	.state('empresas', {
+		url: '/empresas',
+		templateUrl: 'views/empresas/index.html',
+		data: {
+	    	authorizedRoles: [USER_ROLES.super]
+	    }
+	})
+	.state('empresas-create', {
+		url: '/empresas-create',
+		controller: 'EmpresaController as evm',
+		templateUrl: 'views/empresas/create.html',
+		data: {
+			authorizedRoles: [USER_ROLES.super]
+		}
+	})
+	.state('empresasDetail', {
+		url: '/empresas/:id',
+		controller: 'EmpresaDetailController as evm',
+		templateUrl: 'views/empresas/edit.html',
+		data: {
+			authorizedRoles: [USER_ROLES.super]
+		}
+	})
+	/*----------------------------------
+	* sucursales
+	* --------------------------------- */
+	.state('sucursales', {
+		url: '/sucursales',
+		templateUrl: 'views/sucursales/index.html',
+		data: {
+	    	authorizedRoles: [USER_ROLES.super]
+	    }
+	})
+	.state('sucursales-create', {
+		url: '/sucursales-create',
+		controller: 'SucursalController as svm',
+		templateUrl: 'views/sucursales/create.html',
+		data: {
+			authorizedRoles: [USER_ROLES.super]
+		}
+	})
+	.state('sucursalesDetail', {
+		url: '/sucursales/:id',
+		controller: 'SucursalDetailController as svm',
+		templateUrl: 'views/sucursales/edit.html',
+		data: {
+			authorizedRoles: [USER_ROLES.super]
+		}
 	});
 }]);
 

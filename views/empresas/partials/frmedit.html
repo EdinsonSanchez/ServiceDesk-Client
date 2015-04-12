@@ -1,0 +1,133 @@
+<form class="form-horizontal">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><strong>Empresa</strong> Detalle</h3>
+        </div>
+        <div class="panel-body">
+            <p>Actualiza con precaución la información general de la empresa.</p>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <!-- col1 -->
+                <div class="col-md-6">
+
+                    <div class="form-group" ng-class="empresa_frm.razonsocial.$invalid ? 'has-error' : ''">
+                        <label class="col-md-3 control-label">Razón Social</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" ng-minlength=3 name="razonsocial" ng-model="evm.empresa.razon_social" ng-required="true" />
+
+                            <!--  -->
+                            <div class="error" ng-show="empresa_frm.razonsocial.$invalid || empresa_frm.razonsocial.$pristine">
+                                <small class="error" ng-show="empresa_frm.razonsocial.$error.required">
+                                    No puedes dejar vacío este campo.
+                                </small>
+                                <small class="error" ng-show="empresa_frm.razonsocial.$error.minlength">
+                                    La razón social debe tener al menos 3 letras.
+                                </small>
+                            </div>
+                            <!--  -->
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-class="empresa_frm.rubro.$invalid ? 'has-error' : ''">
+                        <label class="col-md-3 control-label">Rubro</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" ng-minlength=3 name="rubro" ng-model="evm.empresa.rubro" ng-required="true" />
+
+                            <!--  -->
+                            <div class="error" ng-show="empresa_frm.rubro.$invalid || empresa_frm.rubro.$pristine">
+                                <small class="error" ng-show="empresa_frm.rubro.$error.required">
+                                    No puedes dejar vacío este campo.
+                                </small>
+                                <small class="error" ng-show="empresa_frm.rubro.$error.minlength">
+                                    El rubro debe tener al menos 3 letras.
+                                </small>
+                            </div>
+                            <!--  -->
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-class="empresa_frm.cui.$invalid ? 'has-error' : ''">
+                        <label class="col-md-3 control-label">CUI</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" ng-minlength=8 name="cui" ng-model="evm.empresa.cui" ng-required="true" />
+
+                            <!--  -->
+                            <div class="error" ng-show="empresa_frm.cui.$invalid || empresa_frm.cui.$pristine">
+                                <small class="error" ng-show="empresa_frm.cui.$error.required">
+                                    No puedes dejar vacío este campo.
+                                </small>
+                                <small class="error" ng-show="empresa_frm.cui.$error.minlength">
+                                    El CUI debe tener al menos 8 digitos.
+                                </small>
+                            </div>
+                            <!--  -->
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <!-- end - col1 -->
+                <div class="col-md-6">
+                    <div class="form-group" ng-class="empresa_frm.web.$invalid ? 'has-error' : ''">
+                        <label class="col-md-3 control-label">Web</label>
+                        <div class="col-md-9">
+                            <input type="url" class="form-control" name="web" ng-model="evm.empresa.web" ng-required="true" placeholder="ej. http://" />
+
+                            <!--  -->
+                            <div class="error" ng-show="empresa_frm.web.$invalid || empresa_frm.web.$pristine">
+                                <small class="error" ng-show="empresa_frm.web.$error.required">
+                                    No puedes dejar vacío este campo.
+                                </small>
+                                <small class="error" ng-show="empresa_frm.web.$invalid">
+                                    La dirección URL debe de contener "http://"
+                                </small>
+                            </div>
+                            <!--  -->
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-class="empresa_frm.email.$invalid ? 'has-error' : ''">
+                        <label class="col-md-3 control-label">Email</label>
+                        <div class="col-md-9">
+                            <input type="email" class="form-control" name="email" ng-model="evm.empresa.email" ng-required="true" />
+
+                            <!--  -->
+                            <div class="error" ng-show="empresa_frm.email.$invalid || empresa_frm.email.$pristine">
+                                <small class="error" ng-show="empresa_frm.email.$error.required">
+                                    No puedes dejar vacío este campo.
+                                </small>
+                                <small class="error" ng-show="empresa_frm.email.$error.email">
+                                    El Email no es válido
+                                </small>
+                            </div>
+                            <!--  -->
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-class="empresa_frm.telefono.$invalid ? 'has-error' : ''">
+                        <label class="col-md-3 control-label">Teléfono</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" name="telefono" ng-model="evm.empresa.telefono" ng-required="true" />
+
+                            <!--  -->
+                            <div class="error" ng-show="empresa_frm.telefono.$invalid || empresa_frm.telefono.$pristine">
+                                <small class="error" ng-show="empresa_frm.telefono.$error.required">
+                                    No puedes dejar vacío este campo.
+                                </small>
+                            </div>
+                            <!--  -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="panel-footer">
+            <button type="submit" ng-click="evm.newEmpresa(empresa_frm.$valid)" ng-disabled="empresa_frm.$invalid || evm.empresaObs.uploader.isLoading" class="btn btn-primary pull-right">Actualizar Empresa<span class="fa fa-floppy-o fa-right"></span></button>
+        </div>
+    </div>
+</form>

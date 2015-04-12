@@ -12,7 +12,18 @@ app.service('EmpresasResource',
 	['$resource', function ($resource) {
 
 	return $resource(apiUrl + '/empresas', {}, {
-		query: { method: 'GET', isArray: true }
+		query: { method: 'GET', isArray: true },
+		create: { method: 'POST' }
 	});
 
+}]);
+
+app.service('EmpresaResource',
+	['$resource', function ($resource) {
+
+    return $resource(apiUrl + '/empresas/:id', {}, {
+        show: { method: 'GET' },
+        update: { method: 'PUT', params: { id: '@id' } },
+        delete: { method: 'DELETE', params: { id: '@id' } }
+    });
 }]);

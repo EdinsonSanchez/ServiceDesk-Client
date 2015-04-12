@@ -1,0 +1,142 @@
+<form class="form-horizontal">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><strong>Sucursal</strong> Detalle</h3>
+        </div>
+        <div class="panel-body">
+            <p>Actualiza con precaución la información general de la sucursal.</p>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <!-- col1 -->
+                <div class="col-md-6">
+
+                    <div class="form-group" ng-class="sucursal_frm.nombre.$invalid ? 'has-error' : ''">
+                        <label class="col-md-3 control-label">Nombre</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" ng-minlength=3 name="nombre" ng-model="svm.sucursal.nombre" ng-required="true" />
+
+                            <!--  -->
+                            <div class="error" ng-show="sucursal_frm.nombre.$invalid || sucursal_frm.nombre.$pristine">
+                                <small class="error" ng-show="sucursal_frm.nombre.$error.required">
+                                    No puedes dejar vacío este campo.
+                                </small>
+                                <small class="error" ng-show="sucursal_frm.nombre.$error.minlength">
+                                    El nombre debe tener al menos 3 letras.
+                                </small>
+                            </div>
+                            <!--  -->
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-class="sucursal_frm.direccion.$invalid ? 'has-error' : ''">
+                        <label class="col-md-3 control-label">Direccion</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" ng-minlength=3 name="direccion" ng-model="svm.sucursal.direccion" ng-required="true" />
+
+                            <!--  -->
+                            <div class="error" ng-show="sucursal_frm.direccion.$invalid || sucursal_frm.direccion.$pristine">
+                                <small class="error" ng-show="sucursal_frm.direccion.$error.required">
+                                    No puedes dejar vacío este campo.
+                                </small>
+                                <small class="error" ng-show="sucursal_frm.direccion.$error.minlength">
+                                    La dirección debe tener al menos 3 letras.
+                                </small>
+                            </div>
+                            <!--  -->
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-class="sucursal_frm.pais.$invalid ? 'has-error' : ''">
+                        <label class="col-md-3 control-label">País</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" ng-minlength=3 name="pais" ng-model="svm.sucursal.pais" ng-required="true" />
+
+                            <!--  -->
+                            <div class="error" ng-show="sucursal_frm.pais.$invalid || sucursal_frm.pais.$pristine">
+                                <small class="error" ng-show="sucursal_frm.pais.$error.required">
+                                    No puedes dejar vacío este campo.
+                                </small>
+                                <small class="error" ng-show="sucursal_frm.pais.$error.minlength">
+                                    El país debe tener al menos 3 letras.
+                                </small>
+                            </div>
+                            <!--  -->
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Empresa<code>*</code></label>
+                        <div class="col-md-9">
+                            <select class="form-control select" disabled name="empresa" ng-required="true" ng-model="svm.sucursal.empresa" ng-options="empresa.razon_social for empresa in svm.empresas track by empresa.id"></select>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- end - col1 -->
+                <div class="col-md-6">
+
+                    <div class="form-group" ng-class="sucursal_frm.provincia.$invalid ? 'has-error' : ''">
+                        <label class="col-md-3 control-label">Provincia</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" ng-minlength=3 name="provincia" ng-model="svm.sucursal.provincia" ng-required="true" />
+
+                            <!--  -->
+                            <div class="error" ng-show="sucursal_frm.provincia.$invalid || sucursal_frm.provincia.$pristine">
+                                <small class="error" ng-show="sucursal_frm.provincia.$error.required">
+                                    No puedes dejar vacío este campo.
+                                </small>
+                                <small class="error" ng-show="sucursal_frm.provincia.$error.minlength">
+                                    La provincia debe tener al menos 3 letras.
+                                </small>
+                            </div>
+                            <!--  -->
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-class="sucursal_frm.distrito.$invalid ? 'has-error' : ''">
+                        <label class="col-md-3 control-label">Distrito</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" ng-minlength=3 name="distrito" ng-model="svm.sucursal.distrito" ng-required="true" />
+
+                            <!--  -->
+                            <div class="error" ng-show="sucursal_frm.distrito.$invalid || sucursal_frm.distrito.$pristine">
+                                <small class="error" ng-show="sucursal_frm.distrito.$error.required">
+                                    No puedes dejar vacío este campo.
+                                </small>
+                                <small class="error" ng-show="sucursal_frm.distrito.$error.minlength">
+                                    El distrito debe tener al menos 3 letras.
+                                </small>
+                            </div>
+                            <!--  -->
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-class="sucursal_frm.departamento.$invalid ? 'has-error' : ''">
+                        <label class="col-md-3 control-label">Departamento</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" ng-minlength=3 name="departamento" ng-model="svm.sucursal.departamento" ng-required="true" />
+
+                            <!--  -->
+                            <div class="error" ng-show="sucursal_frm.departamento.$invalid || sucursal_frm.departamento.$pristine">
+                                <small class="error" ng-show="sucursal_frm.departamento.$error.required">
+                                    No puedes dejar vacío este campo.
+                                </small>
+                                <small class="error" ng-show="sucursal_frm.departamento.$error.minlength">
+                                    El departamento debe tener al menos 3 letras.
+                                </small>
+                            </div>
+                            <!--  -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="panel-footer">
+            <button type="submit" ng-click="svm.updateSucursal(sucursal_frm.$valid)" ng-disabled="sucursal_frm.$invalid || svm.sucursalObs.uploader.isLoading" class="btn btn-primary pull-right">Guardar Sucursal<span class="fa fa-floppy-o fa-right"></span></button>
+        </div>
+    </div>
+</form>
