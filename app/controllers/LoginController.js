@@ -9,14 +9,14 @@
 'use strict';
 
 app.controller('LoginController',
-	['$scope', '$rootScope', '$log', '$location', 'USER_ROLES', 'AUTH_EVENTS', 'AuthService', 
+	['$scope', '$rootScope', '$log', '$location', 'USER_ROLES', 'AUTH_EVENTS', 'AuthService',
 	function ($scope, $rootScope, $log, $location, USER_ROLES, AUTH_EVENTS, AuthService) {
 
     /* -------------------------------------------------------
      * Entidad
      * ------------------------------------------------------- */
-		$scope.user = { username: '', password: '' };
-		$scope.message = '';
+	$scope.user = { username: '', password: '' };
+	$scope.message = '';
 
     var hostapp = $location.protocol() + "://" + $location.host() + ($location.port() != "" ? ':' + $location.port() : '' ) + '/' +appName;
 
@@ -26,12 +26,12 @@ app.controller('LoginController',
      * ------------------------------------------------------- */
     $scope.setCurrentUser = function (user) {
         $scope.currentUser = user;
-    }; 
-        
-		$scope.login = function(isValid) {
-            
-      if(isValid) {
-          
+    };
+
+	$scope.login = function(isValid) {
+
+      	if(isValid) {
+
           AuthService.login($scope.user).then(function (userLog) {
               // clear messages
               $scope.message = '';
@@ -58,22 +58,25 @@ app.controller('LoginController',
 		};
 }]);
 
-app.controller('AuthController', ['$scope', '$log', '$location', 'AuthService', 'USER_ROLES', function ($scope, $log, $location, AuthService, USER_ROLES) {
-    
+app.controller('AuthController', ['$scope', '$window', '$log', '$location', 'AuthService', 'USER_ROLES', function ($scope, $window, $log, $location, AuthService, USER_ROLES) {
+
     $scope.currentUser = AuthService.getUser();
     var hostapp = $location.protocol() + "://" + $location.host() + ($location.port() != "" ? ':' + $location.port() : '' ) + '/' +appName;
 
 //    $log.info($scope.currentUser);
     $scope.userRoles = USER_ROLES;
     $scope.isAuthorized = AuthService.isAuthorized;
+	$scope.myaccount = function () {
+		$location.url('/users/' + AuthService.getUser().id);
+	};
 
     init();
-    
+
     function init() {
         if(!AuthService.isAuthenticated()) {
             // redirecciona a la pagina de login
             window.location.href = hostapp + '/login.html';
         }
     }
-    
+
 }]);

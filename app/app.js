@@ -17,12 +17,12 @@ var app = angular.module("SDApp", ['angularMoment', 'ui.router'
 	, 'summernote']);
 
 var apiMainhost = 'http://www.mss.pe/apps/tickets/v2/public/apiv2';
-var sandbox = 'http://192.168.1.37/appGestConfV2.0/public/apiv2';
+// var sandbox = 'http://192.168.1.37/appGestConfV2.0/public/apiv2';
 
 var apiMainUrl = 'http://www.mss.pe/apps/tickets/v2/public';
 // var sandboxurl = 'http://192.168.1.37/appGestConfV2.0/public';
 
-var apiUrl = sandbox;
+var apiUrl = apiMainhost;
 var appUrl = apiMainUrl;
 
 var appName = 'apps/tickets';
@@ -176,7 +176,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function($stat
 		templateUrl: 'views/users/edit.html',
 		controller: 'UserDetailController',
 		data: {
-	    	authorizedRoles: [USER_ROLES.super]
+	    	authorizedRoles: [USER_ROLES.super, USER_ROLES.usuario, USER_ROLES.analista, USER_ROLES.manager]
 	    }
 	})
 	/*----------------------------------

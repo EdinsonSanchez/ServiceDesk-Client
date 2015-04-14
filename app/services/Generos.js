@@ -13,7 +13,6 @@ app.factory('GenerosFactory', function() {
 	var generos = [
 		{ id: 1, nombre: "Hombre" }
 		, { id: 2, nombre: "Mujer" }
-		, { id: 3, nombre: "Otro" }
 	];
 
 	return {

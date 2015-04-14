@@ -12,14 +12,14 @@
             <!-- col1 -->
             <div class="col-md-6">
 
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Nombres</label>
+                <div class="form-group" ng-class="persona_frm.nombre.$invalid ? 'has-error' : ''">
+                    <label class="col-md-3 control-label">Nombres<code>*</code></label>
                     <div class="col-md-9">
-                        
+
                         <input type="text" class="form-control" ng-minlength=3 name="nombre" ng-model="persona.nombre" ng-required="true" />
-                        
+
                         <!--  -->
-                        <div class="error" ng-show="persona_frm.nombre.$invalid && !persona_frm.nombre.$pristine">
+                        <div class="error" ng-show="persona_frm.nombre.$invalid || persona_frm.nombre.$pristine">
                             <small class="error" ng-show="persona_frm.nombre.$error.required">
                                 No puedes dejar vacío este campo.
                             </small>
@@ -31,15 +31,15 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Apellidos</label>
+                <div class="form-group" ng-class="persona_frm.apellidos.$invalid ? 'has-error' : ''">
+                    <label class="col-md-3 control-label">Apellidos<code>*</code></label>
                     <div class="col-md-9">
-                        
-                            
+
+
                         <input type="text" class="form-control" ng-minlength=5 name="apellidos" ng-model="persona.apellidos" ng-required="true" />
-                        
+
                         <!--  -->
-                        <div class="error" ng-show="persona_frm.$submitted || persona_frm.apellidos.$dirty && persona_frm.apellidos.$invalid">
+                        <div class="error" ng-show="persona_frm.apellidos.$invalid || persona_frm.apellidos.$pristine">
                             <small class="error" ng-show="persona_frm.apellidos.$error.required">
                                 No puedes dejar vacio este campo.
                             </small>
@@ -50,14 +50,14 @@
                         <!--  -->
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Documento</label>
+                <div class="form-group" ng-class="persona_frm.nro_documento.$invalid ? 'has-error' : ''">
+                    <label class="col-md-3 control-label">Documento<code>*</code></label>
                     <div class="col-md-9">
-                        
+
                         <input type="number" class="form-control" ng-minlength=8 ng-maxlength=8 name="nro_documento" ng-model="persona.nro_documento" ng-required="true" />
-                       
+
                         <!--  -->
-                        <div class="error" ng-show="persona_frm.nro_documento.$dirty && persona_frm.nro_documento.$invalid">
+                        <div class="error" ng-show="persona_frm.nro_documento.$invalid || persona_frm.nro_documento.$pristine">
                             <small class="error" ng-show="persona_frm.nro_documento.$error.required">
                                 No puedes dejar vacío este campo.
                             </small>
@@ -71,21 +71,21 @@
                         <!--  -->
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Genero</label>
+                <div class="form-group" ng-class="persona_frm.genero.$invalid ? 'has-error' : ''">
+                    <label class="col-md-3 control-label">Genero<code>*</code></label>
                     <div class="col-md-9">
                         <select class="form-control select" name="genero" ng-model="persona.genero" ng-options="genero.nombre for genero in generos track by genero.id"></select>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Email</label>
+                <div class="form-group" ng-class="persona_frm.email.$invalid ? 'has-error' : ''">
+                    <label class="col-md-3 control-label">Email<code>*</code></label>
                     <div class="col-md-9">
-                        
+
                         <input type="email" class="form-control" name="email" ng-model="persona.email" ng-required="true" />
-                        
+
                         <!--  -->
-                        <div class="error" ng-show="persona_frm.email.$dirty && persona_frm.email.$invalid">
+                        <div class="error" ng-show="persona_frm.email.$invalid || persona_frm.email.$pristine">
                             <small class="error" ng-show="persona_frm.email.$error.email">
                                 Ingresa un email válido.
                             </small>
@@ -96,9 +96,9 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label">Email(Opcional)</label>
                     <div class="col-md-9">
-                        
+
                        <input type="email" class="form-control" name="email2" ng-model="persona.email2" />
-                       
+
                         <!--  -->
                         <div class="error" ng-show="persona_frm.email2.$dirty && persona_frm.email2.$invalid">
                             <small class="error" ng-show="persona_frm.email2.$error.email">
@@ -116,20 +116,20 @@
             <!-- col2 -->
             <div class="col-md-6">
 
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Empresa</label>
+                <div class="form-group" ng-class="persona_frm.empresa.$invalid ? 'has-error' : ''">
+                    <label class="col-md-3 control-label">Empresa<code>*</code></label>
                     <div class="col-md-9">
                         <select class="form-control select" name="empresa" ng-model="persona.empresa" ng-required="true" ng-options="empresa.razon_social for empresa in empresas track by empresa.id"  >
                         </select>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Sucursal</label>
+                <div class="form-group" ng-class="persona_frm.sucursal.$invalid ? 'has-error' : ''">
+                    <label class="col-md-3 control-label">Sucursal<code>*</code></label>
                     <div class="col-md-9">
                         <select class="form-control select" name="sucursal" ng-model="persona.sucursal" ng-required="true" ng-options="sucursal.nombre for sucursal in sucursales track by sucursal.id"  >
                         </select>
                         <!--  -->
-                        <div class="error" ng-show="persona_frm.sucursal.$invalid && persona_frm.sucursal.$pristine">
+                        <div class="error" ng-show="persona_frm.sucursal.$invalid || persona_frm.sucursal.$pristine">
                             <small class="error" ng-show="persona_frm.sucursal.$error.required">
                                 No puedes dejar vacío este campo.
                             </small>
@@ -137,15 +137,15 @@
                         <!--  -->
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Area</label>
+                <div class="form-group" ng-class="persona_frm.area.$invalid ? 'has-error' : ''">
+                    <label class="col-md-3 control-label">Area<code>*</code></label>
                     <div class="col-md-9">
                         <select class="form-control select" name="area" ng-model="persona.area" ng-required="true" ng-options="area.nombre for area in areas track by area.id"  >
                         </select>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Cargo</label>
+                <div class="form-group" ng-class="persona_frm.cargo.$invalid ? 'has-error' : ''">
+                    <label class="col-md-3 control-label">Cargo<code>*</code></label>
                     <div class="col-md-9">
                         <select class="form-control select" name="cargo" ng-model="persona.cargo" ng-required="true" ng-options="cargo.nombre for cargo in cargos track by cargo.id" >
                         </select>
@@ -160,8 +160,8 @@
                     </div>
                 </div>
 
-                <div class="form-group" ng-show="persona.istrabajador">
-                    <label class="col-md-3 control-label">Grupo</label>
+                <div class="form-group" ng-show="persona.istrabajador" ng-class="persona_frm.grupo.$invalid ? 'has-error' : ''">
+                    <label class="col-md-3 control-label">Grupo<code>*</code></label>
                     <div class="col-md-5">
                         <select class="form-control select" name="grupo" ng-model="persona.grupo" ng-options="grupo.nombre for grupo in grupos track by grupo.id"  >
                         </select>
@@ -172,24 +172,24 @@
                 </div>
 
 
-                <div class="form-group" ng-show="persona.istrabajador" ng-controller="DatepickerCtrl">
-                    <label class="col-md-3 control-label">Fecha Nacimiento</label>
+                <div class="form-group" ng-show="persona.istrabajador" ng-controller="DatepickerCtrl" ng-class="persona_frm.fecha_nacimiento.$invalid ? 'has-error' : ''">
+                    <label class="col-md-3 control-label">Fecha Nacimiento<code>*</code></label>
                     <div class="col-md-9">
                         <div class="input-group">
-                            <input type="text" disabled class="form-control" ng-model="persona.fechaNacimiento" datepicker-popup="yyyy-MM-dd" is-open="opened" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" close-text="cerrar" ng-required="persona.istrabajador" />
+                            <input type="text" disabled name="fecha_nacimiento" class="form-control" ng-model="persona.fechaNacimiento" datepicker-popup="yyyy-MM-dd" is-open="opened" datepicker-options="dateOptions" close-text="cerrar" ng-required="persona.istrabajador" />
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="open($event)"><i class="fa fa-calendar"></i></button>
                             </span>
                         </div>
-                        <span class="help-block">Indica la fecha de nacimiento</span>
+                        <span class="help-block">Indica la fecha de nacimiento<code>*</code></span>
                     </div>
                 </div>
-                
-                <div class="form-group" ng-show="persona.istrabajador" ng-controller="DatepickerCtrl">
+
+                <div class="form-group" ng-show="persona.istrabajador" ng-controller="DatepickerCtrl" ng-class="persona_frm.fecha_ingreso.$invalid ? 'has-error' : ''">
                     <label class="col-md-3 control-label">Fecha Ingreso</label>
                     <div class="col-md-9">
                         <div class="input-group">
-                            <input type="text" disabled class="form-control" ng-model="persona.fechaIngreso" datepicker-popup="yyyy-MM-dd" is-open="opened" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" close-text="cerrar" ng-required="persona.istrabajador" />
+                            <input type="text" name="fecha_ingreso" disabled class="form-control" ng-model="persona.fechaIngreso" datepicker-popup="yyyy-MM-dd" is-open="opened" datepicker-options="dateOptions" close-text="cerrar" ng-required="persona.istrabajador" />
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="open($event)"><i class="fa fa-calendar"></i></button>
                             </span>

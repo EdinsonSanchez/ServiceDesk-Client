@@ -12,10 +12,26 @@ app.controller('UserDetailController', ['$scope', '$log', '$routeParams', '$loca
 	, 'UserResource'
 	, 'IPersonaFactory'
     , 'UsergroupsResource'
+	, 'AuthService'
+	, 'USER_ROLES'
 	, function($scope, $log, $routeParams, $location, $stateParams
 		, UserResource
 		, IPersonaFactory
-        , UsergroupsResource) {
+        , UsergroupsResource
+		, AuthService
+		, USER_ROLES) {
+
+
+	// Inicializa.
+	init();
+
+	function init() {
+		// solo permite ingresar a todas las acciones
+		// si es super usuario, caso contrario solo puede editar el password de su propio usuario.
+		if(!AuthService.isAuthorized([USER_ROLES.super])) {
+			$location.url('/users/' + AuthService.getUser().id);
+		}
+	}
      /* -------------------------------------------
      * Recursos
      * -------------------------------------------*/
@@ -63,8 +79,8 @@ app.controller('UserDetailController', ['$scope', '$log', '$routeParams', '$loca
         $scope.user = currentUser;
 
         /* ------------------------------------------------------
-         * forma el objeto en un arreglo de ids. 
-         * example: {id: 1, title: "public", id:2, title:Author} 
+         * forma el objeto en un arreglo de ids.
+         * example: {id: 1, title: "public", id:2, title:Author}
          * Result: [1, 2]
          * Permite enlazar los permisos y visualizar los permisos actuales.
          * ------------------------------------------------------ */
@@ -85,12 +101,12 @@ app.controller('UserDetailController', ['$scope', '$log', '$routeParams', '$loca
      * ------------------------------------------------------------- */
     $scope.updateUser = function (isValid) {
         if(isValid) {
-            
+
             // Bloque el boton hasta recibir respuesta del servidor.
             $scope.userObs.uploader.isLoading = true;
 
             UserResource.update($scope.user, function (response) {
-                
+
                 $scope.userObs.uploader.isSuccess = true;
                 $scope.userObs.uploader.message = response.message;
 
@@ -99,13 +115,13 @@ app.controller('UserDetailController', ['$scope', '$log', '$routeParams', '$loca
                     $scope.userObs.uploader.message = error.data.message;
                 } else {
                     $scope.userObs.uploader.message = 'Ocurrio un problema al actualizar la información';
-                        
+
                     $log.info(error);
                 }
-                
+
                 $scope.userObs.uploader.isError = true;
             });
-            
+
         }
     }
 

@@ -156,9 +156,10 @@
 
 
                     <!-- POWER OFF -->
-                    <li class="xn-icon-button pull-right">
+                    <li class="xn-icon-button pull-right" ng-controller="AuthController">
                         <a href="#"><span class="fa fa-power-off"></span></a>
                         <ul class="xn-drop-left animated zoomIn">
+                            <li><a ng-click="myaccount()" ><span class="fa fa-sign-out"></span> Mi cuenta</a></li>
                             <li><a href="#/" class="mb-control" data-box="#mb-signout"><span class="fa fa-sign-out"></span> Cerrar sesion</a></li>
                         </ul>
                     </li>
