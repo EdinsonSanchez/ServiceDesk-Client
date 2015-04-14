@@ -5,7 +5,7 @@ app.controller('dtTipificaciones',
 
     // Usuario con la sesion actual.
     var currentUser = AuthService.getUser();
-        
+
     $scope.reloadData = function() {
         $scope.dtOptions.reloadData();
         $log.info('Reload Data(tipificaciones) at: ' + new Date());
@@ -14,11 +14,18 @@ app.controller('dtTipificaciones',
     $scope.show = function (id) {
         $location.path('/tipificaciones/' + id);
     };
-        
+
     $scope.delete = function (id) {
         // Elimina la tipificacion seleccionada
         TipificacionResource.delete({ id: id, deleted: currentUser.id }, function (ok) {
+            alert(ok.message);
             $scope.reloadData();
+        }, function (error) {
+            if(error.data.message) {
+                alert(error.data.message);
+            } else {
+                alert('Error en el proceso para eliminar tipificación!');
+            }
         });
     };
 
@@ -40,9 +47,9 @@ app.controller('dtTipificaciones',
                  if(data.parents != null) {
                      var itemsString = '';
                      angular.forEach(data.parents, function(item) {
-                        itemsString += '<a href="#/tipificaciones/' + item.id + '">' + item.nombre + '</a>, '; 
+                        itemsString += '<a href="#/tipificaciones/' + item.id + '">' + item.nombre + '</a>, ';
                      }, this);
-                     
+
                      return itemsString;
                  }
                  else return null;
@@ -52,8 +59,9 @@ app.controller('dtTipificaciones',
                 if(data.nivel == null) {
                     return '<button class="btn btn-info btn-sm" ng-click="show(' + data.id + ')">' +
                         '   <span class="fa fa-eye"></span> Ver' +
-                        '</button>&nbsp;' + 
-                        '<button class="btn btn-danger btn-sm" ng-click="delete(' + data.id + ')">' +
+                        '</button>&nbsp;' +
+                        '<button class="btn btn-danger btn-sm" confirmed-click="delete(' + data.id + ')"' +
+                        'ng-confirm-click="Estas seguro de eliminar la tipificación ' + data.nombre  + '?">' +
                         '   <span class="glyphicon glyphicon-trash"></span> Eliminar' +
                         '</button>&nbsp;';
                 }
@@ -92,9 +100,9 @@ app.controller('dtTipificacionesWithActions',
                  if(data.parents != null) {
                      var itemsString = '';
                      angular.forEach(data.parents, function(item) {
-                        itemsString += item.nombre + ', '; 
+                        itemsString += item.nombre + ', ';
                      }, this);
-                     
+
                      return itemsString;
                  }
                  else return null;

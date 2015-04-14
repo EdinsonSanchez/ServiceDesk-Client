@@ -2,7 +2,7 @@
 app.controller('dtUsers',
     ['$scope', '$log', '$compile', '$location', 'UserResource', 'DTOptionsBuilder', 'DTColumnBuilder',
     function($scope, $log, $compile, $location, UserResource, DTOptionsBuilder, DTColumnBuilder) {
-    
+
     $scope.reloadData = function() {
         $scope.dtOptions.reloadData();
         $log.info('Reload Data(users) at: ' + new Date());
@@ -15,7 +15,14 @@ app.controller('dtUsers',
     $scope.delete = function (id) {
         // Elimina la tipificacion seleccionada
         UserResource.delete({ id: id }, function (ok) {
+            alert(ok.message);
             $scope.reloadData();
+        }, function (error) {
+            if(error.data.message) {
+                alert(error.data.message);
+            } else {
+                alert('Error en el proceso para eliminar usuario!');
+            }
         });
     };
 
@@ -41,9 +48,9 @@ app.controller('dtUsers',
                 if(data.usergroups != null) {
                      var itemsString = '';
                      angular.forEach(data.usergroups, function(item) {
-                        itemsString += '[ ' + item.title + ' ], '; 
+                        itemsString += '[ ' + item.title + ' ], ';
                      }, this);
-                     
+
                      return itemsString;
                  }
                  else return null;
@@ -52,8 +59,9 @@ app.controller('dtUsers',
             .renderWith(function (data, type, full, meta) {
                 return '<button class="btn btn-info btn-sm" ng-click="show(' + data.id + ')">' +
                         '   <span class="fa fa-eye"></span> Ver' +
-                        '</button>&nbsp;' + 
-                        '<button class="btn btn-danger btn-sm" ng-click="delete(' + data.id + ')">' +
+                        '</button>&nbsp;' +
+                        '<button class="btn btn-danger btn-sm" confirmed-click="delete(' + data.id + ')"' +
+                        'ng-confirm-click="Estas seguro de eliminar el usuario ' + data.username  + '?">' +
                         '   <span class="glyphicon glyphicon-trash"></span> Eliminar' +
                         '</button>&nbsp;';
             }),

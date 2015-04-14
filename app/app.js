@@ -17,12 +17,12 @@ var app = angular.module("SDApp", ['angularMoment', 'ui.router'
 	, 'summernote']);
 
 var apiMainhost = 'http://www.mss.pe/apps/tickets/v2/public/apiv2';
-// var sandbox = 'http://192.168.1.37/appGestConfV2.0/public/apiv2';
+var sandbox = 'http://192.168.1.37/appGestConfV2.0/public/apiv2';
 
 var apiMainUrl = 'http://www.mss.pe/apps/tickets/v2/public';
 // var sandboxurl = 'http://192.168.1.37/appGestConfV2.0/public';
 
-var apiUrl = apiMainhost;
+var apiUrl = sandbox;
 var appUrl = apiMainUrl;
 
 var appName = 'apps/tickets';
