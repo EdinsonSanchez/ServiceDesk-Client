@@ -1,8 +1,8 @@
 'use strict';
 app.controller('dtPersonas',
-    ['$scope', '$log', '$timeout', '$compile', '$location', 'DTOptionsBuilder', 'DTColumnBuilder', 'IPersonaFactory',
-    function($scope, $log, $timeout, $compile, $location, DTOptionsBuilder, DTColumnBuilder, IPersonaFactory) {
-        
+    ['$scope', '$log', '$timeout', '$compile', '$location', 'DTOptionsBuilder', 'DTColumnBuilder', 'IPersonaFactory', 'PersonaResource',
+    function($scope, $log, $timeout, $compile, $location, DTOptionsBuilder, DTColumnBuilder, IPersonaFactory, PersonaResource) {
+
     $scope.reloadData = function() {
         $scope.dtOptions.reloadData();
         $log.info('Reload Data(personas) at: ' + new Date());
@@ -10,6 +10,20 @@ app.controller('dtPersonas',
 
     $scope.show = function (id) {
         $location.path('/personas/' + id);
+    };
+
+    $scope.delete = function (id) {
+        // Elimina la tipificacion seleccionada
+        PersonaResource.delete({ id: id }, function (ok) {
+            alert(ok.message);
+            $scope.reloadData();
+        }, function (error) {
+            if(error.data.message) {
+                alert(error.data.message);
+            } else {
+                alert('Error en el proceso para eliminar usuario!');
+            }
+        });
     };
 
     $scope.dtOptions = DTOptionsBuilder.fromSource(apiUrl + '/personas')
@@ -31,7 +45,7 @@ app.controller('dtPersonas',
             });
             return nRow;
         });
-        
+
     $scope.dtColumns = [
         DTColumnBuilder.newColumn('id').withTitle('ID'),
         DTColumnBuilder.newColumn('nombre').withTitle('Nombres'),
@@ -46,9 +60,13 @@ app.controller('dtPersonas',
             .renderWith(function (data, type, full, meta) {
                 return '<button class="btn btn-info btn-sm" ng-click="show(' + data.id + ')">' +
                     '   <i class="fa fa-eye"></i>' +
+                    '</button>&nbsp;'+
+                    '<button class="btn btn-danger btn-sm" confirmed-click="delete(' + data.id + ')"' +
+                    'ng-confirm-click="Estas seguro de eliminar a ' + data.nombre + ' ' + data.apellidos  + '?">' +
+                    '   <span class="glyphicon glyphicon-trash"></span>' +
                     '</button>&nbsp;';
             }),
     ];
-        
+
    // $timeout($scope.reloadData, 50);
 }]);
