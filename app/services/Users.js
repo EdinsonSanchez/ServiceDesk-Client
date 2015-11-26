@@ -17,7 +17,7 @@ app.service('UsersResource',
 
 }]);
 
-app.service('UserResource', 
+app.service('UserResource',
   ['$resource', function ($resource) {
 
     return $resource(apiUrl + '/users/:id', {}, {
@@ -30,15 +30,15 @@ app.service('UserResource',
 app.service('AuthService', ['$http', '$log', 'Session', function ($http, $log, Session) {
 
   	var authService = {};
- 
+
   	authService.login = function (credentials) {
-        return $http.post(apiUrl + '/login/auth', credentials)
+        return $http.post(sandboxUnport + '/login/auth', credentials)
             .then(function (res) {
                 Session.create(res.data);
 	        	    return res.data;
 	      	  });
   	};
-	 
+
   	authService.logout = function () {
   		  $log.info("destroy session");
   		  Session.destroy();
@@ -52,7 +52,7 @@ app.service('AuthService', ['$http', '$log', 'Session', function ($http, $log, S
   	authService.getUser = function () {
         return Session.getSession();
   	};
- 
+
     authService.isAuthorized = function (authorizedRoles) {
 
         // $log.info(authorizedRoles);

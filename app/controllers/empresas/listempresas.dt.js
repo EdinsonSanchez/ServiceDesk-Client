@@ -19,7 +19,7 @@
         vm.show = show;
 
         // Options Dt
-        vm.dtOptions = DTOptionsBuilder.fromSource(apiUrl + '/empresas?option=list')
+        vm.dtOptions = DTOptionsBuilder.fromSource(sandboxUnport + '/empresas?option=list')
             .withPaginationType('full_numbers')
             .withBootstrap()
             .withOption('createdRow', function(row, data, dataIndex) {

@@ -26,7 +26,7 @@ app.controller('dtPersonas',
         });
     };
 
-    $scope.dtOptions = DTOptionsBuilder.fromSource(apiUrl + '/personas')
+    $scope.dtOptions = DTOptionsBuilder.fromSource(sandboxUnport + '/personas')
         .withPaginationType('full_numbers')
         .withBootstrap()
         .withOption('createdRow', function(row, data, dataIndex) {

@@ -10,7 +10,7 @@
 
 app.controller('dtAreas', ['$scope', '$log', '$location', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder',
     function($scope, $log, $location, $compile, DTOptionsBuilder, DTColumnBuilder) {
-	
+
     $scope.reloadData = function() {
         $scope.dtOptions.reloadData();
         $log.info('Reload Data(areas) at: ' + new Date());
@@ -21,7 +21,7 @@ app.controller('dtAreas', ['$scope', '$log', '$location', '$compile', 'DTOptions
     };
 
 
-    $scope.dtOptions = DTOptionsBuilder.fromSource(apiUrl + '/areas')
+    $scope.dtOptions = DTOptionsBuilder.fromSource(sandboxUnport + '/areas')
         .withPaginationType('full_numbers')
         .withOption('createdRow', function(row, data, dataIndex) {
             // Recompiling so we can bind Angular directive to the DT

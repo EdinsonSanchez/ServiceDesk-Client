@@ -3,7 +3,7 @@ app.controller('dtGruposWithActions',
     ['$scope', '$log', '$compile', '$location', 'DTOptionsBuilder', 'DTColumnBuilder', 'IGrupoFactory',
     function($scope, $log, $compile, $location, DTOptionsBuilder, DTColumnBuilder, IGrupoFactory) {
 
-    $scope.dtOptions = DTOptionsBuilder.fromSource(apiUrl + '/grupos')
+    $scope.dtOptions = DTOptionsBuilder.fromSource(sandboxUnport + '/grupos')
         .withPaginationType('full_numbers')
         .withBootstrap()
         .withOption('rowCallback', function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -51,7 +51,7 @@ app.controller('dtGrupos', ['$scope', '$log', '$compile', '$location', 'DTOption
         });
     };
 
-    $scope.dtOptions = DTOptionsBuilder.fromSource(apiUrl + '/grupos')
+    $scope.dtOptions = DTOptionsBuilder.fromSource(sandboxUnport + '/grupos')
         .withPaginationType('full_numbers')
         .withBootstrap()
         .withOption('createdRow', function(row, data, dataIndex) {

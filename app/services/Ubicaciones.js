@@ -8,34 +8,22 @@
 
 'use strict';
 
-app.factory('CargosFactory', ['$http', function ($http) {
-
-	var CargosFactory = {};
-
-	CargosFactory.getCargos = function() {
-		return $http.get(sandboxUnport + '/cargos');
-	};
-
-	return CargosFactory;
-}]);
-
-
-app.service('CargosResource',
+app.service('UbicacionesResource',
 	['$resource', function ($resource) {
 
-	return $resource(apiUrl + '/cargos', {}, {
-		create: { method: 'POST' }
+	return $resource(apiUrl + '/ubicacions', {}, {
+		query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
 	});
 
 }]);
 
-app.service('CargoResource',
+app.service('UbicacionResource',
 	['$resource', function ($resource) {
 
-	return $resource(apiUrl + '/cargos/:id', {}, {
+    return $resource(apiUrl + '/ubicacions/:id', {}, {
         show: { method: 'GET' },
         update: { method: 'PUT', params: { id: '@id' } },
         delete: { method: 'DELETE', params: { id: '@id' } }
     });
-
 }]);

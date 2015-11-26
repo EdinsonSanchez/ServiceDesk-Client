@@ -1,0 +1,75 @@
+<form class="form-horizontal">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><strong>SLA</strong> Actualizar</h3>
+        </div>
+        <div class="panel-body">
+            <p>Información general del nuevo SLA</p>
+        </div>
+        <div class="panel-body">
+            <!-- col1-->
+            <div class="col-md-6">
+
+                <div class="form-group" ng-class="sla_frm.empresa.$invalid ? 'has-error' : ''">
+                    <label class="col-md-3 control-label">Empresa<code>*</code></label>
+                    <div class="col-md-9">
+                        <select disabled class="form-control select" name="empresa" ng-model="svm.sla.empresa" ng-required="true" ng-options="empresa.razon_social for empresa in svm.empresas track by empresa.id"  >
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-class="sla_frm.clase.$invalid ? 'has-error' : ''">
+                    <label class="col-md-3 control-label">Clase</label>
+                    <div class="col-md-9">
+                        <select disabled class="form-control select" name="clase" ng-model="svm.sla.incclase" ng-options="clase.nombre for clase in svm.incclases track by clase.id">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!-- end - col1 -->
+
+            <!-- col2 -->
+            <div class="col-md-6">
+              <div class="form-group" ng-class="sla_frm.severidad.$invalid ? 'has-error' : ''">
+                  <label class="col-md-3 control-label">Severidad<code>*</code></label>
+                  <div class="col-md-9">
+                      <select disabled class="form-control select" name="severidad" ng-model="svm.sla.severidad" ng-options="severidad.nivel for severidad in svm.severidades track by severidad.id"  >
+                      </select>
+                  </div>
+              </div>
+
+              <div class="form-group" ng-class="sla_frm.tiempo_resolucion.$invalid ? 'has-error' : ''">
+                  <label class="col-md-3 control-label">Tiempo Resolución<code>*</code></label>
+                  <div class="col-md-9">
+
+
+                      <input type="number" class="form-control" name="tiempo_resolucion" min="1" max="7200" ng-model="svm.sla.tiempo_resolucion" ng-required="true" />
+
+                      <!--  -->
+                      <div class="error" ng-show="sla_frm.tiempo_resolucion.$invalid || sla_frm.tiempo_resolucion.$pristine">
+                          <small class="error" ng-show="sla_frm.tiempo_resolucion.$error.required">
+                            No puedes dejar vacio este campo.
+                          </small>
+                          <small class="error" ng-show="sla_frm.tiempo_resolucion.$error.min">
+                            El tiempo mínimo es de 1 min.
+                          </small>
+                          <small class="error" ng-show="sla_frm.tiempo_resolucion.$error.max">
+                            El tiempo máximo es de 7200 min(5dias).
+                          </small>
+                          <small class="error" ng-show="sla_frm.tiempo_resolucion.$error.number">
+                            No es un tiempo válido.
+                          </small>
+                      </div>
+                      <!--  -->
+                  </div>
+              </div>
+
+            </div>
+            <!-- end-col2  -->
+        </div>
+
+        <div class="panel-footer">
+            <button type="submit" ng-click="svm.newSla(sla_frm.$valid)" ng-disabled="sla_frm.$invalid || svm.slaObs.uploader.isLoading" class="btn btn-primary pull-right">Guardar SLA <span class="fa fa-floppy-o fa-right"></span></button>
+        </div>
+    </div>
+</form>

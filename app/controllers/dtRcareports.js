@@ -2,7 +2,7 @@
 app.controller('dtRcareports',
     ['$scope', '$log', '$location', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder',
     function($scope, $log, $location, $compile, DTOptionsBuilder, DTColumnBuilder) {
-    
+
     $scope.reloadData = function() {
         $scope.dtOptions.reloadData();
         $log.info('Reload Data(reportes RCA) at: ' + new Date());
@@ -12,7 +12,7 @@ app.controller('dtRcareports',
         $location.path('/rcareport/' + id);
     };
 
-    $scope.dtOptions = DTOptionsBuilder.fromSource(apiUrl + '/rcareports')
+    $scope.dtOptions = DTOptionsBuilder.fromSource(sandboxUnport + '/rcareports')
         .withPaginationType('full_numbers')
         .withOption('createdRow', function(row, data, dataIndex) {
             // Recompiling so we can bind Angular directive to the DT

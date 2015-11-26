@@ -1,14 +1,14 @@
 // Detalle del porcentaje de tickets creados agrupados por severidad
 app.controller('IncidenciaSeveridadCtrl', ['$scope', '$log', 'ChartsResource', function($scope, $log, ChartsResource) {
-    
+
     $scope.title = 'Porcentaje de Incidencias del año actual (Severidad)';
     $scope.container = '#incidencias-area';
 
     var init = function () {
-    
+
         $(function () {
 
-            $.getJSON(apiUrl + '/charts?option=severidad', function (data) {
+            $.getJSON(sandboxUnport + '/charts?option=severidad', function (data) {
 
                 $($scope.container).highcharts({
                     chart: {
@@ -52,16 +52,16 @@ app.controller('IncidenciaSeveridadCtrl', ['$scope', '$log', 'ChartsResource', f
 
 // Detalle del porcentaje de tickets creados agrupados por clase
 app.controller('IncidenciaClaseCtrl', ['$scope', '$log', 'ChartsResource', function($scope, $log, ChartsResource) {
-    
+
     $scope.title = 'Porcentaje de Incidencias del año actual (Clase)';
     $scope.container = '#incidencias-clase-area';
 
     var init = function () {
-    
+
         $(function () {
 
-            $.getJSON(apiUrl + '/charts?option=clase', function (data) {
-                
+            $.getJSON(sandboxUnport + '/charts?option=clase', function (data) {
+
                 $($scope.container).highcharts({
                     chart: {
                         plotBackgroundColor: null,
@@ -104,15 +104,15 @@ app.controller('IncidenciaClaseCtrl', ['$scope', '$log', 'ChartsResource', funct
 
 // Detalle de tickets creados en la semana actual, agrupados por severidad
 app.controller('IncidenciaWeekCtrl', ['$scope', '$log', 'ChartsResource', function($scope, $log, ChartsResource) {
-    
+
     $scope.title = 'Incidencias reportadas en la semana actual';
     $scope.container = '#incidencias-week-area';
 
     var init = function () {
-    
+
         $(function () {
 
-            $.getJSON(apiUrl + '/charts?option=weekly', function (series) {
+            $.getJSON(sandboxUnport + '/charts?option=weekly', function (series) {
 
                 $($scope.container).highcharts({
                     chart: {
@@ -163,7 +163,7 @@ app.controller('IncidenciaWeekCtrl', ['$scope', '$log', 'ChartsResource', functi
                 });
             });
 
-           
+
         });
     };
 
@@ -173,14 +173,14 @@ app.controller('IncidenciaWeekCtrl', ['$scope', '$log', 'ChartsResource', functi
 
 // Detalle mensual de tickets creados en el anho actual, agrupados por severidad
 app.controller('IncidenciaMonthlyCtrl', ['$scope', '$log', 'ChartsResource', function($scope, $log, ChartsResource) {
-    
+
     $scope.title = 'Incidencias reportadas en el año actual';
     $scope.container = '#incidencias-monthly-area';
 
     var init = function () {
-    
+
         $(function () {
-            $.getJSON(apiUrl + '/charts?option=monthly', function (series) {
+            $.getJSON(sandboxUnport + '/charts?option=monthly', function (series) {
 
                 $($scope.container).highcharts({
                     title: {
@@ -219,7 +219,7 @@ app.controller('IncidenciaMonthlyCtrl', ['$scope', '$log', 'ChartsResource', fun
 
             });
 
-            
+
         });
     };
 
@@ -229,15 +229,15 @@ app.controller('IncidenciaMonthlyCtrl', ['$scope', '$log', 'ChartsResource', fun
 
 // Detalle diario de tickets crados en el ultimo anho
 app.controller('IncidenciaDaylyCtrl', ['$scope', '$log', 'ChartsResource', function($scope, $log, ChartsResource) {
-    
+
     $scope.title = 'Incidencias reportadas en el año actual';
     $scope.container = '#incidencias-dayly-area';
     var date = new Date();
 
     var init = function () {
-    
+
         $(function () {
-            $.getJSON(apiUrl + '/charts?option=dayly', function (data) {
+            $.getJSON(sandboxUnport + '/charts?option=dayly', function (data) {
 
                 $($scope.container).highcharts({
                     chart: {
@@ -296,7 +296,7 @@ app.controller('IncidenciaDaylyCtrl', ['$scope', '$log', 'ChartsResource', funct
 
             });
 
-            
+
         });
     };
 

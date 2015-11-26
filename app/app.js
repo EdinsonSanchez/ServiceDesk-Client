@@ -16,16 +16,19 @@ var app = angular.module("SDApp", ['angularMoment', 'ui.router'
 	, 'timer'
 	, 'summernote']);
 
-var apiMainhost = 'http://www.mss.pe/apps/tickets/v2/public/apiv2';
-var sandbox = 'http://192.168.1.37/appGestConfV2.0/public/apiv2';
+//var apiMainhost = 'http://www.mss.pe/apps/tickets/v2/public/apiv2';
+var sandbox = 'http://localhost\\:8888/sandbox/appGestConfV2.0/public/apiv2';
+var sandboxUnport = 'http://localhost:8888/sandbox/appGestConfV2.0/public/apiv2';
+//var sandbox = 'http://10.42.0.1/appGestConfV2.0/public/apiv2';
 
-var apiMainUrl = 'http://www.mss.pe/apps/tickets/v2/public';
-// var sandboxurl = 'http://192.168.1.37/appGestConfV2.0/public';
+//var apiMainUrl = 'http://www.mss.pe/apps/tickets/v2/public';
+//var sandboxurl = 'http://10.42.0.1/appGestConfV2.0/public';
+var sandboxurl = 'http://localhost:8888/sandbox/appGestConfV2.0/public';
 
 var apiUrl = sandbox;
-var appUrl = apiMainUrl;
+var appUrl = sandboxurl;
 
-var appName = 'apps/tickets';
+var appName = 'sandbox/ServiceDesk';
 
 app.constant('AUTH_EVENTS', {
   loginSuccess: 'auth-login-success',
@@ -360,7 +363,87 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function($stat
 		data: {
 			authorizedRoles: [USER_ROLES.super]
 		}
+	})
+	/*----------------------------------
+	* clases
+	* --------------------------------- */
+	.state('clases', {
+		url: '/clases',
+		templateUrl: 'views/clases/index.html',
+		data: {
+			authorizedRoles: [USER_ROLES.super]
+		}
+	})
+	.state('clases-create', {
+		url: '/clases-create',
+		controller: 'ClaseController as cvm',
+		templateUrl: 'views/clases/create.html',
+		data: {
+			authorizedRoles: [USER_ROLES.super]
+		}
+	})
+	.state('clasesDetail', {
+		url: '/clases/:id',
+		controller: 'ClaseDetailController as cvm',
+		templateUrl: 'views/clases/edit.html',
+		data: {
+			authorizedRoles: [USER_ROLES.super]
+		}
+	})
+	/*----------------------------------
+	* clases
+	* --------------------------------- */
+	.state('slas', {
+		url: '/slas',
+		templateUrl: 'views/slas/index.html',
+		data: {
+			authorizedRoles: [USER_ROLES.super]
+		}
+	})
+	.state('slas-create', {
+		url: '/slas-create',
+		controller: 'SlaController as svm',
+		templateUrl: 'views/slas/create.html',
+		data: {
+			authorizedRoles: [USER_ROLES.super]
+		}
+	})
+	.state('slasDetail', {
+		url: '/slas/:id',
+		controller: 'SlaDetailController as svm',
+		templateUrl: 'views/slas/edit.html',
+		data: {
+			authorizedRoles: [USER_ROLES.super]
+		}
+	})
+	/*----------------------------------
+	* ubicaciones
+	* --------------------------------- */
+	.state('ubicaciones', {
+		url: '/ubicaciones',
+		templateUrl: 'views/ubicaciones/index.html',
+		data: {
+			authorizedRoles: [USER_ROLES.super]
+		}
+	})
+	.state('ubicaciones-create', {
+		url: '/ubicaciones-create',
+		controller: 'SlaController as svm',
+		templateUrl: 'views/ubicaciones/create.html',
+		data: {
+			authorizedRoles: [USER_ROLES.super]
+		}
+	})
+	.state('ubicacionesDetail', {
+		url: '/ubicaciones/:id',
+		controller: 'SlaDetailController as svm',
+		templateUrl: 'views/ubicaciones/edit.html',
+		data: {
+			authorizedRoles: [USER_ROLES.super]
+		}
 	});
+
+	//
 }]);
 
 app.run(['$rootScope', 'AUTH_EVENTS', 'AuthService', function ($rootScope, AUTH_EVENTS, AuthService) {

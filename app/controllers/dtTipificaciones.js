@@ -29,7 +29,7 @@ app.controller('dtTipificaciones',
         });
     };
 
-    $scope.dtOptions = DTOptionsBuilder.fromSource(apiUrl + '/tipificaciones')
+    $scope.dtOptions = DTOptionsBuilder.fromSource(sandboxUnport + '/tipificaciones')
         .withPaginationType('full_numbers')
         .withBootstrap()
         .withOption('createdRow', function(row, data, dataIndex) {
@@ -75,7 +75,7 @@ app.controller('dtTipificacionesWithActions',
     ['$scope', '$log', '$compile', '$location', 'DTOptionsBuilder', 'DTColumnBuilder', 'ITipificacionFactory',
     function($scope, $log, $compile, $location, DTOptionsBuilder, DTColumnBuilder, ITipificacionFactory) {
 
-    $scope.dtOptions = DTOptionsBuilder.fromSource(apiUrl + '/tipificaciones')
+    $scope.dtOptions = DTOptionsBuilder.fromSource(sandboxUnport + '/tipificaciones')
         .withPaginationType('full_numbers')
         .withBootstrap()
         .withOption('rowCallback', function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {

@@ -13,20 +13,20 @@ app.factory('PersonasFactory', ['$http', function ($http) {
 	var PersonasFactory = {};
 
 	PersonasFactory.getPersonas = function () {
-		return $http.get(apiUrl + '/personas');
+		return $http.get(sandboxUnport + '/personas');
 	};
 
 	PersonasFactory.getPersonasBySucursal = function (sucursalId) {
-		return $http.get(apiUrl + '/personas?sucursalId=' + sucursalId);
+		return $http.get(sandboxUnport + '/personas?sucursalId=' + sucursalId);
 	};
 
 	PersonasFactory.getPersonalByGrupo = function (grupoId) {
-		return $http.get(apiUrl + '/trabajadores?grupoId=' + grupoId);
+		return $http.get(sandboxUnport + '/trabajadores?grupoId=' + grupoId);
 		// retorna del servidor en este formato [object { object { object } }, object { object { object } }]
 	};
 
 	PersonasFactory.postPersona = function (persona) {
-		return $http.post(apiUrl + '/personas', persona)
+		return $http.post(sandboxUnport + '/personas', persona)
 			.then(function (response) {
 				return response.data;
 			});

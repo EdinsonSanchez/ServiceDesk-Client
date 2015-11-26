@@ -14,7 +14,7 @@ app.controller('dtTicketsArchive',
         $location.path('/tickets/' + id);
     };
 
-    $scope.dtOptions = DTOptionsBuilder.fromSource(apiUrl + '/tickets?userId=' + $scope.user.id + '&option=archive')
+    $scope.dtOptions = DTOptionsBuilder.fromSource(sandboxUnport + '/tickets?userId=' + $scope.user.id + '&option=archive')
         .withPaginationType('full_numbers')
         .withBootstrap()
         .withOption('createdRow', function(row, data, dataIndex) {
@@ -132,13 +132,13 @@ app.controller('dtTicketsArchive',
                 var tiempoResolucion = 0;
                 if(clase != 0)
                 {
-                    angular.forEach(data.severidad.incclases, function (incclase) {
-                        if(incclase.id == 1 && clase == 1 && empresaId == incclase.pivot.empresa_id) { // hardware siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
-                        } else if(incclase.id == 2 && clase == 2 && empresaId == incclase.pivot.empresa_id) { // software siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
-                        }
-                    }, this);
+                  angular.forEach(data.severidad.pivotclases, function (incclase) {
+                    // console.log(incclase);
+                      if(empresaId == incclase.empresa_id && data.clase.id == incclase.incclase_id) {
+                        tiempoResolucion = incclase.tiempo_resolucion;
+                      }
+
+                  }, this);
                 }
 
                 if(clase == 0) {

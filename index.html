@@ -52,29 +52,31 @@
                         <a href="#/dashboard"><span class="fa fa-desktop"></span> <span class="xn-text">Dashboard</span></a>
                     </li>
                     <li class="xn-openable active" ng-show="isAuthorized([userRoles.super, userRoles.usuario, userRoles.manager, userRoles.analista])">
-                        <a href="#"><span class="fa fa-files-o"></span> <span class="xn-text">Tickets</span></a>
+                        <a href="#"><span class="fa fa-files-o"></span> <span class="xn-text">Incidentes</span></a>
                         <ul>
                             <li ng-show="isAuthorized([userRoles.super, userRoles.usuario, userRoles.manager, userRoles.analista])"><a href="#/tickets"><span class="fa fa-align-justify"></span> Resumen</a></li>
                             <li ng-show="isAuthorized([userRoles.super, userRoles.analista])"><a href="#/tickets-archivados"><span class="fa fa-briefcase"></span> Archivados</a></li>
-                            <li ng-show="isAuthorized([userRoles.super, userRoles.usuario, userRoles.manager, userRoles.analista])"><a href="#/tickets-create"><span class="fa fa-pencil-square-o"></span> Crear ticket</a></li>
+                            <li ng-show="isAuthorized([userRoles.super, userRoles.usuario, userRoles.manager, userRoles.analista])"><a href="#/tickets-create"><span class="fa fa-pencil-square-o"></span> Registrar incidente</a></li>
                         </ul>
                     </li>
-                    <li class="xn-openable" ng-show="isAuthorized([userRoles.none])">
-                        <a href="#"><span class="fa fa-file-text-o"></span> <span class="xn-text">Reportes RCA</span></a>
-                        <ul>
-                            <li><a href="#/rcareport"><span class="fa fa-align-justify"></span> Resumen</a></li>
-                        </ul>
-                    </li>
+
                     <li class="xn-openable" ng-show="isAuthorized([userRoles.super])" >
-                        <a href="#"><span class="fa fa-file-text-o"></span> <span class="xn-text">Tipificaciones</span></a>
+                        <a href="#"><span class="fa fa-file-text-o"></span> <span class="xn-text">Clasificaciones</span></a>
                         <ul>
                             <li><a href="#/tipificaciones"><span class="fa fa-align-justify"></span> Resumen</a></li>
-                            <li><a href="#/tipificaciones-create"><span class="fa fa-pencil-square-o"></span> Crear tipificacion</a></li>
+                            <li><a href="#/tipificaciones-create"><span class="fa fa-pencil-square-o"></span> Crear clasificacion</a></li>
                         </ul>
                     </li>
 
 
                     <li class="xn-title" ng-if="isAuthorized([userRoles.super])">Avanzado</li>
+                    <li class="xn-openable" ng-show="isAuthorized([userRoles.super])">
+                        <a href="#"><span class="fa fa-hospital-o"></span> <span class="xn-text">Ubicaciones</span></a>
+                        <ul>
+                            <li><a href="#/ubicaciones"><span class="fa fa-align-justify"></span> Resumen</a></li>
+                            <li><a href="#/ubicaciones-create"><span class="fa fa-pencil-square-o"></span> Crear ubicación</a></li>
+                        </ul>
+                    </li>
                     <li class="xn-openable" ng-show="isAuthorized([userRoles.super])">
                         <a href="#"><span class="fa fa-hospital-o"></span> <span class="xn-text">Empresas</span></a>
                         <ul>
@@ -129,6 +131,20 @@
                         <ul>
                             <li><a href="#/areas"><span class="fa fa-align-justify"></span> Resumen</a></li>
                             <li><a href="#/areas-create"><span class="fa fa-pencil-square-o"></span> Crear área</a></li>
+                        </ul>
+                    </li>
+                    <li class="xn-openable" ng-show="isAuthorized([userRoles.super])">
+                        <a href="#"><span class="glyphicon glyphicon-paperclip"></span> <span class="xn-text">Clase</span></a>
+                        <ul>
+                            <li><a href="#/clases"><span class="fa fa-align-justify"></span> Resumen</a></li>
+                            <li><a href="#/clases-create"><span class="fa fa-pencil-square-o"></span> Crear clase</a></li>
+                        </ul>
+                    </li>
+                    <li class="xn-openable" ng-show="isAuthorized([userRoles.super])">
+                        <a href="#"><span class="glyphicon glyphicon-screenshot"></span> <span class="xn-text">SLA</span></a>
+                        <ul>
+                            <li><a href="#/slas"><span class="fa fa-align-justify"></span> Resumen</a></li>
+                            <li><a href="#/slas-create"><span class="fa fa-pencil-square-o"></span> Crear SLA</a></li>
                         </ul>
                     </li>
                     <li class="xn-openable" ng-show="isAuthorized([userRoles.super])">
@@ -445,5 +461,20 @@
     <script type="text/javascript" src="app/controllers/sucursales/sucursal.controller.js"></script>
     <script type="text/javascript" src="app/controllers/sucursales/listsucursales.dt.js"></script>
     <script type="text/javascript" src="app/controllers/sucursales/sucursaldetail.controller.js"></script>
+
+    <!-- module clases -->
+    <script type="text/javascript" src="app/controllers/clases/listclases.dt.js"></script>
+    <script type="text/javascript" src="app/controllers/clases/clase.controller.js"></script>
+
+    <!-- module slas -->
+    <script type="text/javascript" src="app/controllers/slas/listslas.dt.js"></script>
+    <script type="text/javascript" src="app/controllers/slas/sla.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/slas/sladetail.controller.js"></script>
+    
+    <!--module ubiscaciones-->
+    <script type="text/javascript" src="app/controllers/ubicaciones/listubicaciones.dt.js"></script>
+    <script type="text/javascript" src="app/services/ubicaciones.js"></script>
+
+
     <!-- endbuild -->
 </html>

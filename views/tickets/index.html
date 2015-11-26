@@ -8,7 +8,7 @@
 
                 <div ng-controller="dtTickets">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Tickets - Resumen</h3>
+                        <h3 class="panel-title">Incidentes - Resumen</h3>
                         <ul class="panel-controls">
                             <li>
                                 <span class="label label-danger">Severidad 1</span>
@@ -33,7 +33,7 @@
             <tab heading="Abiertos" ng-if="isAuthorized([userRoles.super, userRoles.analista, userRoles.manager])">
                 <div ng-controller="dtTicketsAbiertos">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Tickets - Abiertos</h3>
+                        <h3 class="panel-title">Incidentes - Abiertos</h3>
                         <ul class="panel-controls">
                             <li>
                                 <span class="label label-danger">Severidad 1</span>
@@ -58,7 +58,7 @@
             <tab heading="Pendiente" ng-if="isAuthorized([userRoles.super, userRoles.analista, userRoles.manager])">
                 <div ng-controller="dtTicketsPendientes">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Tickets - Pendientes Por Usuario</h3>
+                        <h3 class="panel-title">Incidentes - Pendientes Por Usuario</h3>
                         <ul class="panel-controls">
                             <li>
                                 <span class="label label-danger">Severidad 1</span>
@@ -83,7 +83,7 @@
             <tab heading="En espera" ng-if="isAuthorized([userRoles.super, userRoles.analista, userRoles.manager])">
                 <div ng-controller="dtTicketsEspera">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Tickets - En espera</h3>
+                        <h3 class="panel-title">Incidentes - En espera</h3>
                         <ul class="panel-controls">
                             <li>
                                 <span class="label label-danger">Severidad 1</span>

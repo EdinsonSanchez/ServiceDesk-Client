@@ -12,7 +12,19 @@ app.service('IncClasesResource',
 	['$resource', function ($resource) {
 
 	return $resource(apiUrl + '/incclases', {}, {
-		query: { method: 'GET', isArray: true }
+		query: { method: 'GET', isArray: true },
+		create: { method: 'POST' }
+	});
+
+}]);
+
+app.service('IncClaseResource',
+	['$resource', function ($resource) {
+
+	return $resource(apiUrl + '/incclases/:id', {}, {
+		show: { method: 'GET' },
+		update: { method: 'PUT', params: { id: '@id' } },
+		delete: { method: 'DELETE', params: { id: '@id' } }
 	});
 
 }]);

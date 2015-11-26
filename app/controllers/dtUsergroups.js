@@ -1,6 +1,6 @@
 app.controller('dtUsergroups', ['$scope', '$log', '$compile', '$location', 'DTOptionsBuilder', 'DTColumnBuilder'
     , function($scope, $log, $compile, $location, DTOptionsBuilder, DTColumnBuilder){
-    
+
     $scope.reloadData = function() {
         $scope.dtOptions.reloadData();
         $log.info('Reload Data(usergroups) at: ' + new Date());
@@ -10,14 +10,14 @@ app.controller('dtUsergroups', ['$scope', '$log', '$compile', '$location', 'DTOp
         $location.path('/usergroups/' + id);
     };
 
-    $scope.dtOptions = DTOptionsBuilder.fromSource(apiUrl + '/usergroups')
+    $scope.dtOptions = DTOptionsBuilder.fromSource(sandboxUnport + '/usergroups')
         .withPaginationType('full_numbers')
         .withBootstrap()
         .withOption('createdRow', function(row, data, dataIndex) {
             // Recompiling so we can bind Angular directive to the DT
             $compile(angular.element(row).contents())($scope);
         });
-    
+
         $scope.dtColumns = [
             DTColumnBuilder.newColumn('id').withTitle('ID'),
             DTColumnBuilder.newColumn('title').withTitle('Title'),

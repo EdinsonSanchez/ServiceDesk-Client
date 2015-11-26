@@ -20,7 +20,7 @@
         vm.reloadData = reloadData;
 
         // Options Dt
-        vm.dtOptions = DTOptionsBuilder.fromSource(apiUrl + '/sucursales?option=list')
+        vm.dtOptions = DTOptionsBuilder.fromSource(sandboxUnport + '/sucursales?option=list')
             .withPaginationType('full_numbers')
             .withBootstrap()
             .withOption('createdRow', function(row, data, dataIndex) {

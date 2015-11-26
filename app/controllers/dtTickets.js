@@ -22,7 +22,7 @@ app.controller('dtTickets',
         $location.path('/tickets/' + id);
     };
 
-    $scope.dtOptions = DTOptionsBuilder.fromSource(apiUrl + '/tickets?userId=' + $scope.user.id + '&option=all&status=all')
+    $scope.dtOptions = DTOptionsBuilder.fromSource(sandboxUnport + '/tickets?userId=' + $scope.user.id + '&option=all&status=all')
         .withPaginationType('full_numbers')
         .withBootstrap()
         .withOption('createdRow', function(row, data, dataIndex) {
@@ -35,6 +35,7 @@ app.controller('dtTickets',
             var msFechaProgramado = 0;
             var empresaId = data.empresa_afectado.id;
             var isCerrado = data.estado.id == 5; // Estado cerrado:5
+
             // Obtiene el tiempo transcurrido de todos lo mivimientos.
             angular.forEach(data.movimientos, function (movimiento) {
 
@@ -78,13 +79,14 @@ app.controller('dtTickets',
             var tiempoResolucion = 0;
             if(clase != 0)
             {
-                angular.forEach(data.severidad.incclases, function (incclase) {
-                    if(incclase.id == 1 && clase == 1 && empresaId == incclase.pivot.empresa_id) { // hardware siempre
-                        tiempoResolucion = incclase.pivot.tiempo_resolucion;
-                    } else if(incclase.id == 2 && clase == 2 && empresaId == incclase.pivot.empresa_id) { // software siempre
-                        tiempoResolucion = incclase.pivot.tiempo_resolucion;
+
+                angular.forEach(data.severidad.pivotclases, function (incclase) {
+                    if(empresaId == incclase.empresa_id && data.clase.id == incclase.incclase_id) {
+                      tiempoResolucion = incclase.tiempo_resolucion;
                     }
+
                 }, this);
+
             }
 
             /* -----------------------------------------------------------------------------------------
@@ -252,12 +254,13 @@ app.controller('dtTickets',
                 var tiempoResolucion = 0;
                 if(clase != 0)
                 {
-                    angular.forEach(data.severidad.incclases, function (incclase) {
-                        if(incclase.id == 1 && clase == 1 && empresaId == incclase.pivot.empresa_id) { // hardware siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
-                        } else if(incclase.id == 2 && clase == 2 && empresaId == incclase.pivot.empresa_id) { // software siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
+                  // console.log(data.severidad);
+                    angular.forEach(data.severidad.pivotclases, function (incclase) {
+                      // console.log(incclase);
+                        if(empresaId == incclase.empresa_id && data.clase.id == incclase.incclase_id) {
+                          tiempoResolucion = incclase.tiempo_resolucion;
                         }
+
                     }, this);
                 }
 
@@ -322,7 +325,7 @@ app.controller('dtTicketsAbiertos',
         $location.path('/tickets/' + id);
     };
 
-    $scope.dtOptions = DTOptionsBuilder.fromSource(apiUrl + '/tickets?userId=' + $scope.user.id + '&option=all&status=1')
+    $scope.dtOptions = DTOptionsBuilder.fromSource(sandboxUnport + '/tickets?userId=' + $scope.user.id + '&option=all&status=1')
         .withPaginationType('full_numbers')
         .withBootstrap()
         .withOption('createdRow', function(row, data, dataIndex) {
@@ -378,13 +381,12 @@ app.controller('dtTicketsAbiertos',
             var tiempoResolucion = 0;
             if(clase != 0)
             {
-                angular.forEach(data.severidad.incclases, function (incclase) {
-                    if(incclase.id == 1 && clase == 1 && empresaId == incclase.pivot.empresa_id) { // hardware siempre
-                        tiempoResolucion = incclase.pivot.tiempo_resolucion;
-                    } else if(incclase.id == 2 && clase == 2 && empresaId == incclase.pivot.empresa_id) { // software siempre
-                        tiempoResolucion = incclase.pivot.tiempo_resolucion;
-                    }
-                }, this);
+              angular.forEach(data.severidad.pivotclases, function (incclase) {
+                  if(empresaId == incclase.empresa_id && data.clase.id == incclase.incclase_id) {
+                    tiempoResolucion = incclase.tiempo_resolucion;
+                  }
+
+              }, this);
             }
 
             /* -----------------------------------------------------------------------------------------
@@ -547,13 +549,12 @@ app.controller('dtTicketsAbiertos',
                 var tiempoResolucion = 0;
                 if(clase != 0)
                 {
-                    angular.forEach(data.severidad.incclases, function (incclase) {
-                        if(incclase.id == 1 && clase == 1 && empresaId == incclase.pivot.empresa_id) { // hardware siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
-                        } else if(incclase.id == 2 && clase == 2 && empresaId == incclase.pivot.empresa_id) { // software siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
-                        }
-                    }, this);
+                  angular.forEach(data.severidad.pivotclases, function (incclase) {
+                      if(empresaId == incclase.empresa_id && data.clase.id == incclase.incclase_id) {
+                        tiempoResolucion = incclase.tiempo_resolucion;
+                      }
+
+                  }, this);
                 }
 
                 if(clase == 0) {
@@ -606,7 +607,7 @@ app.controller('dtTicketsPendientes',
         $location.path('/tickets/' + id);
     };
 
-    $scope.dtOptions = DTOptionsBuilder.fromSource(apiUrl + '/tickets?userId=' + $scope.user.id + '&option=all&status=4')
+    $scope.dtOptions = DTOptionsBuilder.fromSource(sandboxUnport + '/tickets?userId=' + $scope.user.id + '&option=all&status=4')
         .withPaginationType('full_numbers')
         .withBootstrap()
         .withOption('createdRow', function(row, data, dataIndex) {
@@ -662,13 +663,12 @@ app.controller('dtTicketsPendientes',
             var tiempoResolucion = 0;
             if(clase != 0)
             {
-                angular.forEach(data.severidad.incclases, function (incclase) {
-                    if(incclase.id == 1 && clase == 1 && empresaId == incclase.pivot.empresa_id) { // hardware siempre
-                        tiempoResolucion = incclase.pivot.tiempo_resolucion;
-                    } else if(incclase.id == 2 && clase == 2 && empresaId == incclase.pivot.empresa_id) { // software siempre
-                        tiempoResolucion = incclase.pivot.tiempo_resolucion;
-                    }
-                }, this);
+              angular.forEach(data.severidad.pivotclases, function (incclase) {
+                  if(empresaId == incclase.empresa_id && data.clase.id == incclase.incclase_id) {
+                    tiempoResolucion = incclase.tiempo_resolucion;
+                  }
+
+              }, this);
             }
 
             /* -----------------------------------------------------------------------------------------
@@ -825,13 +825,12 @@ app.controller('dtTicketsPendientes',
                 var tiempoResolucion = 0;
                 if(clase != 0)
                 {
-                    angular.forEach(data.severidad.incclases, function (incclase) {
-                        if(incclase.id == 1 && clase == 1 && empresaId == incclase.pivot.empresa_id) { // hardware siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
-                        } else if(incclase.id == 2 && clase == 2 && empresaId == incclase.pivot.empresa_id) { // software siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
-                        }
-                    }, this);
+                  angular.forEach(data.severidad.pivotclases, function (incclase) {
+                      if(empresaId == incclase.empresa_id && data.clase.id == incclase.incclase_id) {
+                        tiempoResolucion = incclase.tiempo_resolucion;
+                      }
+
+                  }, this);
                 }
 
                 if(clase == 0) {
@@ -884,7 +883,7 @@ app.controller('dtTicketsEspera',
         $location.path('/tickets/' + id);
     };
 
-    $scope.dtOptions = DTOptionsBuilder.fromSource(apiUrl + '/tickets?userId=' + $scope.user.id + '&option=all&status=7')
+    $scope.dtOptions = DTOptionsBuilder.fromSource(sandboxUnport + '/tickets?userId=' + $scope.user.id + '&option=all&status=7')
         .withPaginationType('full_numbers')
         .withBootstrap()
         .withOption('createdRow', function(row, data, dataIndex) {
@@ -940,13 +939,12 @@ app.controller('dtTicketsEspera',
             var tiempoResolucion = 0;
             if(clase != 0)
             {
-                angular.forEach(data.severidad.incclases, function (incclase) {
-                    if(incclase.id == 1 && clase == 1 && empresaId == incclase.pivot.empresa_id) { // hardware siempre
-                        tiempoResolucion = incclase.pivot.tiempo_resolucion;
-                    } else if(incclase.id == 2 && clase == 2 && empresaId == incclase.pivot.empresa_id) { // software siempre
-                        tiempoResolucion = incclase.pivot.tiempo_resolucion;
-                    }
-                }, this);
+              angular.forEach(data.severidad.pivotclases, function (incclase) {
+                  if(empresaId == incclase.empresa_id && data.clase.id == incclase.incclase_id) {
+                    tiempoResolucion = incclase.tiempo_resolucion;
+                  }
+
+              }, this);
             }
 
             /* -----------------------------------------------------------------------------------------
@@ -1106,13 +1104,12 @@ app.controller('dtTicketsEspera',
                 var tiempoResolucion = 0;
                 if(clase != 0)
                 {
-                    angular.forEach(data.severidad.incclases, function (incclase) {
-                        if(incclase.id == 1 && clase == 1 && empresaId == incclase.pivot.empresa_id) { // hardware siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
-                        } else if(incclase.id == 2 && clase == 2 && empresaId == incclase.pivot.empresa_id) { // software siempre
-                            tiempoResolucion = incclase.pivot.tiempo_resolucion;
-                        }
-                    }, this);
+                  angular.forEach(data.severidad.pivotclases, function (incclase) {
+                      if(empresaId == incclase.empresa_id && data.clase.id == incclase.incclase_id) {
+                        tiempoResolucion = incclase.tiempo_resolucion;
+                      }
+
+                  }, this);
                 }
 
                 if(clase == 0) {

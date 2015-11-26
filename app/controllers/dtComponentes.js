@@ -11,7 +11,7 @@
 app.controller('dtComponentes',
     ['$scope', '$log', '$compile', '$location', 'DTOptionsBuilder', 'DTColumnBuilder', 'ComponenteFactory',
     function($scope, $log, $compile, $location, DTOptionsBuilder, DTColumnBuilder, ComponenteFactory) {
-    
+
     $scope.reloadData = function() {
         $scope.dtOptions.reloadData();
         $log.info('Reload Data(componentes) at: ' + new Date());
@@ -21,7 +21,7 @@ app.controller('dtComponentes',
         $location.path('/elementos/' + id);
     };
 
-    $scope.dtOptions = DTOptionsBuilder.fromSource(apiUrl + '/componentes')
+    $scope.dtOptions = DTOptionsBuilder.fromSource(sandboxUnport + '/componentes')
         .withPaginationType('full_numbers')
         .withBootstrap()
         .withOption('createdRow', function(row, data, dataIndex) {
@@ -75,8 +75,8 @@ app.controller('dtComponentes',
 app.controller('dtComponentesWithActions',
     ['$scope', '$log', '$compile', '$location', 'DTOptionsBuilder', 'DTColumnBuilder', 'ComponenteFactory',
     function($scope, $log, $compile, $location, DTOptionsBuilder, DTColumnBuilder, ComponenteFactory) {
-    
-    $scope.dtOptions = DTOptionsBuilder.fromSource(apiUrl + '/componentes')
+
+    $scope.dtOptions = DTOptionsBuilder.fromSource(sandboxUnport + '/componentes')
         .withPaginationType('full_numbers')
         .withBootstrap()
         .withOption('createdRow', function(row, data, dataIndex) {

@@ -18,7 +18,7 @@ app.service('TicketsResource',
 
 }]);
 
-app.service('TicketResource', 
+app.service('TicketResource',
 	['$resource', function ($resource) {
 
     return $resource(apiUrl + '/tickets/:id', {}, {
