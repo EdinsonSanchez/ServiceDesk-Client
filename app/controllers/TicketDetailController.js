@@ -26,6 +26,7 @@ app.controller('TicketDetailController',
 		, 'TicketFactory'
 		, 'ComponenteFactory'
 		, 'SolverResource'
+		, 'UbicacionesResource'
 		, function($scope, $modal, $log, $routeParams, $location, $stateParams, $q
 	        , AuthService
 			, EmpresasResource
@@ -42,7 +43,8 @@ app.controller('TicketDetailController',
 			, AnexosFactory
 			, TicketFactory
 			, ComponenteFactory
-			, SolverResource) {
+			, SolverResource
+			, UbicacionesResource) {
 
 	$scope.status;
 
@@ -77,6 +79,7 @@ app.controller('TicketDetailController',
 		{ id: 7, nombre: 'Prioridad 7' },
 	];
 	$scope.estados = [];
+	$scope.ubicaciones = [];
 
     // tipificaciones motivo
 	$scope.tipificacionesN1 = [];
@@ -109,6 +112,7 @@ app.controller('TicketDetailController',
 		sucursal_afectada: {},
 		tipoafectado: { id: 0 },
 		estado: {},
+		ubicacion: {},
         updateMotivo: false,
         tipificacion: {
 			N1: { id: 0 },
@@ -375,6 +379,18 @@ app.controller('TicketDetailController',
 			return $scope.tipotickets;
 		});
 	}
+	
+	function loadUbicaciones() {
+		return UbicacionesResource.query({}, function (ubicaciones) {
+			$scope.ubicaciones = ubicaciones;
+			var ubicacionnulo = {
+				id: -1,
+				nombre: "Sin definir",
+				descripcion: "Sin definir"
+			};
+			$scope.ubicaciones.push(ubicacionnulo);
+		});
+	}
 
 	function loadSeveridades() {
 		return SeveridadesResource.query({}, function (severidades) {
@@ -568,7 +584,7 @@ app.controller('TicketDetailController',
 	loadCurrent();
 
 	function loadResources() {
-		var promises = [loadEmpresas(), loadAreas(), loadGrupos(), loadTipotickets(), loadSeveridades(), loadIncClases(), loadEstados(), loadTipificacionesL1()];
+		var promises = [loadEmpresas(), loadAreas(), loadGrupos(), loadTipotickets(), loadSeveridades(), loadIncClases(), loadEstados(), loadTipificacionesL1(), loadUbicaciones()];
 
 		return $q.all(promises).then(function () {
 			console.log('Resources load complete');
@@ -604,6 +620,7 @@ app.controller('TicketDetailController',
 			$scope.ticket.prefijo = currentTicket.prefijo;
 			$scope.ticket.correlativo = currentTicket.correlativo;
 			$scope.ticket.asunto = currentTicket.asunto;
+			$scope.ticket.ubicacion = currentTicket.ubicacion;
 
 			$scope.ticket.empresa_solicitante = currentTicket.empresa_solicitante;
 			$scope.ticket.sucursal_solicitante = currentTicket.sucursal_solicitante;
