@@ -668,11 +668,11 @@ app.controller('TicketDetailController',
 	        // Transforma la informacion de tipificaciones motivo separada por comas e.j. "{1,5,8,20}"
 			var partOfString = currentTicket.tipificaciones_inicial.substr(1, currentTicket.tipificaciones_inicial.length - 2).split(',');
 	        // Asociamos los valores a las tipificaciones anteriores
-			$scope.ticket.tipificacion.N1 = { id: partOfString[0] != "" && partOfString[0] != undefined ? partOfString[0] : 0 };
-			$scope.ticket.tipificacion.N2 = { id: partOfString[1] != "" && partOfString[1] != undefined ? partOfString[1] : 0 };
-			$scope.ticket.tipificacion.N3 = { id: partOfString[2] != "" && partOfString[2] != undefined ? partOfString[2] : 0 };
-			$scope.ticket.tipificacion.N4 = { id: partOfString[3] != "" && partOfString[3] != undefined ? partOfString[3] : 0 };
-			$scope.ticket.tipificacion.N5 = { id: partOfString[4] != "" && partOfString[4] != undefined ? partOfString[4] : 0 };
+			$scope.ticket.tipificacion.N1 = { id: partOfString[0] != "" && partOfString[0] != undefined ? parseInt(partOfString[0]) : 0 };
+			$scope.ticket.tipificacion.N2 = { id: partOfString[1] != "" && partOfString[1] != undefined ? parseInt(partOfString[1]) : 0 };
+			$scope.ticket.tipificacion.N3 = { id: partOfString[2] != "" && partOfString[2] != undefined ? parseInt(partOfString[2]) : 0 };
+			$scope.ticket.tipificacion.N4 = { id: partOfString[3] != "" && partOfString[3] != undefined ? parseInt(partOfString[3]) : 0 };
+			$scope.ticket.tipificacion.N5 = { id: partOfString[4] != "" && partOfString[4] != undefined ? parseInt(partOfString[4]) : 0 };
 
 			// console.log($scope.ticket.tipificacion.);
 
@@ -680,11 +680,11 @@ app.controller('TicketDetailController',
 	        var lengthTipificacionesFinal = currentTicket.movimientos[movimientosLength - 1].tipificaciones_final.length;
 	        var partSoluciones = currentTicket.movimientos[movimientosLength - 1].tipificaciones_final.substr(1, lengthTipificacionesFinal - 2).split(',');
 	        // $log.info(partSoluciones[1]);
-	        $scope.ticket.currentMovimiento.solucion.N1 = { id: (partSoluciones[0] != "" && partSoluciones[0] != undefined ? partSoluciones[0] : 0) };
-	        $scope.ticket.currentMovimiento.solucion.N2 = { id: (partSoluciones[1] != "" && partSoluciones[1] != undefined ? partSoluciones[1] : 0) };
-	        $scope.ticket.currentMovimiento.solucion.N3 = { id: (partSoluciones[2] != "" && partSoluciones[2] != undefined ? partSoluciones[2] : 0) };
-	        $scope.ticket.currentMovimiento.solucion.N4 = { id: (partSoluciones[3] != "" && partSoluciones[3] != undefined ? partSoluciones[3] : 0) };
-	        $scope.ticket.currentMovimiento.solucion.N5 = { id: (partSoluciones[4] != "" && partSoluciones[4] != undefined ? partSoluciones[4] : 0) };
+	        $scope.ticket.currentMovimiento.solucion.N1 = { id: (partSoluciones[0] != "" && partSoluciones[0] != undefined ? parseInt(partSoluciones[0]) : 0) };
+	        $scope.ticket.currentMovimiento.solucion.N2 = { id: (partSoluciones[1] != "" && partSoluciones[1] != undefined ? parseInt(partSoluciones[1]) : 0) };
+	        $scope.ticket.currentMovimiento.solucion.N3 = { id: (partSoluciones[2] != "" && partSoluciones[2] != undefined ? parseInt(partSoluciones[2]) : 0) };
+	        $scope.ticket.currentMovimiento.solucion.N4 = { id: (partSoluciones[3] != "" && partSoluciones[3] != undefined ? parseInt(partSoluciones[3]) : 0) };
+	        $scope.ticket.currentMovimiento.solucion.N5 = { id: (partSoluciones[4] != "" && partSoluciones[4] != undefined ? parseInt(partSoluciones[4]) : 0) };
 
 			// separar por las comas, asignarle a cada nivel
 			$scope.ticket.movimientos = currentTicket.movimientos;
@@ -711,7 +711,9 @@ app.controller('TicketDetailController',
 	                }
 	            }
 	        }, this);
-			return $scope.ticket;
+			
+			console.log($scope.ticket);
+			// return $scope.ticket;
 		}, function (error) {
 			$log.info('Error produccido al obtener la informacion del servidor.');
 			$location.url('/404');
