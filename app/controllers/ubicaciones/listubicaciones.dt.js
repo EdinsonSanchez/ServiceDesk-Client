@@ -6,13 +6,13 @@
                 .module('SDApp')
                 .controller('ListUbicacionesDt', ListUbicacionesDt);
 
-        ListUbicacionesDt.$inject = ['$scope', '$location', '$log', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'UbicacionesResource'];
+        ListUbicacionesDt.$inject = ['$scope', '$location', '$log', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'UbicacionResource'];
 
-        function ListUbicacionesDt($scope, $location, $log, $compile, DTOptionsBuilder, DTColumnBuilder, UbicacionesResource) {
+        function ListUbicacionesDt($scope, $location, $log, $compile, DTOptionsBuilder, DTColumnBuilder, UbicacionResource) {
                 var vm = this;
                 vm.reloadData = reloadData;
                 vm.show = show;
-                vm.deleteSla = deleteUbicacion;
+                vm.deleteUbicacion = deleteUbicacion;
 		
                 // Options Dt
                 vm.dtOptions = DTOptionsBuilder.fromSource(sandboxUnport + '/ubicacions')
@@ -30,6 +30,7 @@
                         DTColumnBuilder.newColumn('descripcion').withTitle('Descripción'),
                         DTColumnBuilder.newColumn(null).withTitle('Acciones').notSortable()
                                 .renderWith(function (data, type, full, meta) {
+                                        // console.log(data);
                                         return '<button class="btn btn-info btn-sm" ng-click="vm.show(' + data.id + ')">' +
                                                 '   <span class="fa fa-eye"></span> Ver' +
                                                 '</button>&nbsp;' +
@@ -50,9 +51,9 @@
                 }
 
                 function deleteUbicacion(id) {
-                
+                        // console.log('id', id);
                         // Elimina la tipificacion seleccionada
-                        UbicacionesResource.delete({ id: id }, function (ok) {
+                        UbicacionResource.delete({ id: id }, function (ok) {
                                 alert(ok.message);
                                 vm.reloadData();
                         }, function (error) {

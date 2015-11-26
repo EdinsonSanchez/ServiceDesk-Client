@@ -119,7 +119,7 @@
                 <!-- col2 -->
                 <div class="col-md-4">
 
-                    <div class="form-group" style="visibility: hidden;">
+                    <div class="form-group" style="display: none;">
                         <label class="col-md-3 control-label">Tipo</label>
                         <div class="col-md-9">
                             <select class="form-control select" disabled ng-model="ticket.tipoticket" ng-options="tipo.nombre for tipo in tipotickets">
@@ -136,20 +136,29 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Clase</label>
-                        <div class="col-md-9">
-                            <select class="form-control select" ng-model="ticket.clase" ng-options="clase.nombre for clase in incclases">
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label class="col-md-3 control-label">Prioridad</label>
                         <div class="col-md-9">
                              <select class="form-control select" disabled ng-model="ticket.prioridad" ng-options="prioridad.nombre for prioridad in prioridades">
                             </select>
                         </div>
                     </div>
+                    
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Clase</label>
+                        <div class="col-md-9">
+                            <select class="form-control select" ng-model="ticket.clase" ng-options="clase.nombre for clase in incclases">
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Ubicación</label>
+                        <div class="col-md-9">
+                            <select class="form-control select" ng-model="ticket.ubicacion" ng-options="ubicacion.nombre for ubicacion in ubicaciones">
+                            </select>
+                        </div>
+                    </div>
+
 
                     <div class="form-group">
                         <label class="col-md-3 control-label">Estado</label>

@@ -120,7 +120,7 @@
                 <!-- col2 -->
                 <div class="col-md-4">
 
-                    <div class="form-group" >
+                    <div class="form-group" style="display: none;">
                         <label class="col-md-3 control-label">Tipo</label>
                         <div class="col-md-9">
                             <select class="form-control select" disabled ng-model="ticket.tipoticket" ng-options="tipo.nombre for tipo in tipotickets track by tipo.id">
@@ -137,17 +137,25 @@
                     </div>
 
                     <div class="form-group">
+                        <label class="col-md-3 control-label">Prioridad</label>
+                        <div class="col-md-9">
+                             <select class="form-control select" disabled ng-model="ticket.prioridad" ng-options="prioridad.nombre for prioridad in prioridades track by prioridad.id">
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
                         <label class="col-md-3 control-label">Clase</label>
                         <div class="col-md-9">
                             <select class="form-control select" ng-disabled="isAuthorized([userRoles.usuario]) || ticket.isCerrado" ng-model="ticket.clase" ng-options="clase.nombre for clase in incclases track by clase.id">
                             </select>
                         </div>
                     </div>
-
+                    
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Prioridad</label>
+                        <label class="col-md-3 control-label">Ubicación</label>
                         <div class="col-md-9">
-                             <select class="form-control select" disabled ng-model="ticket.prioridad" ng-options="prioridad.nombre for prioridad in prioridades track by prioridad.id">
+                            <select class="form-control select" ng-model="ticket.ubicacion" ng-options="ubicacion.nombre for ubicacion in ubicaciones track by ubicacion.id">
                             </select>
                         </div>
                     </div>

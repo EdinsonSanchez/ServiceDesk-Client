@@ -25,6 +25,7 @@ var sandboxUnport = 'http://localhost:8888/sandbox/appGestConfV2.0/public/apiv2'
 //var sandboxurl = 'http://10.42.0.1/appGestConfV2.0/public';
 var sandboxurl = 'http://localhost:8888/sandbox/appGestConfV2.0/public';
 
+
 var apiUrl = sandbox;
 var appUrl = sandboxurl;
 
@@ -428,7 +429,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function($stat
 	})
 	.state('ubicaciones-create', {
 		url: '/ubicaciones-create',
-		controller: 'SlaController as svm',
+		controller: 'UbicacionController as uvm',
 		templateUrl: 'views/ubicaciones/create.html',
 		data: {
 			authorizedRoles: [USER_ROLES.super]
@@ -436,7 +437,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function($stat
 	})
 	.state('ubicacionesDetail', {
 		url: '/ubicaciones/:id',
-		controller: 'SlaDetailController as svm',
+		controller: 'UbicacionDetailController as uvm',
 		templateUrl: 'views/ubicaciones/edit.html',
 		data: {
 			authorizedRoles: [USER_ROLES.super]

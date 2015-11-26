@@ -26,6 +26,7 @@ app.controller('TicketController',
 	, 'TicketFactory'
 	, 'AnexosFactory'
 	, 'SolverResource'
+	, 'UbicacionesResource'
 	, function ($scope, $modal, $log, $location
         , AuthService
 		, TipoticketsResource
@@ -42,7 +43,8 @@ app.controller('TicketController',
 		, TicketsResource
 		, TicketFactory
 		, AnexosFactory
-		, SolverResource) {
+		, SolverResource
+		, UbicacionesResource) {
 
 	$scope.status;
 	$scope.tickets = {};
@@ -76,6 +78,7 @@ app.controller('TicketController',
 		{ id: 7, nombre: 'Prioridad 7' },
 	];
 	$scope.estados = [];
+	$scope.ubicaciones = [];
 
 	// tipificaciones motivo
 	$scope.tipificacionesN1 = [];
@@ -102,6 +105,7 @@ app.controller('TicketController',
 		area_afectada: {},
 		sucursal_afectada: {},
 		estado: {},
+		ubicacion: {},
 		grupo: {},
 		asignado: {},
         descripcion: '',
@@ -268,6 +272,17 @@ app.controller('TicketController',
 		};
 		$scope.grupos.push(gruponulo);
 		$scope.ticket.grupo = $scope.grupos[$scope.grupos.length - 1];
+	});
+	
+	UbicacionesResource.query({}, function (ubicaciones) {
+		$scope.ubicaciones = ubicaciones;
+		var ubicacionnulo = {
+			id: -1,
+			nombre: "Sin definir",
+			descripcion: "Sin definir"
+		};
+		$scope.ubicaciones.push(ubicacionnulo);
+		$scope.ticket.ubicacion = $scope.ubicaciones[$scope.ubicaciones.length - 1];
 	});
 
 	TipificacionesResource.query({ nivel: 1 }, function (data) {
