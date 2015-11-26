@@ -679,6 +679,7 @@ app.controller('TicketDetailController',
 	        // Transforma la informacion de tipificaciones solucion separada por comas e.j. "{1,5,8,20,30}"
 	        var lengthTipificacionesFinal = currentTicket.movimientos[movimientosLength - 1].tipificaciones_final.length;
 	        var partSoluciones = currentTicket.movimientos[movimientosLength - 1].tipificaciones_final.substr(1, lengthTipificacionesFinal - 2).split(',');
+			console.log(partSoluciones);
 	        // $log.info(partSoluciones[1]);
 	        $scope.ticket.currentMovimiento.solucion.N1 = { id: (partSoluciones[0] != "" && partSoluciones[0] != undefined ? parseInt(partSoluciones[0]) : 0) };
 	        $scope.ticket.currentMovimiento.solucion.N2 = { id: (partSoluciones[1] != "" && partSoluciones[1] != undefined ? parseInt(partSoluciones[1]) : 0) };
