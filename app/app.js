@@ -428,7 +428,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function($stat
 	})
 	.state('ubicaciones-create', {
 		url: '/ubicaciones-create',
-		controller: 'SlaController as svm',
+		controller: 'UbicacionController as uvm',
 		templateUrl: 'views/ubicaciones/create.html',
 		data: {
 			authorizedRoles: [USER_ROLES.super]
@@ -436,7 +436,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function($stat
 	})
 	.state('ubicacionesDetail', {
 		url: '/ubicaciones/:id',
-		controller: 'SlaDetailController as svm',
+		controller: 'UbicacionDetailController as uvm',
 		templateUrl: 'views/ubicaciones/edit.html',
 		data: {
 			authorizedRoles: [USER_ROLES.super]
