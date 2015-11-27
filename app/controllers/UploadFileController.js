@@ -4,7 +4,7 @@ app.controller('UploadFileController',
     function($scope, FileUploader, AnexosFactory) {
         
         var uploader = $scope.uploader = new FileUploader({
-            url: apiUrl + '/upload'
+            url: sandboxUnport + '/upload'
         });
 
         // FILTERS

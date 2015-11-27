@@ -23,7 +23,7 @@ var sandboxUnport = 'http://localhost:8888/sandbox/appGestConfV2.0/public/apiv2'
 
 //var apiMainUrl = 'http://www.mss.pe/apps/tickets/v2/public';
 //var sandboxurl = 'http://10.42.0.1/appGestConfV2.0/public';
-var sandboxurl = 'http://localhost:8888/sandbox/appGestConfV2.0/public';
+var sandboxurl = 'http://localhost\\:8888/sandbox/appGestConfV2.0/public';
 
 
 var apiUrl = sandbox;
