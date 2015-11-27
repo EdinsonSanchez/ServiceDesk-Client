@@ -181,10 +181,23 @@ app.controller('dtTickets',
             }),
         DTColumnBuilder.newColumn('clase.nombre').withTitle('Clase'),
         DTColumnBuilder.newColumn('empresa_afectado.razon_social').withTitle('Empresa'),
-        DTColumnBuilder.newColumn('reportado_by').withTitle('Reportado por')
+        DTColumnBuilder.newColumn(null).withTitle('Afectado')
             .renderWith(function (data, type, full, meta) {
-                return data.nombre + ' ' + data.apellidos;
+                if(data.afectado != null) {
+                    return data.afectado.nombre + ' ' + data.afectado.apellidos;
+                }
+                else if(data.area_afectada != null) {
+                    return "Área de " + data.area_afectada.nombre;
+                } else if(data.sucursal_afectado != null) {
+                    return "Sucursal " + data.sucursal_afectada.nombre;
+                } else {
+                    return "-";
+                }
             }),
+        // DTColumnBuilder.newColumn('reportado_by').withTitle('Reportado por')
+        //     .renderWith(function (data, type, full, meta) {
+        //         return data.nombre + ' ' + data.apellidos;
+        //     }),
         DTColumnBuilder.newColumn('estado.nombre').withTitle('Estado'),
         DTColumnBuilder.newColumn(null).withTitle('Asignado a')
             .renderWith(function (data) {
